@@ -4,13 +4,9 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
-import { useTheme } from '@/lib/theme';
 import {
   Menu,
   X,
-  Sun,
-  Moon,
-  LogOut,
   LayoutDashboard,
   Package,
   ShoppingCart,
@@ -24,6 +20,7 @@ import {
   PlusCircle,
 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
+import { UserMenu } from '@/components/UserMenu';
 
 const menuItems = [
   {
@@ -85,12 +82,6 @@ const menuItems = [
 
 function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   const pathname = usePathname();
-  const { theme, setTheme, resolvedTheme } = useTheme();
-
-  const handleLogout = () => {
-    localStorage.removeItem('auth_token');
-    window.location.href = '/login';
-  };
 
   return (
     <>
@@ -147,60 +138,9 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
             })}
           </nav>
 
-          {/* Theme Switcher */}
-          <div className="border-t border-secondary-200 dark:border-secondary-800 p-3 space-y-3">
-            <div className="flex items-center justify-between px-3">
-              <span className="text-xs font-medium text-secondary-600 dark:text-secondary-400">
-                Theme
-              </span>
-              <div className="flex gap-1">
-                <button
-                  onClick={() => setTheme('light')}
-                  className={cn(
-                    'p-1.5 rounded-md transition-colors',
-                    theme === 'light'
-                      ? 'bg-primary-100 text-primary-600 dark:bg-primary-900/30 dark:text-primary-300'
-                      : 'text-secondary-500 hover:bg-secondary-100 dark:hover:bg-secondary-800'
-                  )}
-                >
-                  <Sun className="w-4 h-4" />
-                </button>
-                <button
-                  onClick={() => setTheme('dark')}
-                  className={cn(
-                    'p-1.5 rounded-md transition-colors',
-                    theme === 'dark'
-                      ? 'bg-primary-100 text-primary-600 dark:bg-primary-900/30 dark:text-primary-300'
-                      : 'text-secondary-500 hover:bg-secondary-100 dark:hover:bg-secondary-800'
-                  )}
-                >
-                  <Moon className="w-4 h-4" />
-                </button>
-                <button
-                  onClick={() => setTheme('auto')}
-                  className={cn(
-                    'p-1.5 rounded-md transition-colors',
-                    theme === 'auto'
-                      ? 'bg-primary-100 text-primary-600 dark:bg-primary-900/30 dark:text-primary-300'
-                      : 'text-secondary-500 hover:bg-secondary-100 dark:hover:bg-secondary-800'
-                  )}
-                >
-                  <Sun className="w-3 h-3 opacity-50" />
-                  <Moon className="w-3 h-3 opacity-50" />
-                </button>
-              </div>
-            </div>
-
-            <Button
-              variant="outline"
-              size="md"
-              fullWidth
-              onClick={handleLogout}
-              className="justify-center gap-2"
-            >
-              <LogOut className="w-4 h-4" />
-              Logout
-            </Button>
+          {/* User Menu - Bottom of Sidebar */}
+          <div className="border-t border-secondary-200 dark:border-secondary-800 p-3">
+            <UserMenu />
           </div>
         </div>
       </aside>
