@@ -2,7 +2,6 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 import { cn } from '@/lib/utils';
-import { useTheme } from '@/lib/theme';
 import {
   Sun,
   Moon,
@@ -43,21 +42,78 @@ const neutralColors = [
   { name: 'Stone', value: 'stone', color: '#78716C' },
 ];
 
-interface MenuItem {
-  label: string;
-  icon: React.ReactNode;
-  onClick?: () => void;
-  divider?: boolean;
-  submenu?: MenuItem[];
+// Apply accent colors via CSS variables
+function applyAccentColors(primary: string, neutral: string) {
+  const primaryColor = primaryColors.find(c => c.value === primary)?.color || '#3B82F6';
+  const neutralColor = neutralColors.find(c => c.value === neutral)?.color || '#64748B';
+  
+  const root = document.documentElement;
+  root.style.setProperty('--accent-primary', primaryColor);
+  root.style.setProperty('--accent-neutral', neutralColor);
+}
+
+// Safely get theme from context, avoiding hydration issues
+function useThemeSafe() {
+  const [theme, setThemeState] = useState<'light' | 'dark' | 'auto'>('auto');
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | 'auto' || 'auto';
+    setThemeState(savedTheme);
+
+    // Apply theme
+    const html = document.documentElement;
+    html.setAttribute('data-theme', savedTheme);
+    if (savedTheme === 'dark') {
+      html.classList.add('dark');
+    } else if (savedTheme === 'light') {
+      html.classList.remove('dark');
+    }
+  }, []);
+
+  const setTheme = (newTheme: 'light' | 'dark' | 'auto') => {
+    setThemeState(newTheme);
+    localStorage.setItem('theme', newTheme);
+    
+    const html = document.documentElement;
+    html.setAttribute('data-theme', newTheme);
+    
+    if (newTheme === 'dark') {
+      html.classList.add('dark');
+    } else if (newTheme === 'light') {
+      html.classList.remove('dark');
+    } else {
+      // auto mode
+      if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        html.classList.add('dark');
+      } else {
+        html.classList.remove('dark');
+      }
+    }
+  };
+
+  return { theme, setTheme, mounted };
 }
 
 export function UserMenu() {
-  const { theme, setTheme } = useTheme();
+  const { theme, setTheme, mounted } = useThemeSafe();
   const [isOpen, setIsOpen] = useState(false);
   const [selectedPrimary, setSelectedPrimary] = useState('blue');
   const [selectedNeutral, setSelectedNeutral] = useState('slate');
   const menuRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
+
+  // Initialize colors from localStorage on mount
+  useEffect(() => {
+    if (!mounted) return;
+    
+    const savedPrimary = localStorage.getItem('accentColor-primary') || 'blue';
+    const savedNeutral = localStorage.getItem('accentColor-neutral') || 'slate';
+    setSelectedPrimary(savedPrimary);
+    setSelectedNeutral(savedNeutral);
+    applyAccentColors(savedPrimary, savedNeutral);
+  }, [mounted]);
 
   const handleLogout = () => {
     localStorage.removeItem('auth_token');
@@ -68,8 +124,22 @@ export function UserMenu() {
     setTheme(newTheme);
   };
 
+  const handlePrimaryColorChange = (color: string) => {
+    setSelectedPrimary(color);
+    localStorage.setItem('accentColor-primary', color);
+    applyAccentColors(color, selectedNeutral);
+  };
+
+  const handleNeutralColorChange = (color: string) => {
+    setSelectedNeutral(color);
+    localStorage.setItem('accentColor-neutral', color);
+    applyAccentColors(selectedPrimary, color);
+  };
+
   // Close menu when clicking outside
   useEffect(() => {
+    if (!mounted) return;
+
     function handleClickOutside(event: MouseEvent) {
       if (
         menuRef.current &&
@@ -83,7 +153,11 @@ export function UserMenu() {
 
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+  }, [mounted]);
+
+  if (!mounted) {
+    return null;
+  }
 
   return (
     <div className="relative">
@@ -191,7 +265,7 @@ export function UserMenu() {
                 {primaryColors.map((color) => (
                   <button
                     key={color.value}
-                    onClick={() => setSelectedPrimary(color.value)}
+                    onClick={() => handlePrimaryColorChange(color.value)}
                     title={color.name}
                     className={cn(
                       'w-6 h-6 rounded transition-all hover:scale-110',
@@ -213,7 +287,7 @@ export function UserMenu() {
                 {neutralColors.map((color) => (
                   <button
                     key={color.value}
-                    onClick={() => setSelectedNeutral(color.value)}
+                    onClick={() => handleNeutralColorChange(color.value)}
                     title={color.name}
                     className={cn(
                       'flex-1 h-5 rounded transition-all hover:scale-110',
