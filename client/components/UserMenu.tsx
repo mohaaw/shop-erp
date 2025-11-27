@@ -12,66 +12,60 @@ import {
   MessageSquare,
   HelpCircle,
   ChevronUp,
+  Palette,
 } from 'lucide-react';
 import {
   getThemeMode,
   setThemeMode,
   getPrimaryColor,
-  setPrimaryColor,
   getNeutralColor,
-  setNeutralColor,
-  PRIMARY_COLORS,
-  NEUTRAL_COLORS,
+  PRESET_THEMES,
+  applyPresetTheme,
+  initializeTheme,
   type ThemeMode,
-  applyCSSVariables,
 } from '@/lib/themeSystem';
 
 export function UserMenu() {
   const [isOpen, setIsOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [themeMode, setThemeModeState] = useState<ThemeMode>('auto');
-  const [primaryColor, setPrimaryColorState] = useState('blue');
-  const [neutralColor, setNeutralColorState] = useState('slate');
+  const [currentTheme, setCurrentTheme] = useState('');
   const menuRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
-  // Initialize from localStorage on mount AND apply colors
+  // Initialize theme on mount
   useEffect(() => {
     setMounted(true);
+    initializeTheme();
     
-    // Load saved values
-    const savedTheme = getThemeMode();
-    const savedPrimary = getPrimaryColor();
-    const savedNeutral = getNeutralColor();
+    const mode = getThemeMode();
+    const primary = getPrimaryColor();
+    const neutral = getNeutralColor();
     
-    setThemeModeState(savedTheme);
-    setPrimaryColorState(savedPrimary);
-    setNeutralColorState(savedNeutral);
+    setThemeModeState(mode);
     
-    // IMPORTANT: Apply CSS variables immediately
-    applyCSSVariables();
+    // Find matching preset theme
+    const matching = PRESET_THEMES.find(
+      t => t.mode === mode && t.primary === primary && t.neutral === neutral
+    );
+    setCurrentTheme(matching?.name || '');
+    
+    console.log('✅ UserMenu initialized:', { mode, primary, neutral, theme: matching?.name });
   }, []);
 
-  // Handle theme mode change
+  // Handle preset theme selection
+  const handlePresetTheme = (themeName: string) => {
+    applyPresetTheme(themeName);
+    setCurrentTheme(themeName);
+    console.log('✅ Applied preset theme:', themeName);
+  };
+
+  // Handle manual theme mode change (Light/Dark/Auto buttons)
   const handleThemeModeChange = (mode: ThemeMode) => {
     setThemeMode(mode);
     setThemeModeState(mode);
-  };
-
-  // Handle primary color change - MUST apply CSS variables
-  const handlePrimaryColorChange = (color: string) => {
-    setPrimaryColor(color);
-    setPrimaryColorState(color);
-    // Force CSS variables to update
-    setTimeout(() => applyCSSVariables(), 0);
-  };
-
-  // Handle neutral color change - MUST apply CSS variables
-  const handleNeutralColorChange = (color: string) => {
-    setNeutralColor(color);
-    setNeutralColorState(color);
-    // Force CSS variables to update
-    setTimeout(() => applyCSSVariables(), 0);
+    // Clear preset theme when manually changing mode
+    setCurrentTheme('');
   };
 
   // Handle logout
@@ -80,24 +74,24 @@ export function UserMenu() {
     window.location.href = '/login';
   };
 
-  // Close menu when clicking outside
+  // Handle click outside
   useEffect(() => {
-    if (!mounted) return;
-
     function handleClickOutside(event: MouseEvent) {
       if (
         menuRef.current &&
-        !menuRef.current.contains(event.target as Node) &&
         buttonRef.current &&
+        !menuRef.current.contains(event.target as Node) &&
         !buttonRef.current.contains(event.target as Node)
       ) {
         setIsOpen(false);
       }
     }
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [mounted]);
+    if (isOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => document.removeEventListener('mousedown', handleClickOutside);
+    }
+  }, [isOpen]);
 
   if (!mounted) {
     return null;
@@ -105,33 +99,23 @@ export function UserMenu() {
 
   return (
     <div className="relative">
-      {/* User Profile Button */}
+      {/* Menu Button */}
       <button
         ref={buttonRef}
         onClick={() => setIsOpen(!isOpen)}
-        className={cn(
-          'w-full flex items-center justify-between gap-3 px-3 py-2 rounded-lg',
-          'hover:bg-secondary-100 dark:hover:bg-secondary-800',
-          'transition-colors',
-          isOpen && 'bg-secondary-100 dark:bg-secondary-800'
-        )}
+        className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-primary-100 dark:hover:bg-primary-900 transition-colors"
+        title="User Menu"
       >
-        <div className="flex items-center gap-3 min-w-0">
-          <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center flex-shrink-0">
-            <span className="text-white text-sm font-bold">AD</span>
-          </div>
-          <div className="text-left min-w-0">
-            <p className="text-sm font-medium text-secondary-900 dark:text-white truncate">
-              Admin User
-            </p>
-            <p className="text-xs text-secondary-500 dark:text-secondary-400 truncate">
-              admin@erp.com
-            </p>
-          </div>
+        <div
+          className="w-8 h-8 rounded-full border-2 border-primary-600 flex items-center justify-center text-xs font-bold text-white"
+          style={{ backgroundColor: 'var(--primary-600)' }}
+        >
+          AD
         </div>
         <ChevronUp
+          size={16}
           className={cn(
-            'w-4 h-4 flex-shrink-0 text-secondary-500 transition-transform',
+            'transition-transform duration-200',
             isOpen && 'rotate-180'
           )}
         />
@@ -141,165 +125,109 @@ export function UserMenu() {
       {isOpen && (
         <div
           ref={menuRef}
-          className={cn(
-            'absolute bottom-full left-0 right-0 mb-2 z-50',
-            'bg-white dark:bg-secondary-900',
-            'border border-secondary-200 dark:border-secondary-800',
-            'rounded-lg shadow-lg',
-            'min-w-[260px] max-h-[600px] overflow-y-auto'
-          )}
+          className="absolute bottom-full right-0 mb-2 w-72 bg-white dark:bg-secondary-900 rounded-lg shadow-lg border border-secondary-200 dark:border-secondary-700 p-2 z-50"
         >
-          {/* ======================
-              THEME MODE SECTION - SMALLER BUTTONS
-              ====================== */}
-          <div className="px-2 py-2 border-b border-secondary-200 dark:border-secondary-800">
-            <div className="text-xs font-semibold text-secondary-600 dark:text-secondary-300 px-1 mb-1.5">
-              THEME
+          {/* User Profile */}
+          <div className="px-3 py-2 border-b border-secondary-200 dark:border-secondary-700 mb-2">
+            <p className="font-semibold text-secondary-900 dark:text-secondary-50">Admin User</p>
+            <p className="text-sm text-secondary-600 dark:text-secondary-400">admin@example.com</p>
+          </div>
+
+          {/* Menu Items */}
+          <button className="w-full text-left px-3 py-2 rounded hover:bg-secondary-100 dark:hover:bg-secondary-800 transition-colors flex items-center gap-2 text-secondary-900 dark:text-secondary-50">
+            <User size={16} /> Profile
+          </button>
+          <button className="w-full text-left px-3 py-2 rounded hover:bg-secondary-100 dark:hover:bg-secondary-800 transition-colors flex items-center gap-2 text-secondary-900 dark:text-secondary-50">
+            <Settings size={16} /> Settings
+          </button>
+          <button className="w-full text-left px-3 py-2 rounded hover:bg-secondary-100 dark:hover:bg-secondary-800 transition-colors flex items-center gap-2 text-secondary-900 dark:text-secondary-50">
+            <FileText size={16} /> Documentation
+          </button>
+          <button className="w-full text-left px-3 py-2 rounded hover:bg-secondary-100 dark:hover:bg-secondary-800 transition-colors flex items-center gap-2 text-secondary-900 dark:text-secondary-50">
+            <MessageSquare size={16} /> Feedback
+          </button>
+          <button className="w-full text-left px-3 py-2 rounded hover:bg-secondary-100 dark:hover:bg-secondary-800 transition-colors flex items-center gap-2 text-secondary-900 dark:text-secondary-50">
+            <HelpCircle size={16} /> Help
+          </button>
+
+          {/* Divider */}
+          <div className="border-t border-secondary-200 dark:border-secondary-700 my-2" />
+
+          {/* Appearance Section */}
+          <div className="px-3 py-2">
+            <p className="text-xs font-semibold text-secondary-600 dark:text-secondary-400 mb-2 flex items-center gap-1">
+              <Palette size={14} /> Themes
+            </p>
+
+            {/* Preset Themes Grid */}
+            <div className="grid grid-cols-2 gap-1 mb-3">
+              {PRESET_THEMES.map((theme) => (
+                <button
+                  key={theme.name}
+                  onClick={() => handlePresetTheme(theme.name)}
+                  className={cn(
+                    'px-2 py-1.5 text-xs rounded border transition-all',
+                    currentTheme === theme.name
+                      ? 'bg-primary-600 text-white border-primary-600'
+                      : 'bg-secondary-100 dark:bg-secondary-800 text-secondary-900 dark:text-secondary-50 border-secondary-300 dark:border-secondary-600 hover:border-primary-400'
+                  )}
+                >
+                  {theme.name}
+                </button>
+              ))}
             </div>
+
+            {/* Quick Theme Mode Buttons */}
             <div className="flex gap-1">
               <button
                 onClick={() => handleThemeModeChange('light')}
                 className={cn(
-                  'flex-1 flex items-center justify-center gap-1 px-2 py-1.5 rounded text-xs font-medium transition-all',
+                  'flex-1 flex items-center justify-center gap-1 px-2 py-1.5 text-xs rounded transition-all',
                   themeMode === 'light'
-                    ? 'bg-blue-600 text-white shadow-sm'
-                    : 'bg-secondary-100 dark:bg-secondary-800 text-secondary-700 dark:text-secondary-300 hover:bg-secondary-200 dark:hover:bg-secondary-700'
+                    ? 'bg-primary-600 text-white'
+                    : 'bg-secondary-100 dark:bg-secondary-800 text-secondary-900 dark:text-secondary-50 hover:bg-secondary-200'
                 )}
+                title="Light Mode"
               >
-                <Sun className="w-3 h-3" />
-                Light
+                <Sun size={14} /> Light
               </button>
               <button
                 onClick={() => handleThemeModeChange('dark')}
                 className={cn(
-                  'flex-1 flex items-center justify-center gap-1 px-2 py-1.5 rounded text-xs font-medium transition-all',
+                  'flex-1 flex items-center justify-center gap-1 px-2 py-1.5 text-xs rounded transition-all',
                   themeMode === 'dark'
-                    ? 'bg-blue-600 text-white shadow-sm'
-                    : 'bg-secondary-100 dark:bg-secondary-800 text-secondary-700 dark:text-secondary-300 hover:bg-secondary-200 dark:hover:bg-secondary-700'
+                    ? 'bg-primary-600 text-white'
+                    : 'bg-secondary-100 dark:bg-secondary-800 text-secondary-900 dark:text-secondary-50 hover:bg-secondary-200'
                 )}
+                title="Dark Mode"
               >
-                <Moon className="w-3 h-3" />
-                Dark
+                <Moon size={14} /> Dark
               </button>
               <button
                 onClick={() => handleThemeModeChange('auto')}
                 className={cn(
-                  'flex-1 flex items-center justify-center gap-1 px-2 py-1.5 rounded text-xs font-medium transition-all',
+                  'flex-1 px-2 py-1.5 text-xs rounded transition-all',
                   themeMode === 'auto'
-                    ? 'bg-blue-600 text-white shadow-sm'
-                    : 'bg-secondary-100 dark:bg-secondary-800 text-secondary-700 dark:text-secondary-300 hover:bg-secondary-200 dark:hover:bg-secondary-700'
+                    ? 'bg-primary-600 text-white'
+                    : 'bg-secondary-100 dark:bg-secondary-800 text-secondary-900 dark:text-secondary-50 hover:bg-secondary-200'
                 )}
+                title="Auto Mode"
               >
-                <Sun className="w-3 h-3" />
                 Auto
               </button>
             </div>
           </div>
 
-          {/* ======================
-              PRIMARY COLOR SECTION
-              ====================== */}
-          <div className="px-2 py-2 border-b border-secondary-200 dark:border-secondary-800">
-            <div className="text-xs font-semibold text-secondary-600 dark:text-secondary-300 px-1 mb-1.5">
-              PRIMARY
-            </div>
-            <div className="grid grid-cols-6 gap-1.5">
-              {PRIMARY_COLORS.map((color) => (
-                <button
-                  key={color.value}
-                  onClick={() => handlePrimaryColorChange(color.value)}
-                  title={color.name}
-                  className={cn(
-                    'w-full aspect-square rounded-md transition-all cursor-pointer relative',
-                    'hover:scale-105 hover:shadow-md',
-                    primaryColor === color.value && 'ring-2 ring-offset-1 ring-blue-600'
-                  )}
-                  style={{ backgroundColor: color.hex }}
-                >
-                  {primaryColor === color.value && (
-                    <div className="absolute inset-0 flex items-center justify-center rounded-md">
-                      <div className="text-white font-bold text-xs">✓</div>
-                    </div>
-                  )}
-                </button>
-              ))}
-            </div>
-          </div>
+          {/* Divider */}
+          <div className="border-t border-secondary-200 dark:border-secondary-700 my-2" />
 
-          {/* ======================
-              NEUTRAL COLOR SECTION
-              ====================== */}
-          <div className="px-2 py-2 border-b border-secondary-200 dark:border-secondary-800">
-            <div className="text-xs font-semibold text-secondary-600 dark:text-secondary-300 px-1 mb-1.5">
-              NEUTRAL
-            </div>
-            <div className="flex gap-1.5">
-              {NEUTRAL_COLORS.map((color) => (
-                <button
-                  key={color.value}
-                  onClick={() => handleNeutralColorChange(color.value)}
-                  title={color.name}
-                  className={cn(
-                    'flex-1 h-8 rounded-md transition-all cursor-pointer relative',
-                    'hover:scale-105 hover:shadow-md',
-                    neutralColor === color.value && 'ring-2 ring-offset-1 ring-blue-600'
-                  )}
-                  style={{ backgroundColor: color.hex }}
-                >
-                  {neutralColor === color.value && (
-                    <div className="absolute inset-0 flex items-center justify-center rounded-md">
-                      <div className="text-white font-bold text-xs">✓</div>
-                    </div>
-                  )}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* ======================
-              MENU ITEMS SECTION
-              ====================== */}
-          <div className="px-2 py-1.5 border-b border-secondary-200 dark:border-secondary-800">
-            <button className="w-full flex items-center gap-3 px-2 py-1.5 rounded hover:bg-secondary-100 dark:hover:bg-secondary-800 transition-colors text-left text-sm">
-              <User className="w-4 h-4 text-secondary-600 dark:text-secondary-400 flex-shrink-0" />
-              <span className="text-secondary-700 dark:text-secondary-300">Profile</span>
-            </button>
-            <button className="w-full flex items-center gap-3 px-2 py-1.5 rounded hover:bg-secondary-100 dark:hover:bg-secondary-800 transition-colors text-left text-sm">
-              <Settings className="w-4 h-4 text-secondary-600 dark:text-secondary-400 flex-shrink-0" />
-              <span className="text-secondary-700 dark:text-secondary-300">Settings</span>
-            </button>
-          </div>
-
-          {/* ======================
-              SUPPORT SECTION
-              ====================== */}
-          <div className="px-2 py-1.5 border-b border-secondary-200 dark:border-secondary-800">
-            <button className="w-full flex items-center gap-3 px-2 py-1.5 rounded hover:bg-secondary-100 dark:hover:bg-secondary-800 transition-colors text-left text-sm">
-              <FileText className="w-4 h-4 text-secondary-600 dark:text-secondary-400 flex-shrink-0" />
-              <span className="text-secondary-700 dark:text-secondary-300">Documentation</span>
-            </button>
-            <button className="w-full flex items-center gap-3 px-2 py-1.5 rounded hover:bg-secondary-100 dark:hover:bg-secondary-800 transition-colors text-left text-sm">
-              <MessageSquare className="w-4 h-4 text-secondary-600 dark:text-secondary-400 flex-shrink-0" />
-              <span className="text-secondary-700 dark:text-secondary-300">Feedback</span>
-            </button>
-            <button className="w-full flex items-center gap-3 px-2 py-1.5 rounded hover:bg-secondary-100 dark:hover:bg-secondary-800 transition-colors text-left text-sm">
-              <HelpCircle className="w-4 h-4 text-secondary-600 dark:text-secondary-400 flex-shrink-0" />
-              <span className="text-secondary-700 dark:text-secondary-300">Help & Support</span>
-            </button>
-          </div>
-
-          {/* ======================
-              LOGOUT SECTION
-              ====================== */}
-          <div className="px-2 py-1.5">
-            <button
-              onClick={handleLogout}
-              className="w-full flex items-center gap-3 px-2 py-1.5 rounded text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors text-left text-sm"
-            >
-              <LogOut className="w-4 h-4 flex-shrink-0" />
-              <span className="font-medium">Logout</span>
-            </button>
-          </div>
+          {/* Logout */}
+          <button
+            onClick={handleLogout}
+            className="w-full text-left px-3 py-2 rounded hover:bg-red-100 dark:hover:bg-red-900/20 transition-colors flex items-center gap-2 text-red-600 dark:text-red-400"
+          >
+            <LogOut size={16} /> Logout
+          </button>
         </div>
       )}
     </div>
