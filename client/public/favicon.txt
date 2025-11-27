@@ -1,0 +1,2 @@
+/* Favicon placeholder - next.js serves from public/ folder */
+/* You can add favicon.ico to public/ folder */
