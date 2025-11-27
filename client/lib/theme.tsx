@@ -1,25 +1,45 @@
 'use client';
 
 import { createContext, useContext, ReactNode, useEffect, useState } from 'react';
-import type { Theme, ResolvedTheme, ThemeContextType } from '@/types';
+import {
+  Theme,
+  ResolvedTheme,
+  ThemeContextType,
+  ThemeName,
+  NeutralColor
+} from '@/types';
+import {
+  getThemeMode,
+  setThemeMode,
+  getPrimaryColor,
+  setPrimaryColor as setSystemPrimaryColor,
+  getNeutralColor,
+  setNeutralColor as setSystemNeutralColor,
+  initializeTheme
+} from './themeSystem';
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setThemeState] = useState<Theme>('auto');
   const [resolvedTheme, setResolvedTheme] = useState<ResolvedTheme>('light');
+  const [primaryColor, setPrimaryColorState] = useState<ThemeName>('blue');
+  const [neutralColor, setNeutralColorState] = useState<NeutralColor>('slate');
   const [mounted, setMounted] = useState(false);
 
   // Initialize theme on mount
   useEffect(() => {
     setMounted(true);
-    
-    const savedTheme = localStorage.getItem('theme') as Theme || 'auto';
-    setThemeState(savedTheme);
-    
-    const resolved = resolveTheme(savedTheme);
-    setResolvedTheme(resolved);
-    applyTheme(resolved);
+    initializeTheme();
+
+    setThemeState(getThemeMode());
+    setPrimaryColorState(getPrimaryColor());
+    setNeutralColorState(getNeutralColor());
+
+    // Initial resolution
+    const isDark = getThemeMode() === 'dark' ||
+      (getThemeMode() === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    setResolvedTheme(isDark ? 'dark' : 'light');
   }, []);
 
   // Handle system theme changes
@@ -27,12 +47,13 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     if (!mounted) return;
 
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    
+
     const handleChange = () => {
       if (theme === 'auto') {
-        const resolved = mediaQuery.matches ? 'dark' : 'light';
-        setResolvedTheme(resolved);
-        applyTheme(resolved);
+        const isDark = mediaQuery.matches;
+        setResolvedTheme(isDark ? 'dark' : 'light');
+        // Re-apply to ensure correct class is set if needed, though themeSystem handles this
+        setThemeMode('auto');
       }
     };
 
@@ -42,19 +63,38 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 
   const setTheme = (newTheme: Theme) => {
     setThemeState(newTheme);
-    localStorage.setItem('theme', newTheme);
-    
-    const resolved = resolveTheme(newTheme);
-    setResolvedTheme(resolved);
-    applyTheme(resolved);
+    setThemeMode(newTheme);
+
+    // Update resolved theme
+    const isDark = newTheme === 'dark' ||
+      (newTheme === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    setResolvedTheme(isDark ? 'dark' : 'light');
   };
 
-  if (!mounted) {
-    return <>{children}</>;
-  }
+  const setPrimaryColor = (color: ThemeName) => {
+    setPrimaryColorState(color);
+    setSystemPrimaryColor(color);
+  };
+
+  const setNeutralColor = (color: NeutralColor) => {
+    setNeutralColorState(color);
+    setSystemNeutralColor(color);
+  };
+
+  // Always render the provider to ensure context is available
+  // Hydration mismatch is handled by the initial state matching server (auto)
+
 
   return (
-    <ThemeContext.Provider value={{ theme, resolvedTheme, setTheme }}>
+    <ThemeContext.Provider value={{
+      theme,
+      resolvedTheme,
+      setTheme,
+      primaryColor,
+      setPrimaryColor,
+      neutralColor,
+      setNeutralColor
+    }}>
       {children}
     </ThemeContext.Provider>
   );
@@ -66,25 +106,4 @@ export function useTheme() {
     throw new Error('useTheme must be used within ThemeProvider');
   }
   return context;
-}
-
-function resolveTheme(theme: Theme): ResolvedTheme {
-  if (theme === 'auto') {
-    if (typeof window !== 'undefined') {
-      return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-    }
-    return 'light';
-  }
-  return theme;
-}
-
-function applyTheme(theme: ResolvedTheme) {
-  const html = document.documentElement;
-  html.setAttribute('data-theme', theme);
-  
-  if (theme === 'dark') {
-    html.classList.add('dark');
-  } else {
-    html.classList.remove('dark');
-  }
 }

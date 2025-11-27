@@ -1,11 +1,6 @@
-/**
- * Complete Theme System - Like Nuxt UI
- * Preset themes with full color palettes (50-950 shades)
- * Works without ThemeProvider context - fully independent
- */
+import { Theme, ThemeName, NeutralColor } from '@/types';
 
-export type ThemeMode = 'light' | 'dark' | 'auto';
-export type ThemeName = 'blue' | 'green' | 'emerald' | 'teal' | 'cyan' | 'sky' | 'indigo' | 'violet' | 'purple' | 'pink' | 'rose' | 'red' | 'orange' | 'amber' | 'yellow';
+export type ThemeMode = Theme;
 
 // Color palettes - each theme has ALL 11 shades (50, 100, 200, 300, 400, 500, 600, 700, 800, 900, 950)
 export const THEME_PALETTES: Record<ThemeName, Record<number, string>> = {
@@ -72,7 +67,7 @@ export const THEME_PALETTES: Record<ThemeName, Record<number, string>> = {
 };
 
 // Neutral palettes
-export const NEUTRAL_PALETTES: Record<'slate' | 'gray' | 'zinc' | 'neutral' | 'stone', Record<number, string>> = {
+export const NEUTRAL_PALETTES: Record<NeutralColor, Record<number, string>> = {
   slate: {
     50: '#F8FAFC', 100: '#F1F5F9', 200: '#E2E8F0', 300: '#CBD5E1', 400: '#94A3B8',
     500: '#64748B', 600: '#475569', 700: '#334155', 800: '#1E293B', 900: '#0F172A', 950: '#020617'
@@ -123,7 +118,7 @@ export function setThemeMode(mode: ThemeMode): void {
   localStorage.setItem('theme-mode', mode);
 
   const html = document.documentElement;
-  const isDark = mode === 'dark' || 
+  const isDark = mode === 'dark' ||
     (mode === 'auto' && window.matchMedia('(prefers-color-scheme: dark)').matches);
 
   if (isDark) {
@@ -216,7 +211,7 @@ export function applyPresetTheme(themeName: string): void {
   setThemeMode(preset.mode);
   setPrimaryColor(preset.primary);
   setNeutralColor(preset.neutral);
-  
+
   console.log('✅ Preset theme applied:', themeName);
 }
 

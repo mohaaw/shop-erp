@@ -2,11 +2,17 @@
 
 export type Theme = 'light' | 'dark' | 'auto';
 export type ResolvedTheme = 'light' | 'dark';
+export type ThemeName = 'blue' | 'green' | 'emerald' | 'teal' | 'cyan' | 'sky' | 'indigo' | 'violet' | 'purple' | 'pink' | 'rose' | 'red' | 'orange' | 'amber' | 'yellow';
+export type NeutralColor = 'slate' | 'gray' | 'zinc' | 'neutral' | 'stone';
 
 export interface ThemeContextType {
   theme: Theme;
   resolvedTheme: ResolvedTheme;
   setTheme: (theme: Theme) => void;
+  primaryColor: ThemeName;
+  setPrimaryColor: (color: ThemeName) => void;
+  neutralColor: NeutralColor;
+  setNeutralColor: (color: NeutralColor) => void;
 }
 
 export interface ThemeConfig {

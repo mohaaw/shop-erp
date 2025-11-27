@@ -37,19 +37,19 @@ export function UserMenu() {
   useEffect(() => {
     setMounted(true);
     initializeTheme();
-    
+
     const mode = getThemeMode();
     const primary = getPrimaryColor();
     const neutral = getNeutralColor();
-    
+
     setThemeModeState(mode);
-    
+
     // Find matching preset theme
     const matching = PRESET_THEMES.find(
       t => t.mode === mode && t.primary === primary && t.neutral === neutral
     );
     setCurrentTheme(matching?.name || '');
-    
+
     console.log('✅ UserMenu initialized:', { mode, primary, neutral, theme: matching?.name });
   }, []);
 
@@ -125,7 +125,7 @@ export function UserMenu() {
       {isOpen && (
         <div
           ref={menuRef}
-          className="absolute bottom-full right-0 mb-2 w-72 bg-white dark:bg-secondary-900 rounded-lg shadow-lg border border-secondary-200 dark:border-secondary-700 p-2 z-50"
+          className="absolute bottom-full left-0 mb-2 w-72 bg-white dark:bg-secondary-900 rounded-lg shadow-lg border border-secondary-200 dark:border-secondary-700 p-2 z-50"
         >
           {/* User Profile */}
           <div className="px-3 py-2 border-b border-secondary-200 dark:border-secondary-700 mb-2">

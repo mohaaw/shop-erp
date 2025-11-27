@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { UserMenu } from '@/components/UserMenu';
+import { AppearanceSettings } from '@/components/ui/AppearanceSettings';
 
 const menuItems = [
   {
@@ -114,10 +115,16 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
             </Link>
           </div>
 
+
+
+
           {/* Menu Items */}
           <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-1">
             {menuItems.map((item) => {
-              const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
+              // ... existing mapping code ...
+              const isActive = item.href === '/dashboard'
+                ? pathname === '/dashboard'
+                : pathname === item.href || pathname.startsWith(item.href + '/');
               const Icon = item.icon;
 
               return (
@@ -136,6 +143,10 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
                 </Link>
               );
             })}
+
+            <div className="pt-4 mt-4 border-t border-secondary-200 dark:border-secondary-800">
+              <AppearanceSettings />
+            </div>
           </nav>
 
           {/* User Menu - Bottom of Sidebar */}
