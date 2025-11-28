@@ -275,5 +275,31 @@
         },
         "deleteTitle": "حذف المنتج",
         "deleteConfirmation": "هل أنت متأكد أنك تريد حذف هذا المنتج؟ لا يمكن التراجع عن هذا الإجراء."
+    },
+    "Categories": {
+        "title": "الفئات",
+        "subtitle": "إدارة فئات المنتجات الخاصة بك",
+        "addCategory": "إضافة فئة",
+        "new": {
+            "title": "فئة جديدة",
+            "subtitle": "إنشاء فئة منتج جديدة"
+        },
+        "edit": {
+            "title": "تعديل الفئة",
+            "subtitle": "تحديث تفاصيل الفئة"
+        },
+        "name": "الاسم",
+        "namePlaceholder": "مثال: إلكترونيات",
+        "slug": "الاسم اللطيف (Slug)",
+        "slugPlaceholder": "مثال: electronics",
+        "slugDesc": "نسخة صديقة للرابط من الاسم.",
+        "description": "الوصف",
+        "descriptionPlaceholder": "وصف الفئة...",
+        "actions": "إجراءات",
+        "noResults": "لم يتم العثور على فئات.",
+        "delete": "حذف",
+        "deleteConfirmation": "هل أنت متأكد أنك تريد حذف هذه الفئة؟",
+        "save": "حفظ",
+        "cancel": "إلغاء"
     }
 }
