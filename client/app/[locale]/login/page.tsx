@@ -1,13 +1,13 @@
 'use client';
 
-import { Button } from '@/components/ui/Button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card';
-import { Input } from '@/components/ui/Input';
-import { Alert } from '@/components/ui/Alert';
 import { useState } from 'react';
-import { signIn } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
 import { useTranslations, useLocale } from 'next-intl';
+import { useRouter } from '@/i18n/navigation';
+import { signIn } from 'next-auth/react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Alert } from '@/components/ui/alert';
 
 export default function LoginPage() {
   const t = useTranslations('Auth');
@@ -37,7 +37,7 @@ export default function LoginPage() {
         router.push(`/${locale}/dashboard`);
       }
     } catch (error) {
-      setError('An unexpected error occurred');
+      setError(t('unexpectedError'));
     } finally {
       setLoading(false);
     }
@@ -51,7 +51,7 @@ export default function LoginPage() {
             ERP-SHOP
           </h1>
           <p className="text-secondary-600 dark:text-secondary-300">
-            Enterprise Resource Planning for Retail
+            {t('enterpriseResourcePlanning')}
           </p>
         </div>
 

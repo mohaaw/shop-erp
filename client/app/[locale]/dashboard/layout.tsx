@@ -3,86 +3,41 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useLocale, useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
 import {
   Menu,
-  X,
   LayoutDashboard,
   Package,
   ShoppingCart,
   Users,
   BarChart3,
-  Settings,
   Box,
   DollarSign,
   Briefcase,
   Users2,
   PlusCircle,
 } from 'lucide-react';
-import { Button } from '@/components/ui/Button';
 import { UserMenu } from '@/components/UserMenu';
-import { AppearanceSettings } from '@/components/ui/AppearanceSettings';
-
-const menuItems = [
-  {
-    label: 'Dashboard',
-    href: '/dashboard',
-    icon: LayoutDashboard,
-  },
-  {
-    label: 'Products',
-    href: '/dashboard/products',
-    icon: Package,
-  },
-  {
-    label: 'Inventory',
-    href: '/dashboard/inventory',
-    icon: Box,
-  },
-  {
-    label: 'Sales',
-    href: '/dashboard/sales',
-    icon: ShoppingCart,
-  },
-  {
-    label: 'Customers',
-    href: '/dashboard/customers',
-    icon: Users,
-  },
-  {
-    label: 'POS',
-    href: '/dashboard/pos',
-    icon: PlusCircle,
-  },
-  {
-    label: 'Suppliers',
-    href: '/dashboard/suppliers',
-    icon: Briefcase,
-  },
-  {
-    label: 'Employees',
-    href: '/dashboard/employees',
-    icon: Users2,
-  },
-  {
-    label: 'Finance',
-    href: '/dashboard/finance',
-    icon: DollarSign,
-  },
-  {
-    label: 'Reports',
-    href: '/dashboard/reports',
-    icon: BarChart3,
-  },
-  {
-    label: 'Settings',
-    href: '/dashboard/settings',
-    icon: Settings,
-  },
-];
 
 function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   const pathname = usePathname();
+  const locale = useLocale();
+  const t = useTranslations('Common');
+  const isRtl = locale === 'ar';
+
+  const menuItems = [
+    { label: t('dashboard'), href: '/dashboard', icon: LayoutDashboard },
+    { label: t('products'), href: '/dashboard/products', icon: Package },
+    { label: t('inventory'), href: '/dashboard/inventory', icon: Box },
+    { label: t('sales'), href: '/dashboard/sales', icon: ShoppingCart },
+    { label: t('customers'), href: '/dashboard/customers', icon: Users },
+    { label: t('pos'), href: '/dashboard/pos', icon: PlusCircle },
+    { label: t('suppliers'), href: '/dashboard/suppliers', icon: Briefcase },
+    { label: t('employees'), href: '/dashboard/employees', icon: Users2 },
+    { label: t('finance'), href: '/dashboard/finance', icon: DollarSign },
+    { label: t('reports'), href: '/dashboard/reports', icon: BarChart3 },
+  ];
 
   return (
     <>
@@ -97,8 +52,9 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
       {/* Sidebar */}
       <aside
         className={cn(
-          'fixed left-0 top-0 h-screen w-64 bg-white dark:bg-secondary-900 border-r border-secondary-200 dark:border-secondary-800 transform transition-transform duration-300 z-40 md:static md:translate-x-0',
-          isOpen ? 'translate-x-0' : '-translate-x-full'
+          'fixed top-0 h-screen w-64 bg-white dark:bg-secondary-900 border-secondary-200 dark:border-secondary-800 transform transition-transform duration-300 z-40 md:static md:translate-x-0',
+          isRtl ? 'right-0 border-l' : 'left-0 border-r',
+          isOpen ? 'translate-x-0' : (isRtl ? 'translate-x-full' : '-translate-x-full')
         )}
       >
         <div className="flex flex-col h-full">
@@ -110,18 +66,14 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
               </div>
               <div>
                 <p className="font-bold text-secondary-900 dark:text-white text-sm">ERP-SHOP</p>
-                <p className="text-xs text-secondary-500 dark:text-secondary-400">Retail ERP</p>
+                <p className="text-xs text-secondary-500 dark:text-secondary-400">{t('retailErp')}</p>
               </div>
             </Link>
           </div>
 
-
-
-
           {/* Menu Items */}
           <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-1">
             {menuItems.map((item) => {
-              // ... existing mapping code ...
               const isActive = item.href === '/dashboard'
                 ? pathname === '/dashboard'
                 : pathname === item.href || pathname.startsWith(item.href + '/');
@@ -143,14 +95,10 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
                 </Link>
               );
             })}
-
-            <div className="pt-4 mt-4 border-t border-secondary-200 dark:border-secondary-800">
-              <AppearanceSettings />
-            </div>
           </nav>
 
-          {/* User Menu - Bottom of Sidebar */}
-          <div className="border-t border-secondary-200 dark:border-secondary-800 p-3">
+          {/* Sidebar Footer: User Menu */}
+          <div className="border-t border-secondary-200 dark:border-secondary-800 p-3 bg-secondary-50/50 dark:bg-secondary-900/50">
             <UserMenu />
           </div>
         </div>
@@ -160,6 +108,8 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
 }
 
 function TopNav({ onMenuOpen }: { onMenuOpen: () => void }) {
+  const t = useTranslations('Common');
+
   return (
     <header className="sticky top-0 z-20 bg-white dark:bg-secondary-900 border-b border-secondary-200 dark:border-secondary-800">
       <div className="px-4 py-3 flex items-center justify-between">
@@ -172,7 +122,7 @@ function TopNav({ onMenuOpen }: { onMenuOpen: () => void }) {
 
         <div className="flex-1 md:flex-none md:ml-auto flex items-center gap-4">
           <div className="text-sm font-medium text-secondary-900 dark:text-white">
-            Welcome Admin
+            {t('welcomeAdmin')}
           </div>
         </div>
       </div>

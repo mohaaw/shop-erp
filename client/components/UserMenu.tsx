@@ -14,6 +14,8 @@ import {
   ChevronUp,
   Palette,
 } from 'lucide-react';
+import { Link } from '@/i18n/navigation';
+import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher';
 import {
   getThemeMode,
   setThemeMode,
@@ -24,6 +26,7 @@ import {
   initializeTheme,
   type ThemeMode,
 } from '@/lib/themeSystem';
+import { useTranslations } from 'next-intl';
 
 export function UserMenu() {
   const [isOpen, setIsOpen] = useState(false);
@@ -32,6 +35,7 @@ export function UserMenu() {
   const [currentTheme, setCurrentTheme] = useState('');
   const menuRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const t = useTranslations('UserMenu');
 
   // Initialize theme on mount
   useEffect(() => {
@@ -103,12 +107,11 @@ export function UserMenu() {
       <button
         ref={buttonRef}
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-primary-100 dark:hover:bg-primary-900 transition-colors"
+        className="flex items-center justify-center gap-2 px-3 py-2 rounded-lg hover:bg-primary-100 dark:hover:bg-primary-900 transition-colors w-full"
         title="User Menu"
       >
         <div
-          className="w-8 h-8 rounded-full border-2 border-primary-600 flex items-center justify-center text-xs font-bold text-white"
-          style={{ backgroundColor: 'var(--primary-600)' }}
+          className="w-8 h-8 rounded-full border-2 border-primary-600 flex items-center justify-center text-xs font-bold text-white bg-primary-600"
         >
           AD
         </div>
@@ -125,29 +128,32 @@ export function UserMenu() {
       {isOpen && (
         <div
           ref={menuRef}
-          className="absolute bottom-full left-0 mb-2 w-72 bg-white dark:bg-secondary-900 rounded-lg shadow-lg border border-secondary-200 dark:border-secondary-700 p-2 z-50"
+          className="absolute bottom-full start-0 mb-2 w-72 bg-white dark:bg-secondary-900 rounded-lg shadow-lg border border-secondary-200 dark:border-secondary-700 p-2 z-50"
         >
           {/* User Profile */}
           <div className="px-3 py-2 border-b border-secondary-200 dark:border-secondary-700 mb-2">
-            <p className="font-semibold text-secondary-900 dark:text-secondary-50">Admin User</p>
-            <p className="text-sm text-secondary-600 dark:text-secondary-400">admin@example.com</p>
+            <p className="font-semibold text-secondary-900 dark:text-secondary-50">{t('adminUser')}</p>
+            <p className="text-sm text-secondary-600 dark:text-secondary-400">{t('adminEmail')}</p>
           </div>
 
           {/* Menu Items */}
           <button className="w-full text-left px-3 py-2 rounded hover:bg-secondary-100 dark:hover:bg-secondary-800 transition-colors flex items-center gap-2 text-secondary-900 dark:text-secondary-50">
-            <User size={16} /> Profile
+            <User size={16} /> {t('profile')}
+          </button>
+          <Link href="/dashboard/settings" className="w-full text-left px-3 py-2 rounded hover:bg-secondary-100 dark:hover:bg-secondary-800 transition-colors flex items-center gap-2 text-secondary-900 dark:text-secondary-50">
+            <Settings size={16} /> {t('settings')}
+          </Link>
+          <div className="px-3 py-2">
+            <LanguageSwitcher />
+          </div>
+          <button className="w-full text-left px-3 py-2 rounded hover:bg-secondary-100 dark:hover:bg-secondary-800 transition-colors flex items-center gap-2 text-secondary-900 dark:text-secondary-50">
+            <FileText size={16} /> {t('documentation')}
           </button>
           <button className="w-full text-left px-3 py-2 rounded hover:bg-secondary-100 dark:hover:bg-secondary-800 transition-colors flex items-center gap-2 text-secondary-900 dark:text-secondary-50">
-            <Settings size={16} /> Settings
+            <MessageSquare size={16} /> {t('feedback')}
           </button>
           <button className="w-full text-left px-3 py-2 rounded hover:bg-secondary-100 dark:hover:bg-secondary-800 transition-colors flex items-center gap-2 text-secondary-900 dark:text-secondary-50">
-            <FileText size={16} /> Documentation
-          </button>
-          <button className="w-full text-left px-3 py-2 rounded hover:bg-secondary-100 dark:hover:bg-secondary-800 transition-colors flex items-center gap-2 text-secondary-900 dark:text-secondary-50">
-            <MessageSquare size={16} /> Feedback
-          </button>
-          <button className="w-full text-left px-3 py-2 rounded hover:bg-secondary-100 dark:hover:bg-secondary-800 transition-colors flex items-center gap-2 text-secondary-900 dark:text-secondary-50">
-            <HelpCircle size={16} /> Help
+            <HelpCircle size={16} /> {t('help')}
           </button>
 
           {/* Divider */}
@@ -156,7 +162,7 @@ export function UserMenu() {
           {/* Appearance Section */}
           <div className="px-3 py-2">
             <p className="text-xs font-semibold text-secondary-600 dark:text-secondary-400 mb-2 flex items-center gap-1">
-              <Palette size={14} /> Themes
+              <Palette size={14} /> {t('themes')}
             </p>
 
             {/* Preset Themes Grid */}
@@ -189,7 +195,7 @@ export function UserMenu() {
                 )}
                 title="Light Mode"
               >
-                <Sun size={14} /> Light
+                <Sun size={14} /> {t('light')}
               </button>
               <button
                 onClick={() => handleThemeModeChange('dark')}
@@ -201,7 +207,7 @@ export function UserMenu() {
                 )}
                 title="Dark Mode"
               >
-                <Moon size={14} /> Dark
+                <Moon size={14} /> {t('dark')}
               </button>
               <button
                 onClick={() => handleThemeModeChange('auto')}
@@ -213,7 +219,7 @@ export function UserMenu() {
                 )}
                 title="Auto Mode"
               >
-                Auto
+                {t('auto')}
               </button>
             </div>
           </div>
@@ -226,7 +232,7 @@ export function UserMenu() {
             onClick={handleLogout}
             className="w-full text-left px-3 py-2 rounded hover:bg-red-100 dark:hover:bg-red-900/20 transition-colors flex items-center gap-2 text-red-600 dark:text-red-400"
           >
-            <LogOut size={16} /> Logout
+            <LogOut size={16} /> {t('logout')}
           </button>
         </div>
       )}

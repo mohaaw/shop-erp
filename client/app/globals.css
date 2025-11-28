@@ -45,33 +45,19 @@
   --foreground: hsl(210, 40%, 98%);
 }
 
-* {
-  @apply border-secondary-200;
-}
-
-[data-theme='dark'] * {
-  @apply border-secondary-700;
-}
-
 html {
-  @apply scroll-smooth;
+  scroll-behavior: smooth;
 }
 
 body {
-  @apply bg-[--background] text-[--foreground] transition-colors duration-200;
+  background-color: var(--background);
+  color: var(--foreground);
+  transition: colors 200ms;
 }
 
 /* Smooth animations */
 @layer utilities {
   .transition-theme {
     @apply transition-colors duration-200;
-  }
-
-  .text-truncate {
-    @apply truncate;
-  }
-
-  .line-clamp-1 {
-    @apply line-clamp-1;
   }
 }

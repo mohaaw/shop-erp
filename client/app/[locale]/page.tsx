@@ -1,8 +1,8 @@
 'use client';
 
-import Link from 'next/link';
-import { Button } from '@/components/ui/Button';
-import { Card, CardContent } from '@/components/ui/Card';
+import { Link } from '@/i18n/navigation';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
 import {
   LayoutDashboard,
   Package,
@@ -13,51 +13,54 @@ import {
   Globe,
   Smartphone,
 } from 'lucide-react';
-
-const features = [
-  {
-    icon: LayoutDashboard,
-    title: 'Dashboard',
-    description: 'Real-time KPIs and business analytics',
-  },
-  {
-    icon: Package,
-    title: 'Product Management',
-    description: 'Complete product catalog with variants',
-  },
-  {
-    icon: ShoppingCart,
-    title: 'Sales & Orders',
-    description: 'Order management and invoicing',
-  },
-  {
-    icon: Users,
-    title: 'Customer CRM',
-    description: 'Manage customer relationships',
-  },
-  {
-    icon: Zap,
-    title: 'Point of Sale',
-    description: 'Fast, touch-optimized POS interface',
-  },
-  {
-    icon: Shield,
-    title: 'Security',
-    description: 'Role-based access and audit trails',
-  },
-  {
-    icon: Globe,
-    title: 'Multi-Location',
-    description: 'Support for multiple stores',
-  },
-  {
-    icon: Smartphone,
-    title: 'Responsive',
-    description: 'Works on all devices',
-  },
-];
+import { useTranslations } from 'next-intl';
 
 export default function Home() {
+  const t = useTranslations('Landing');
+
+  const features = [
+    {
+      icon: LayoutDashboard,
+      title: t('features.dashboard'),
+      description: t('features.dashboardDesc'),
+    },
+    {
+      icon: Package,
+      title: t('features.products'),
+      description: t('features.productsDesc'),
+    },
+    {
+      icon: ShoppingCart,
+      title: t('features.sales'),
+      description: t('features.salesDesc'),
+    },
+    {
+      icon: Users,
+      title: t('features.crm'),
+      description: t('features.crmDesc'),
+    },
+    {
+      icon: Zap,
+      title: t('features.pos'),
+      description: t('features.posDesc'),
+    },
+    {
+      icon: Shield,
+      title: t('features.security'),
+      description: t('features.securityDesc'),
+    },
+    {
+      icon: Globe,
+      title: t('features.multiLocation'),
+      description: t('features.multiLocationDesc'),
+    },
+    {
+      icon: Smartphone,
+      title: t('features.responsive'),
+      description: t('features.responsiveDesc'),
+    },
+  ];
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-primary-50 dark:from-secondary-950 dark:via-secondary-900 dark:to-secondary-950">
       {/* Navigation */}
@@ -71,10 +74,10 @@ export default function Home() {
           </div>
           <div className="flex items-center gap-4">
             <Link href="/login">
-              <Button variant="outline">Sign In</Button>
+              <Button variant="outline">{t('nav.signIn')}</Button>
             </Link>
             <Link href="/dashboard">
-              <Button>Dashboard</Button>
+              <Button>{t('nav.dashboard')}</Button>
             </Link>
           </div>
         </div>
@@ -84,19 +87,19 @@ export default function Home() {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32">
         <div className="text-center space-y-6">
           <h1 className="text-5xl md:text-6xl font-bold text-secondary-900 dark:text-white">
-            Enterprise Resource Planning for{' '}
-            <span className="text-primary-600">Retail</span>
+            {t('hero.titlePart1')}{' '}
+            <span className="text-primary-600">{t('hero.titlePart2')}</span>
           </h1>
           <p className="text-xl text-secondary-600 dark:text-secondary-400 max-w-2xl mx-auto">
-            Complete ERP system for managing modern retail businesses with beautiful Nuxt UI-inspired design
+            {t('hero.subtitle')}
           </p>
           <div className="flex gap-4 justify-center">
             <Link href="/dashboard">
-              <Button size="lg">Get Started</Button>
+              <Button size="lg">{t('hero.getStarted')}</Button>
             </Link>
             <a href="#features">
               <Button size="lg" variant="outline">
-                Learn More
+                {t('hero.learnMore')}
               </Button>
             </a>
           </div>
@@ -107,10 +110,10 @@ export default function Home() {
       <section id="features" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold text-secondary-900 dark:text-white mb-4">
-            Powerful Features
+            {t('features.title')}
           </h2>
           <p className="text-xl text-secondary-600 dark:text-secondary-400">
-            Everything you need to run a modern retail business
+            {t('features.subtitle')}
           </p>
         </div>
 
@@ -144,14 +147,14 @@ export default function Home() {
           <CardContent className="py-16">
             <div className="text-center space-y-6">
               <h2 className="text-3xl md:text-4xl font-bold text-white">
-                Ready to Transform Your Retail Business?
+                {t('cta.title')}
               </h2>
               <p className="text-primary-100 text-lg max-w-2xl mx-auto">
-                Start managing your entire retail operation with ERP-SHOP today
+                {t('cta.subtitle')}
               </p>
               <Link href="/dashboard">
                 <Button size="lg" variant="secondary">
-                  Start Free Trial
+                  {t('cta.startTrial')}
                 </Button>
               </Link>
             </div>
@@ -163,8 +166,8 @@ export default function Home() {
       <footer className="border-t border-secondary-200 dark:border-secondary-800 mt-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="text-center text-secondary-600 dark:text-secondary-400">
-            <p>© 2025 ERP-SHOP. All rights reserved.</p>
-            <p className="text-sm mt-2">Enterprise Resource Planning for Retail Shops</p>
+            <p>{t('footer.copyright')}</p>
+            <p className="text-sm mt-2">{t('footer.description')}</p>
           </div>
         </div>
       </footer>

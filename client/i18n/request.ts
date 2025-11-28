@@ -1,15 +1,16 @@
 import { getRequestConfig } from 'next-intl/server';
-import { notFound } from 'next/navigation';
+import { routing } from './routing';
 
-const locales = ['en', 'ar'];
+export default getRequestConfig(async ({ requestLocale }) => {
+    let locale = await requestLocale;
 
-export default getRequestConfig(async ({ locale }) => {
-    // Validate that the incoming `locale` parameter is valid
-    // If invalid, fallback to 'en' to avoid "notFound() in root layout" error
-    const validLocale = (locales.includes(locale as any) ? locale : 'en') as string;
+    // Ensure that a valid locale is used
+    if (!locale || !routing.locales.includes(locale as any)) {
+        locale = routing.defaultLocale;
+    }
 
     return {
-        locale: validLocale,
-        messages: (await import(`../messages/${validLocale}.json`)).default
+        locale,
+        messages: (await import(`../messages/${locale}.json`)).default
     };
 });

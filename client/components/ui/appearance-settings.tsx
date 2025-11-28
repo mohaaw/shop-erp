@@ -14,6 +14,7 @@ import {
     Check,
     Paintbrush
 } from 'lucide-react';
+import { useTranslations } from 'next-intl';
 
 interface AppearanceSettingsProps {
     className?: string;
@@ -23,6 +24,8 @@ export function AppearanceSettings({ className }: AppearanceSettingsProps) {
     const { theme, setTheme, primaryColor, setPrimaryColor, neutralColor, setNeutralColor } = useTheme();
     const [isExpanded, setIsExpanded] = useState(false);
     const [activeSection, setActiveSection] = useState<'theme' | 'primary' | 'neutral' | null>(null);
+    const t = useTranslations('Appearance');
+    const tCommon = useTranslations('Common');
 
     // Toggle main section
     const toggleExpanded = () => setIsExpanded(!isExpanded);
@@ -44,7 +47,7 @@ export function AppearanceSettings({ className }: AppearanceSettingsProps) {
                 )}
             >
                 <Paintbrush className="w-5 h-5 flex-shrink-0" />
-                <span className="flex-1 text-left">Appearance</span>
+                <span className="flex-1 text-left">{t('title')}</span>
                 <ChevronRight className={cn("w-4 h-4 transition-transform", isExpanded && "rotate-90")} />
             </button>
 
@@ -56,24 +59,24 @@ export function AppearanceSettings({ className }: AppearanceSettingsProps) {
                             onClick={() => toggleSection('theme')}
                             className="w-full flex items-center justify-between px-3 py-2 text-xs font-medium text-secondary-600 dark:text-secondary-400 hover:text-secondary-900 dark:hover:text-secondary-200 transition-colors"
                         >
-                            <span>Theme Mode</span>
+                            <span>{t('themeMode')}</span>
                             <ChevronRight className={cn("w-3 h-3 transition-transform", activeSection === 'theme' && "rotate-90")} />
                         </button>
 
                         {activeSection === 'theme' && (
                             <div className="grid grid-cols-3 gap-1 px-2 pb-2">
                                 {[
-                                    { mode: 'light', icon: Sun, label: 'Light' },
-                                    { mode: 'dark', icon: Moon, label: 'Dark' },
-                                    { mode: 'auto', icon: Monitor, label: 'System' },
+                                    { mode: 'light', icon: Sun, label: tCommon('light') },
+                                    { mode: 'dark', icon: Moon, label: tCommon('dark') },
+                                    { mode: 'auto', icon: Monitor, label: tCommon('system') },
                                 ].map(({ mode, icon: Icon, label }) => (
                                     <button
                                         key={mode}
                                         onClick={() => setTheme(mode as any)}
                                         className={cn(
-                                            "flex flex-col items-center justify-center gap-1 p-2 rounded-md border text-[10px] transition-all",
+                                            "flex flex-col items-center justify-center gap-1 p-2 rounded-md border text-xs font-medium transition-all",
                                             theme === mode
-                                                ? "bg-primary-50 border-primary-200 text-primary-700 dark:bg-primary-800 dark:border-primary-700 dark:text-white"
+                                                ? "bg-primary-100 border-primary-500 text-primary-900 dark:bg-primary-900 dark:border-primary-400 dark:text-white shadow-sm"
                                                 : "bg-white border-secondary-200 text-secondary-600 hover:bg-secondary-50 dark:bg-secondary-900 dark:border-secondary-800 dark:text-secondary-400 dark:hover:bg-secondary-800"
                                         )}
                                     >
@@ -92,7 +95,7 @@ export function AppearanceSettings({ className }: AppearanceSettingsProps) {
                             className="w-full flex items-center justify-between px-3 py-2 text-xs font-medium text-secondary-600 dark:text-secondary-400 hover:text-secondary-900 dark:hover:text-secondary-200 transition-colors"
                         >
                             <div className="flex items-center gap-2">
-                                <span>Primary Color</span>
+                                <span>{t('primaryColor')}</span>
                                 <div
                                     className="w-2 h-2 rounded-full"
                                     style={{ backgroundColor: `var(--primary-500)` }}
@@ -128,7 +131,7 @@ export function AppearanceSettings({ className }: AppearanceSettingsProps) {
                             className="w-full flex items-center justify-between px-3 py-2 text-xs font-medium text-secondary-600 dark:text-secondary-400 hover:text-secondary-900 dark:hover:text-secondary-200 transition-colors"
                         >
                             <div className="flex items-center gap-2">
-                                <span>Neutral Color</span>
+                                <span>{t('neutralColor')}</span>
                                 <div
                                     className="w-2 h-2 rounded-full"
                                     style={{ backgroundColor: `var(--secondary-500)` }}

@@ -15,7 +15,33 @@
         "system": "النظام",
         "language": "اللغة",
         "english": "الإنجليزية",
-        "arabic": "العربية"
+        "arabic": "العربية",
+        "suppliers": "الموردين",
+        "employees": "الموظفين",
+        "finance": "المالية",
+        "reports": "التقارير",
+        "retailErp": "نظام تخطيط موارد المؤسسات",
+        "welcomeAdmin": "مرحباً بالمدير"
+    },
+    "UserMenu": {
+        "profile": "الملف الشخصي",
+        "settings": "الإعدادات",
+        "documentation": "التوثيق",
+        "feedback": "الملاحظات",
+        "help": "المساعدة",
+        "themes": "السمات",
+        "light": "فاتح",
+        "dark": "داكن",
+        "auto": "تلقائي",
+        "logout": "تسجيل الخروج",
+        "adminUser": "المستخدم المسؤول",
+        "adminEmail": "admin@example.com"
+    },
+    "Appearance": {
+        "title": "المظهر",
+        "themeMode": "وضع السمة",
+        "primaryColor": "اللون الأساسي",
+        "neutralColor": "اللون المحايد"
     },
     "Auth": {
         "welcomeBack": "مرحباً بعودتك",
@@ -25,6 +51,310 @@
         "signIn": "تسجيل الدخول",
         "demoCredentials": "بيانات تجريبية: admin@example.com / password123",
         "copyright": "© 2025 ERP-SHOP. جميع الحقوق محفوظة.",
-        "invalidCredentials": "البريد الإلكتروني أو كلمة المرور غير صحيحة"
+        "invalidCredentials": "البريد الإلكتروني أو كلمة المرور غير صحيحة",
+        "enterpriseResourcePlanning": "تخطيط موارد المؤسسات لتجارة التجزئة",
+        "unexpectedError": "حدث خطأ غير متوقع"
+    },
+    "Landing": {
+        "nav": {
+            "signIn": "تسجيل الدخول",
+            "dashboard": "لوحة التحكم"
+        },
+        "hero": {
+            "titlePart1": "نظام تخطيط موارد المؤسسات",
+            "titlePart2": "لتجارة التجزئة",
+            "subtitle": "نظام ERP متكامل لإدارة أعمال التجزئة الحديثة بتصميم جميل مستوحى من Nuxt UI",
+            "getStarted": "ابدأ الآن",
+            "learnMore": "اعرف المزيد"
+        },
+        "features": {
+            "title": "ميزات قوية",
+            "subtitle": "كل ما تحتاجه لإدارة أعمال التجزئة الحديثة",
+            "dashboard": "لوحة التحكم",
+            "dashboardDesc": "مؤشرات الأداء الرئيسية والتحليلات في الوقت الفعلي",
+            "products": "إدارة المنتجات",
+            "productsDesc": "كتالوج منتجات كامل مع المتغيرات",
+            "sales": "المبيعات والطلبات",
+            "salesDesc": "إدارة الطلبات والفواتير",
+            "crm": "إدارة علاقات العملاء",
+            "crmDesc": "إدارة علاقات العملاء بفعالية",
+            "pos": "نقطة البيع",
+            "posDesc": "واجهة نقطة بيع سريعة ومحسنة للمس",
+            "security": "الأمان",
+            "securityDesc": "صلاحيات قائمة على الأدوار وسجلات التدقيق",
+            "multiLocation": "متعدد الفروع",
+            "multiLocationDesc": "دعم لعدة متاجر وفروع",
+            "responsive": "متجاوب",
+            "responsiveDesc": "يعمل على جميع الأجهزة"
+        },
+        "cta": {
+            "title": "مستعد لتحويل أعمال التجزئة الخاصة بك؟",
+            "subtitle": "ابدأ إدارة عمليات التجزئة بالكامل مع ERP-SHOP اليوم",
+            "startTrial": "ابدأ التجربة المجانية"
+        },
+        "footer": {
+            "copyright": "© 2025 ERP-SHOP. جميع الحقوق محفوظة.",
+            "description": "نظام تخطيط موارد المؤسسات لمتاجر التجزئة"
+        }
+    },
+    "DashboardHome": {
+        "header": {
+            "title": "لوحة التحكم",
+            "subtitle": "مرحباً بعودتك! إليك نظرة عامة على أعمالك."
+        },
+        "stats": {
+            "totalSales": "إجمالي المبيعات",
+            "orders": "الطلبات",
+            "customers": "العملاء",
+            "products": "المنتجات"
+        },
+        "charts": {
+            "salesOverview": "نظرة عامة على المبيعات",
+            "last30Days": "أداء آخر 30 يوماً",
+            "comingSoon": "مكون الرسم البياني قريباً..."
+        },
+        "quickActions": {
+            "title": "إجراءات سريعة",
+            "subtitle": "مهام شائعة",
+            "newSale": "+ بيع جديد",
+            "newProduct": "+ منتج جديد",
+            "newCustomer": "+ عميل جديد",
+            "viewReports": "+ عرض التقارير"
+        },
+        "recentOrders": {
+            "title": "أحدث الطلبات",
+            "subtitle": "آخر 5 طلبات لك",
+            "orderPrefix": "طلب #",
+            "hoursAgo": "منذ ساعتين",
+            "completed": "مكتمل"
+        }
+    },
+```json
+{
+        "Common": {
+            "dashboard": "لوحة التحكم",
+            "products": "المنتجات",
+            "inventory": "المخزون",
+            "sales": "المبيعات",
+            "customers": "العملاء",
+            "pos": "نقطة البيع",
+            "settings": "الإعدادات",
+            "logout": "تسجيل الخروج",
+            "profile": "الملف الشخصي",
+            "appearance": "المظهر",
+            "light": "فاتح",
+            "dark": "داكن",
+            "system": "النظام",
+            "language": "اللغة",
+            "english": "الإنجليزية",
+            "arabic": "العربية",
+            "suppliers": "الموردين",
+            "employees": "الموظفين",
+            "finance": "المالية",
+            "reports": "التقارير",
+            "retailErp": "نظام تخطيط موارد المؤسسات",
+            "welcomeAdmin": "مرحباً بالمدير"
+        },
+        "UserMenu": {
+            "profile": "الملف الشخصي",
+            "settings": "الإعدادات",
+            "documentation": "التوثيق",
+            "feedback": "الملاحظات",
+            "help": "المساعدة",
+            "themes": "السمات",
+            "light": "فاتح",
+            "dark": "داكن",
+            "auto": "تلقائي",
+            "logout": "تسجيل الخروج",
+            "adminUser": "المستخدم المسؤول",
+            "adminEmail": "admin@example.com"
+        },
+        "Appearance": {
+            "title": "المظهر",
+            "themeMode": "وضع السمة",
+            "primaryColor": "اللون الأساسي",
+            "neutralColor": "اللون المحايد"
+        },
+        "Auth": {
+            "welcomeBack": "مرحباً بعودتك",
+            "signInSubtitle": "سجل الدخول للمتابعة",
+            "email": "البريد الإلكتروني",
+            "password": "كلمة المرور",
+            "signIn": "تسجيل الدخول",
+            "demoCredentials": "بيانات تجريبية: admin@example.com / password123",
+            "copyright": "© 2025 ERP-SHOP. جميع الحقوق محفوظة.",
+            "invalidCredentials": "البريد الإلكتروني أو كلمة المرور غير صحيحة",
+            "enterpriseResourcePlanning": "تخطيط موارد المؤسسات لتجارة التجزئة",
+            "unexpectedError": "حدث خطأ غير متوقع"
+        },
+        "Landing": {
+            "nav": {
+                "signIn": "تسجيل الدخول",
+                "dashboard": "لوحة التحكم"
+            },
+            "hero": {
+                "titlePart1": "نظام تخطيط موارد المؤسسات",
+                "titlePart2": "لتجارة التجزئة",
+                "subtitle": "نظام ERP متكامل لإدارة أعمال التجزئة الحديثة بتصميم جميل مستوحى من Nuxt UI",
+                "getStarted": "ابدأ الآن",
+                "learnMore": "اعرف المزيد"
+            },
+            "features": {
+                "title": "ميزات قوية",
+                "subtitle": "كل ما تحتاجه لإدارة أعمال التجزئة الحديثة",
+                "dashboard": "لوحة التحكم",
+                "dashboardDesc": "مؤشرات الأداء الرئيسية والتحليلات في الوقت الفعلي",
+                "products": "إدارة المنتجات",
+                "productsDesc": "كتالوج منتجات كامل مع المتغيرات",
+                "sales": "المبيعات والطلبات",
+                "salesDesc": "إدارة الطلبات والفواتير",
+                "crm": "إدارة علاقات العملاء",
+                "crmDesc": "إدارة علاقات العملاء بفعالية",
+                "pos": "نقطة البيع",
+                "posDesc": "واجهة نقطة بيع سريعة ومحسنة للمس",
+                "security": "الأمان",
+                "securityDesc": "صلاحيات قائمة على الأدوار وسجلات التدقيق",
+                "multiLocation": "متعدد الفروع",
+                "multiLocationDesc": "دعم لعدة متاجر وفروع",
+                "responsive": "متجاوب",
+                "responsiveDesc": "يعمل على جميع الأجهزة"
+            },
+            "cta": {
+                "title": "مستعد لتحويل أعمال التجزئة الخاصة بك؟",
+                "subtitle": "ابدأ إدارة عمليات التجزئة بالكامل مع ERP-SHOP اليوم",
+                "startTrial": "ابدأ التجربة المجانية"
+            },
+            "footer": {
+                "copyright": "© 2025 ERP-SHOP. جميع الحقوق محفوظة.",
+                "description": "نظام تخطيط موارد المؤسسات لمتاجر التجزئة"
+            }
+        },
+        "DashboardHome": {
+            "header": {
+                "title": "لوحة التحكم",
+                "subtitle": "مرحباً بعودتك! إليك نظرة عامة على أعمالك."
+            },
+            "stats": {
+                "totalSales": "إجمالي المبيعات",
+                "orders": "الطلبات",
+                "customers": "العملاء",
+                "products": "المنتجات"
+            },
+            "charts": {
+                "salesOverview": "نظرة عامة على المبيعات",
+                "last30Days": "أداء آخر 30 يوماً",
+                "comingSoon": "مكون الرسم البياني قريباً..."
+            },
+            "quickActions": {
+                "title": "إجراءات سريعة",
+                "subtitle": "مهام شائعة",
+                "newSale": "+ بيع جديد",
+                "newProduct": "+ منتج جديد",
+                "newCustomer": "+ عميل جديد",
+                "viewReports": "+ عرض التقارير"
+            },
+            "recentOrders": {
+                "title": "أحدث الطلبات",
+                "subtitle": "آخر 5 طلبات لك",
+                "orderPrefix": "طلب #",
+                "hoursAgo": "منذ ساعتين",
+                "completed": "مكتمل"
+            }
+        },
+        "Settings": {
+            "nav": {
+                "general": "عام",
+                "appearance": "المظهر",
+                "profile": "الملف الشخصي",
+                "notifications": "الإشعارات",
+                "security": "الأمان",
+                "integrations": "التكاملات",
+                "data": "إدارة البيانات",
+                "audit": "سجلات التدقيق"
+            },
+            "general": {
+                "title": "الإعدادات العامة",
+                "subtitle": "إدارة تفاصيل متجرك وتفضيلاتك",
+                "storeName": "اسم المتجر",
+                "supportEmail": "بريد الدعم",
+                "currency": "العملة",
+                "timezone": "المنطقة الزمنية",
+                "save": "حفظ التغييرات"
+            },
+            "appearance": {
+                "title": "المظهر",
+                "subtitle": "تخصيص مظهر لوحة التحكم الخاصة بك",
+                "theme": "السمة",
+                "light": "فاتح",
+                "dark": "داكن",
+                "system": "النظام",
+                "primaryColor": "اللون الأساسي",
+                "neutralColor": "اللون المحايد",
+                "language": "اللغة"
+            },
+            "profile": {
+                "title": "إعدادات الملف الشخصي",
+                "subtitle": "إدارة معلوماتك الشخصية",
+                "fullName": "الاسم الكامل",
+                "email": "البريد الإلكتروني",
+                "bio": "نبذة",
+                "avatar": "الصورة الرمزية"
+            },
+            "notifications": {
+                "title": "الإشعارات",
+                "subtitle": "تكوين كيفية تلقي الإشعارات",
+                "emailNotifications": "إشعارات البريد الإلكتروني",
+                "pushNotifications": "الإشعارات الفورية",
+                "orderUpdates": "تحديثات الطلبات",
+                "securityAlerts": "تنبيهات الأمان"
+            },
+            "security": {
+                "title": "الأمان",
+                "subtitle": "حماية حسابك وبياناتك",
+                "changePassword": "تغيير كلمة المرور",
+                "currentPassword": "كلمة المرور الحالية",
+                "newPassword": "البريد الإلكتروني",
+                "confirmPassword": "تأكيد كلمة المرور",
+                "twoFactor": "المصادقة الثنائية",
+                "activeSessions": "الجلسات النشطة"
+            },
+            "integrations": {
+                "title": "التكاملات",
+                "subtitle": "الربط مع خدمات الطرف الثالث",
+                "apiKeys": "مفاتيح API",
+                "apiKeysDesc": "إدارة مفاتيح API للوصول الخارجي",
+                "regenerate": "إعادة توليد",
+                "createNewKey": "إنشاء مفتاح جديد",
+                "webhooks": "Webhooks",
+                "webhooksDesc": "إرسال أحداث في الوقت الفعلي إلى خادمك",
+                "noWebhooks": "لم يتم تكوين أي webhooks",
+                "addWebhook": "إضافة Webhook",
+                "connectedApps": "التطبيقات المتصلة",
+                "connectedAppsDesc": "إدارة التطبيقات المتصلة",
+                "notConnected": "غير متصل",
+                "connect": "اتصال"
+            },
+            "data": {
+                "title": "إدارة البيانات",
+                "subtitle": "تصدير واستيراد وإدارة بياناتك",
+                "exportData": "تصدير البيانات",
+                "exportDataDesc": "تنزيل نسخة من بياناتك",
+                "exportNote": "سيشمل التصدير جميع المنتجات والطلبات وبيانات العملاء.",
+                "exportCSV": "تصدير كـ CSV",
+                "exportJSON": "تصدير كـ JSON",
+                "importData": "استيراد البيانات",
+                "importDataDesc": "استيراد البيانات من مصادر أخرى",
+                "dragDrop": "اسحب وأفلت الملفات هنا أو انقر للرفع",
+                "dangerZone": "منطقة الخطر",
+                "dangerZoneDesc": "إجراءات لا يمكن التراجع عنها",
+                "deleteAccount": "حذف الحساب"
+            },
+            "audit": {
+                "title": "سجلات التدقيق",
+                "subtitle": "عرض نشاط النظام وأحداث الأمان",
+                "activityLog": "سجل النشاط",
+                "activityLogDesc": "الإجراءات الأخيرة التي تم تنفيذها في النظام"
+            }
+        }
     }
-}
+```

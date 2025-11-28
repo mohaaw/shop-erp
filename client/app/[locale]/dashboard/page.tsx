@@ -1,49 +1,59 @@
 'use client';
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card';
-import { Badge } from '@/components/ui/Badge';
-import { Button } from '@/components/ui/Button';
-import { BarChart3, TrendingUp, Users, ShoppingCart, Package, DollarSign } from 'lucide-react';
-
-const stats = [
-  {
-    title: 'Total Sales',
-    value: '$45,231.89',
-    change: '+20.1%',
-    positive: true,
-    icon: DollarSign,
-  },
-  {
-    title: 'Orders',
-    value: '1,234',
-    change: '+15%',
-    positive: true,
-    icon: ShoppingCart,
-  },
-  {
-    title: 'Customers',
-    value: '892',
-    change: '+8.2%',
-    positive: true,
-    icon: Users,
-  },
-  {
-    title: 'Products',
-    value: '2,456',
-    change: '+2.5%',
-    positive: true,
-    icon: Package,
-  },
-];
+import { useTranslations } from 'next-intl';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import {
+  DollarSign,
+  ShoppingCart,
+  Users,
+  Package,
+  TrendingUp,
+  BarChart3,
+} from 'lucide-react';
 
 export default function DashboardPage() {
+  const t = useTranslations('Dashboard');
+
+  const stats = [
+    {
+      title: t('stats.totalSales'),
+      value: '$45,231.89',
+      change: '+20.1%',
+      positive: true,
+      icon: DollarSign,
+    },
+    {
+      title: t('stats.orders'),
+      value: '1,234',
+      change: '+15%',
+      positive: true,
+      icon: ShoppingCart,
+    },
+    {
+      title: t('stats.customers'),
+      value: '892',
+      change: '+8.2%',
+      positive: true,
+      icon: Users,
+    },
+    {
+      title: t('stats.products'),
+      value: '2,456',
+      change: '+2.5%',
+      positive: true,
+      icon: Package,
+    },
+  ];
+
   return (
     <div className="space-y-8">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-secondary-900 dark:text-white">Dashboard</h1>
+        <h1 className="text-3xl font-bold text-secondary-900 dark:text-white">{t('header.title')}</h1>
         <p className="text-secondary-600 dark:text-secondary-400 mt-1">
-          Welcome back! Here's your business overview.
+          {t('header.subtitle')}
         </p>
       </div>
 
@@ -87,14 +97,14 @@ export default function DashboardPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <BarChart3 className="w-5 h-5 text-primary-600" />
-              Sales Overview
+              {t('charts.salesOverview')}
             </CardTitle>
-            <CardDescription>Last 30 days performance</CardDescription>
+            <CardDescription>{t('charts.last30Days')}</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="h-64 flex items-center justify-center bg-secondary-50 dark:bg-secondary-800/50 rounded-lg">
               <p className="text-secondary-500 dark:text-secondary-400">
-                Chart component coming soon...
+                {t('charts.comingSoon')}
               </p>
             </div>
           </CardContent>
@@ -102,21 +112,21 @@ export default function DashboardPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Quick Actions</CardTitle>
-            <CardDescription>Common tasks</CardDescription>
+            <CardTitle>{t('quickActions.title')}</CardTitle>
+            <CardDescription>{t('quickActions.subtitle')}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-2">
             <Button variant="outline" fullWidth className="justify-start">
-              + New Sale
+              {t('quickActions.newSale')}
             </Button>
             <Button variant="outline" fullWidth className="justify-start">
-              + New Product
+              {t('quickActions.newProduct')}
             </Button>
             <Button variant="outline" fullWidth className="justify-start">
-              + New Customer
+              {t('quickActions.newCustomer')}
             </Button>
             <Button variant="outline" fullWidth className="justify-start">
-              + View Reports
+              {t('quickActions.viewReports')}
             </Button>
           </CardContent>
         </Card>
@@ -125,18 +135,18 @@ export default function DashboardPage() {
       {/* Recent Orders */}
       <Card>
         <CardHeader>
-          <CardTitle>Recent Orders</CardTitle>
-          <CardDescription>Your latest 5 orders</CardDescription>
+          <CardTitle>{t('recentOrders.title')}</CardTitle>
+          <CardDescription>{t('recentOrders.subtitle')}</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
             {[1, 2, 3, 4, 5].map((order) => (
               <div key={order} className="flex items-center justify-between p-3 border border-secondary-200 dark:border-secondary-700 rounded-lg">
                 <div>
-                  <p className="font-medium text-secondary-900 dark:text-white">Order #{1001 + order}</p>
-                  <p className="text-sm text-secondary-600 dark:text-secondary-400">2 hours ago</p>
+                  <p className="font-medium text-secondary-900 dark:text-white">{t('recentOrders.orderPrefix')}{1001 + order}</p>
+                  <p className="text-sm text-secondary-600 dark:text-secondary-400">{t('recentOrders.hoursAgo')}</p>
                 </div>
-                <Badge variant="success">Completed</Badge>
+                <Badge variant="success">{t('recentOrders.completed')}</Badge>
               </div>
             ))}
           </div>
