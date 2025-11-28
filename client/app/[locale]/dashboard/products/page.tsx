@@ -1,41 +1,69 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
+import { ProductTable } from '@/components/products/product-table';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Package, Plus } from 'lucide-react';
+import { Plus } from 'lucide-react';
+import { Link } from '@/i18n/navigation';
+import { Product } from '@/types/product';
+
+// Mock data
+const products: Product[] = [
+  {
+    id: '1',
+    name: 'Wireless Headphones',
+    sku: 'WH-001',
+    price: 99.99,
+    stock: 50,
+    category: 'Electronics',
+    status: 'active',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    id: '2',
+    name: 'Ergonomic Chair',
+    sku: 'EC-100',
+    price: 249.00,
+    stock: 15,
+    category: 'Furniture',
+    status: 'active',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+  {
+    id: '3',
+    name: 'Mechanical Keyboard',
+    sku: 'MK-88',
+    price: 120.50,
+    stock: 0,
+    category: 'Electronics',
+    status: 'draft',
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  },
+];
 
 export default function ProductsPage() {
+  const t = useTranslations('Products');
+
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-secondary-900 dark:text-white">Products</h1>
-          <p className="text-secondary-600 dark:text-secondary-400 mt-1">
-            Manage your product catalog
+          <h1 className="text-3xl font-bold tracking-tight text-secondary-900 dark:text-white">{t('title')}</h1>
+          <p className="text-secondary-500 dark:text-secondary-400">
+            {t('subtitle')}
           </p>
         </div>
-        <Button className="gap-2">
-          <Plus className="w-4 h-4" />
-          New Product
+        <Button asChild>
+          <Link href="/dashboard/products/new">
+            <Plus className="mr-2 h-4 w-4" />
+            {t('addProduct')}
+          </Link>
         </Button>
       </div>
-
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Package className="w-5 h-5 text-primary-600" />
-            Product List
-          </CardTitle>
-          <CardDescription>All products in your catalog</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="h-64 flex items-center justify-center bg-secondary-50 dark:bg-secondary-800/50 rounded-lg">
-            <p className="text-secondary-500 dark:text-secondary-400">
-              Product list component coming soon...
-            </p>
-          </div>
-        </CardContent>
-      </Card>
+      <ProductTable data={products} />
     </div>
   );
 }

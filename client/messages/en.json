@@ -129,25 +129,89 @@
       "completed": "Completed"
     }
   },
-  {
-    "Common": {
-      "dashboard": "Dashboard",
-      "products": "Products",
-      "inventory": "Inventory",
-      "sales": "Sales",
-      "customers": "Customers",
-      "pos": "POS",
-      "settings": "Settings",
-      "logout": "Logout",
-      "profile": "Profile",
+  "Settings": {
+    "nav": {
+      "general": "General",
       "appearance": "Appearance",
+      "profile": "Profile",
+      "notifications": "Notifications",
+      "security": "Security",
+      "integrations": "Integrations",
+      "data": "Data Management",
+      "audit": "Audit Logs"
+    },
+    "general": {
+      "title": "General Settings",
+      "subtitle": "Manage your store details and preferences",
+      "storeName": "Store Name",
+      "supportEmail": "Support Email",
+      "currency": "Currency",
+      "timezone": "Timezone",
+      "save": "Save Changes"
+    },
+    "appearance": {
+      "title": "Appearance",
+      "subtitle": "Customize the look and feel of your dashboard",
+      "theme": "Theme",
       "light": "Light",
       "dark": "Dark",
       "system": "System",
-      "language": "Language",
-      "english": "English",
-      "arabic": "Arabic",
-      "suppliers": "Suppliers",
+      "primaryColor": "Primary Color",
+      "neutralColor": "Neutral Color",
+      "language": "Language"
+    },
+    "profile": {
+      "title": "Profile Settings",
+      "subtitle": "Manage your personal information",
+      "fullName": "Full Name",
+      "email": "Email Address",
+      "bio": "Bio",
+      "avatar": "Avatar"
+    },
+    "notifications": {
+      "title": "Notifications",
+      "subtitle": "Configure how you want to be notified",
+      "emailNotifications": "Email Notifications",
+      "pushNotifications": "Push Notifications",
+      "orderUpdates": "Order Updates",
+      "securityAlerts": "Security Alerts"
+    },
+    "security": {
+      "title": "Security",
+      "subtitle": "Protect your account and data",
+      "changePassword": "Change Password",
+      "currentPassword": "Current Password",
+      "newPassword": "New Password",
+      "confirmPassword": "Confirm Password",
+      "twoFactor": "Two-Factor Authentication",
+      "activeSessions": "Active Sessions"
+    },
+    "integrations": {
+      "title": "Integrations",
+      "subtitle": "Connect with third-party services",
+      "apiKeys": "API Keys",
+      "apiKeysDesc": "Manage your API keys for external access",
+      "regenerate": "Regenerate",
+      "createNewKey": "Create New Key",
+      "webhooks": "Webhooks",
+      "webhooksDesc": "Send real-time events to your server",
+      "noWebhooks": "No webhooks configured",
+      "addWebhook": "Add Webhook",
+      "connectedApps": "Connected Apps",
+      "connectedAppsDesc": "Manage connected applications",
+      "notConnected": "Not connected",
+      "connect": "Connect"
+    },
+    "data": {
+      "title": "Data Management",
+      "subtitle": "Export, import, and manage your data",
+      "exportData": "Export Data",
+      "exportDataDesc": "Download a copy of your data",
+      "exportNote": "Your export will include all products, orders, and customer data.",
+      "exportCSV": "Export as CSV",
+      "exportJSON": "Export as JSON",
+      "importData": "Import Data",
+      "importDataDesc": "Import data from other sources",
       "employees": "Employees",
       "finance": "Finance",
       "reports": "Reports",
@@ -353,6 +417,56 @@
         "subtitle": "View system activity and security events",
         "activityLog": "Activity Log",
         "activityLogDesc": "Recent actions performed in the system"
+      }
+    },
+    "Products": {
+      "title": "Products",
+      "subtitle": "Manage your product catalog",
+      "addProduct": "Add Product",
+      "searchPlaceholder": "Search products...",
+      "image": "Image",
+      "name": "Name",
+      "sku": "SKU",
+      "category": "Category",
+      "price": "Price",
+      "stock": "Stock",
+      "status": {
+        "active": "Active",
+        "draft": "Draft",
+        "archived": "Archived"
+      },
+      "actions": "Actions",
+      "edit": "Edit",
+      "delete": "Delete",
+      "noResults": "No products found",
+      "form": {
+        "name": "Product Name",
+        "namePlaceholder": "e.g. Wireless Headphones",
+        "description": "Description",
+        "descriptionPlaceholder": "Product description...",
+        "descriptionDesc": "Detailed description of the product",
+        "price": "Price",
+        "cost": "Cost Price",
+        "costDesc": "Cost of goods sold (not visible to customers)",
+        "stock": "Stock Quantity",
+        "sku": "SKU",
+        "category": "Category",
+        "selectCategory": "Select a category",
+        "status": "Status",
+        "selectStatus": "Select status",
+        "active": "Active",
+        "draft": "Draft",
+        "archived": "Archived",
+        "cancel": "Cancel",
+        "save": "Save Product"
+      },
+      "new": {
+        "title": "Create Product",
+        "subtitle": "Add a new product to your catalog"
+      },
+      "edit": {
+        "title": "Edit Product",
+        "subtitle": "Update product details"
       }
     }
   }

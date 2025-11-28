@@ -69,7 +69,7 @@ export default function DataSettingsPage() {
                         <CardDescription>{t('dangerZoneDesc')}</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <Button variant="destructive">{t('deleteAccount')}</Button>
+                        <Button variant="danger">{t('deleteAccount')}</Button>
                     </CardContent>
                 </Card>
             </div>

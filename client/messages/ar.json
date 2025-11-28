@@ -129,26 +129,89 @@
             "completed": "مكتمل"
         }
     },
-```json
-{
-        "Common": {
-            "dashboard": "لوحة التحكم",
-            "products": "المنتجات",
-            "inventory": "المخزون",
-            "sales": "المبيعات",
-            "customers": "العملاء",
-            "pos": "نقطة البيع",
-            "settings": "الإعدادات",
-            "logout": "تسجيل الخروج",
-            "profile": "الملف الشخصي",
+    "Settings": {
+        "nav": {
+            "general": "عام",
             "appearance": "المظهر",
+            "profile": "الملف الشخصي",
+            "notifications": "الإشعارات",
+            "security": "الأمان",
+            "integrations": "التكاملات",
+            "data": "إدارة البيانات",
+            "audit": "سجلات التدقيق"
+        },
+        "general": {
+            "title": "الإعدادات العامة",
+            "subtitle": "إدارة تفاصيل متجرك وتفضيلاتك",
+            "storeName": "اسم المتجر",
+            "supportEmail": "بريد الدعم",
+            "currency": "العملة",
+            "timezone": "المنطقة الزمنية",
+            "save": "حفظ التغييرات"
+        },
+        "appearance": {
+            "title": "المظهر",
+            "subtitle": "تخصيص مظهر لوحة التحكم الخاصة بك",
+            "theme": "السمة",
             "light": "فاتح",
             "dark": "داكن",
             "system": "النظام",
-            "language": "اللغة",
-            "english": "الإنجليزية",
-            "arabic": "العربية",
-            "suppliers": "الموردين",
+            "primaryColor": "اللون الأساسي",
+            "neutralColor": "اللون المحايد",
+            "language": "اللغة"
+        },
+        "profile": {
+            "title": "إعدادات الملف الشخصي",
+            "subtitle": "إدارة معلوماتك الشخصية",
+            "fullName": "الاسم الكامل",
+            "email": "البريد الإلكتروني",
+            "bio": "نبذة",
+            "avatar": "الصورة الرمزية"
+        },
+        "notifications": {
+            "title": "الإشعارات",
+            "subtitle": "تكوين كيفية تلقي الإشعارات",
+            "emailNotifications": "إشعارات البريد الإلكتروني",
+            "pushNotifications": "الإشعارات الفورية",
+            "orderUpdates": "تحديثات الطلبات",
+            "securityAlerts": "تنبيهات الأمان"
+        },
+        "security": {
+            "title": "الأمان",
+            "subtitle": "حماية حسابك وبياناتك",
+            "changePassword": "تغيير كلمة المرور",
+            "currentPassword": "كلمة المرور الحالية",
+            "newPassword": "كلمة المرور الجديدة",
+            "confirmPassword": "تأكيد كلمة المرور",
+            "twoFactor": "المصادقة الثنائية",
+            "activeSessions": "الجلسات النشطة"
+        },
+        "integrations": {
+            "title": "التكاملات",
+            "subtitle": "الربط مع خدمات الطرف الثالث",
+            "apiKeys": "مفاتيح API",
+            "apiKeysDesc": "إدارة مفاتيح API للوصول الخارجي",
+            "regenerate": "إعادة توليد",
+            "createNewKey": "إنشاء مفتاح جديد",
+            "webhooks": "Webhooks",
+            "webhooksDesc": "إرسال أحداث في الوقت الفعلي إلى خادمك",
+            "noWebhooks": "لم يتم تكوين أي webhooks",
+            "addWebhook": "إضافة Webhook",
+            "connectedApps": "التطبيقات المتصلة",
+            "connectedAppsDesc": "إدارة التطبيقات المتصلة",
+            "notConnected": "غير متصل",
+            "connect": "اتصال"
+        },
+        "data": {
+            "title": "إدارة البيانات",
+            "subtitle": "تصدير واستيراد وإدارة بياناتك",
+            "exportData": "تصدير البيانات",
+            "exportDataDesc": "تنزيل نسخة من بياناتك",
+            "exportNote": "سيشمل التصدير جميع المنتجات والطلبات وبيانات العملاء.",
+            "exportCSV": "تصدير كـ CSV",
+            "exportJSON": "تصدير كـ JSON",
+            "importData": "استيراد البيانات",
+            "importDataDesc": "استيراد البيانات من مصادر أخرى",
             "employees": "الموظفين",
             "finance": "المالية",
             "reports": "التقارير",
@@ -313,7 +376,7 @@
                 "subtitle": "حماية حسابك وبياناتك",
                 "changePassword": "تغيير كلمة المرور",
                 "currentPassword": "كلمة المرور الحالية",
-                "newPassword": "البريد الإلكتروني",
+                "newPassword": "كلمة المرور الجديدة",
                 "confirmPassword": "تأكيد كلمة المرور",
                 "twoFactor": "المصادقة الثنائية",
                 "activeSessions": "الجلسات النشطة"
@@ -355,6 +418,55 @@
                 "activityLog": "سجل النشاط",
                 "activityLogDesc": "الإجراءات الأخيرة التي تم تنفيذها في النظام"
             }
+        },
+        "Products": {
+            "title": "المنتجات",
+            "subtitle": "إدارة كتالوج المنتجات",
+            "addProduct": "إضافة منتج",
+            "searchPlaceholder": "البحث عن المنتجات...",
+            "image": "الصورة",
+            "name": "الاسم",
+            "sku": "SKU",
+            "category": "الفئة",
+            "price": "السعر",
+            "stock": "المخزون",
+            "status": {
+                "active": "نشط",
+                "draft": "مسودة",
+                "archived": "مؤرشف"
+            },
+            "actions": "إجراءات",
+            "edit": "تعديل",
+            "delete": "حذف",
+            "noResults": "لم يتم العثور على منتجات",
+            "form": {
+                "name": "اسم المنتج",
+                "namePlaceholder": "مثال: سماعات لاسلكية",
+                "description": "الوصف",
+                "descriptionPlaceholder": "وصف المنتج...",
+                "descriptionDesc": "وصف تفصيلي للمنتج",
+                "price": "السعر",
+                "cost": "سعر التكلفة",
+                "costDesc": "تكلفة البضائع المباعة (غير مرئية للعملاء)",
+                "stock": "كمية المخزون",
+                "sku": "SKU",
+                "category": "الفئة",
+                "selectCategory": "اختر فئة",
+                "status": "الحالة",
+                "selectStatus": "اختر الحالة",
+                "active": "نشط",
+                "draft": "مسودة",
+                "archived": "مؤرشف",
+                "cancel": "إلغاء",
+                "save": "حفظ المنتج"
+            },
+            "new": {
+                "title": "إنشاء منتج",
+                "subtitle": "إضافة منتج جديد إلى الكتالوج الخاص بك"
+            },
+            "edit": {
+                "title": "تعديل المنتج",
+                "subtitle": "تحديث تفاصيل المنتج"
+            }
         }
     }
-```
