@@ -39,7 +39,7 @@ export function AppearanceSettings({ className }: AppearanceSettingsProps) {
                 className={cn(
                     'w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors',
                     isExpanded
-                        ? 'bg-primary-50 text-primary-900 dark:bg-primary-900/20 dark:text-primary-100'
+                        ? 'bg-primary-50 text-primary-900 dark:bg-primary-800 dark:text-white'
                         : 'text-secondary-700 hover:bg-secondary-100 dark:text-secondary-300 dark:hover:bg-secondary-800'
                 )}
             >
@@ -73,7 +73,7 @@ export function AppearanceSettings({ className }: AppearanceSettingsProps) {
                                         className={cn(
                                             "flex flex-col items-center justify-center gap-1 p-2 rounded-md border text-[10px] transition-all",
                                             theme === mode
-                                                ? "bg-primary-50 border-primary-200 text-primary-700 dark:bg-primary-900/30 dark:border-primary-800 dark:text-primary-300"
+                                                ? "bg-primary-50 border-primary-200 text-primary-700 dark:bg-primary-800 dark:border-primary-700 dark:text-white"
                                                 : "bg-white border-secondary-200 text-secondary-600 hover:bg-secondary-50 dark:bg-secondary-900 dark:border-secondary-800 dark:text-secondary-400 dark:hover:bg-secondary-800"
                                         )}
                                     >

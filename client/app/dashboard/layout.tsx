@@ -134,7 +134,7 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
                   className={cn(
                     'flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors',
                     isActive
-                      ? 'bg-primary-100 text-primary-900 dark:bg-primary-900/30 dark:text-primary-100'
+                      ? 'bg-primary-100 text-primary-900 dark:bg-primary-800 dark:text-white'
                       : 'text-secondary-700 hover:bg-secondary-100 dark:text-secondary-300 dark:hover:bg-secondary-800'
                   )}
                 >
