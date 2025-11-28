@@ -97,7 +97,7 @@
       "description": "Enterprise Resource Planning for Retail Shops"
     }
   },
-  "DashboardHome": {
+  "Dashboard": {
     "header": {
       "title": "Dashboard",
       "subtitle": "Welcome back! Here's your business overview."
@@ -212,261 +212,68 @@
       "exportJSON": "Export as JSON",
       "importData": "Import Data",
       "importDataDesc": "Import data from other sources",
-      "employees": "Employees",
-      "finance": "Finance",
-      "reports": "Reports",
-      "retailErp": "Retail ERP",
-      "welcomeAdmin": "Welcome Admin"
+      "dragDrop": "Drag and drop files here or click to upload",
+      "dangerZone": "Danger Zone",
+      "dangerZoneDesc": "Irreversible actions",
+      "deleteAccount": "Delete Account"
     },
-    "UserMenu": {
-      "profile": "Profile",
-      "settings": "Settings",
-      "documentation": "Documentation",
-      "feedback": "Feedback",
-      "help": "Help",
-      "themes": "Themes",
-      "light": "Light",
-      "dark": "Dark",
-      "auto": "Auto",
-      "logout": "Logout",
-      "adminUser": "Admin User",
-      "adminEmail": "admin@example.com"
+    "audit": {
+      "title": "Audit Logs",
+      "subtitle": "View system activity and security events",
+      "activityLog": "Activity Log",
+      "activityLogDesc": "Recent actions performed in the system"
+    }
+  },
+  "Products": {
+    "title": "Products",
+    "subtitle": "Manage your product catalog",
+    "addProduct": "Add Product",
+    "searchPlaceholder": "Search products...",
+    "image": "Image",
+    "name": "Name",
+    "sku": "SKU",
+    "category": "Category",
+    "price": "Price",
+    "stock": "Stock",
+    "status": {
+      "active": "Active",
+      "draft": "Draft",
+      "archived": "Archived"
     },
-    "Appearance": {
-      "title": "Appearance",
-      "themeMode": "Theme Mode",
-      "primaryColor": "Primary Color",
-      "neutralColor": "Neutral Color"
-    },
-    "Auth": {
-      "welcomeBack": "Welcome Back",
-      "signInSubtitle": "Sign in to your account to continue",
-      "email": "Email",
-      "password": "Password",
-      "signIn": "Sign In",
-      "demoCredentials": "Demo credentials: admin@example.com / password123",
-      "copyright": "© 2025 ERP-SHOP. All rights reserved.",
-      "invalidCredentials": "Invalid email or password",
-      "enterpriseResourcePlanning": "Enterprise Resource Planning for Retail",
-      "unexpectedError": "An unexpected error occurred"
-    },
-    "Landing": {
-      "nav": {
-        "signIn": "Sign In",
-        "dashboard": "Dashboard"
-      },
-      "hero": {
-        "titlePart1": "Enterprise Resource Planning for",
-        "titlePart2": "Retail",
-        "subtitle": "Complete ERP system for managing modern retail businesses with beautiful Nuxt UI-inspired design",
-        "getStarted": "Get Started",
-        "learnMore": "Learn More"
-      },
-      "features": {
-        "title": "Powerful Features",
-        "subtitle": "Everything you need to run a modern retail business",
-        "dashboard": "Dashboard",
-        "dashboardDesc": "Real-time KPIs and business analytics",
-        "products": "Product Management",
-        "productsDesc": "Complete product catalog with variants",
-        "sales": "Sales & Orders",
-        "salesDesc": "Order management and invoicing",
-        "crm": "Customer CRM",
-        "crmDesc": "Manage customer relationships",
-        "pos": "Point of Sale",
-        "posDesc": "Fast, touch-optimized POS interface",
-        "security": "Security",
-        "securityDesc": "Role-based access and audit trails",
-        "multiLocation": "Multi-Location",
-        "multiLocationDesc": "Support for multiple stores",
-        "responsive": "Responsive",
-        "responsiveDesc": "Works on all devices"
-      },
-      "cta": {
-        "title": "Ready to Transform Your Retail Business?",
-        "subtitle": "Start managing your entire retail operation with ERP-SHOP today",
-        "startTrial": "Start Free Trial"
-      },
-      "footer": {
-        "copyright": "© 2025 ERP-SHOP. All rights reserved.",
-        "description": "Enterprise Resource Planning for Retail Shops"
-      }
-    },
-    "DashboardHome": {
-      "header": {
-        "title": "Dashboard",
-        "subtitle": "Welcome back! Here's your business overview."
-      },
-      "stats": {
-        "totalSales": "Total Sales",
-        "orders": "Orders",
-        "customers": "Customers",
-        "products": "Products"
-      },
-      "charts": {
-        "salesOverview": "Sales Overview",
-        "last30Days": "Last 30 days performance",
-        "comingSoon": "Chart component coming soon..."
-      },
-      "quickActions": {
-        "title": "Quick Actions",
-        "subtitle": "Common tasks",
-        "newSale": "+ New Sale",
-        "newProduct": "+ New Product",
-        "newCustomer": "+ New Customer",
-        "viewReports": "+ View Reports"
-      },
-      "recentOrders": {
-        "title": "Recent Orders",
-        "subtitle": "Your latest 5 orders",
-        "orderPrefix": "Order #",
-        "hoursAgo": "2 hours ago",
-        "completed": "Completed"
-      }
-    },
-    "Settings": {
-      "nav": {
-        "general": "General",
-        "appearance": "Appearance",
-        "profile": "Profile",
-        "notifications": "Notifications",
-        "security": "Security",
-        "integrations": "Integrations",
-        "data": "Data Management",
-        "audit": "Audit Logs"
-      },
-      "general": {
-        "title": "General Settings",
-        "subtitle": "Manage your store details and preferences",
-        "storeName": "Store Name",
-        "supportEmail": "Support Email",
-        "currency": "Currency",
-        "timezone": "Timezone",
-        "save": "Save Changes"
-      },
-      "appearance": {
-        "title": "Appearance",
-        "subtitle": "Customize the look and feel of your dashboard",
-        "theme": "Theme",
-        "light": "Light",
-        "dark": "Dark",
-        "system": "System",
-        "primaryColor": "Primary Color",
-        "neutralColor": "Neutral Color",
-        "language": "Language"
-      },
-      "profile": {
-        "title": "Profile Settings",
-        "subtitle": "Manage your personal information",
-        "fullName": "Full Name",
-        "email": "Email Address",
-        "bio": "Bio",
-        "avatar": "Avatar"
-      },
-      "notifications": {
-        "title": "Notifications",
-        "subtitle": "Configure how you want to be notified",
-        "emailNotifications": "Email Notifications",
-        "pushNotifications": "Push Notifications",
-        "orderUpdates": "Order Updates",
-        "securityAlerts": "Security Alerts"
-      },
-      "security": {
-        "title": "Security",
-        "subtitle": "Protect your account and data",
-        "changePassword": "Change Password",
-        "currentPassword": "Current Password",
-        "newPassword": "New Password",
-        "confirmPassword": "Confirm Password",
-        "twoFactor": "Two-Factor Authentication",
-        "activeSessions": "Active Sessions"
-      },
-      "integrations": {
-        "title": "Integrations",
-        "subtitle": "Connect with third-party services",
-        "apiKeys": "API Keys",
-        "apiKeysDesc": "Manage your API keys for external access",
-        "regenerate": "Regenerate",
-        "createNewKey": "Create New Key",
-        "webhooks": "Webhooks",
-        "webhooksDesc": "Send real-time events to your server",
-        "noWebhooks": "No webhooks configured",
-        "addWebhook": "Add Webhook",
-        "connectedApps": "Connected Apps",
-        "connectedAppsDesc": "Manage connected applications",
-        "notConnected": "Not connected",
-        "connect": "Connect"
-      },
-      "data": {
-        "title": "Data Management",
-        "subtitle": "Export, import, and manage your data",
-        "exportData": "Export Data",
-        "exportDataDesc": "Download a copy of your data",
-        "exportNote": "Your export will include all products, orders, and customer data.",
-        "exportCSV": "Export as CSV",
-        "exportJSON": "Export as JSON",
-        "importData": "Import Data",
-        "importDataDesc": "Import data from other sources",
-        "dragDrop": "Drag and drop files here or click to upload",
-        "dangerZone": "Danger Zone",
-        "dangerZoneDesc": "Irreversible actions",
-        "deleteAccount": "Delete Account"
-      },
-      "audit": {
-        "title": "Audit Logs",
-        "subtitle": "View system activity and security events",
-        "activityLog": "Activity Log",
-        "activityLogDesc": "Recent actions performed in the system"
-      }
-    },
-    "Products": {
-      "title": "Products",
-      "subtitle": "Manage your product catalog",
-      "addProduct": "Add Product",
-      "searchPlaceholder": "Search products...",
-      "image": "Image",
-      "name": "Name",
+    "actions": "Actions",
+    "edit": "Edit",
+    "delete": "Delete",
+    "noResults": "No products found",
+    "form": {
+      "name": "Product Name",
+      "namePlaceholder": "e.g. Wireless Headphones",
+      "description": "Description",
+      "descriptionPlaceholder": "Product description...",
+      "descriptionDesc": "Detailed description of the product",
+      "price": "Price",
+      "cost": "Cost Price",
+      "costDesc": "Cost of goods sold (not visible to customers)",
+      "stock": "Stock Quantity",
       "sku": "SKU",
       "category": "Category",
-      "price": "Price",
-      "stock": "Stock",
-      "status": {
-        "active": "Active",
-        "draft": "Draft",
-        "archived": "Archived"
-      },
-      "actions": "Actions",
-      "edit": "Edit",
-      "delete": "Delete",
-      "noResults": "No products found",
-      "form": {
-        "name": "Product Name",
-        "namePlaceholder": "e.g. Wireless Headphones",
-        "description": "Description",
-        "descriptionPlaceholder": "Product description...",
-        "descriptionDesc": "Detailed description of the product",
-        "price": "Price",
-        "cost": "Cost Price",
-        "costDesc": "Cost of goods sold (not visible to customers)",
-        "stock": "Stock Quantity",
-        "sku": "SKU",
-        "category": "Category",
-        "selectCategory": "Select a category",
-        "status": "Status",
-        "selectStatus": "Select status",
-        "active": "Active",
-        "draft": "Draft",
-        "archived": "Archived",
-        "cancel": "Cancel",
-        "save": "Save Product"
-      },
-      "new": {
-        "title": "Create Product",
-        "subtitle": "Add a new product to your catalog"
-      },
-      "edit": {
-        "title": "Edit Product",
-        "subtitle": "Update product details"
-      }
-    }
+      "selectCategory": "Select a category",
+      "status": "Status",
+      "selectStatus": "Select status",
+      "active": "Active",
+      "draft": "Draft",
+      "archived": "Archived",
+      "cancel": "Cancel",
+      "save": "Save Product"
+    },
+    "new": {
+      "title": "Create Product",
+      "subtitle": "Add a new product to your catalog"
+    },
+    "editPage": {
+      "title": "Edit Product",
+      "subtitle": "Update product details"
+    },
+    "deleteTitle": "Delete Product",
+    "deleteConfirmation": "Are you sure you want to delete this product? This action cannot be undone."
   }
+}

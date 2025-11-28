@@ -18,6 +18,14 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
@@ -25,18 +33,46 @@ import { MoreHorizontal, Pencil, Trash2, ArrowUpDown } from 'lucide-react';
 import { Product } from '@/types/product';
 import { Link } from '@/i18n/navigation';
 
+import { productService } from '@/services/products';
+import { useRouter } from '@/i18n/navigation';
+
 interface ProductTableProps {
     data: Product[];
 }
 
 export function ProductTable({ data }: ProductTableProps) {
     const t = useTranslations('Products');
+    const router = useRouter();
     const [searchTerm, setSearchTerm] = useState('');
+    const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+    const [productToDelete, setProductToDelete] = useState<Product | null>(null);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     const filteredData = data.filter((product) =>
         product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         product.sku.toLowerCase().includes(searchTerm.toLowerCase())
     );
+
+    const handleDeleteClick = (product: Product) => {
+        setProductToDelete(product);
+        setDeleteDialogOpen(true);
+    };
+
+    const confirmDelete = async () => {
+        if (productToDelete) {
+            setIsDeleting(true);
+            try {
+                await productService.deleteProduct(productToDelete.id);
+                router.refresh();
+                setDeleteDialogOpen(false);
+                setProductToDelete(null);
+            } catch (error) {
+                console.error('Failed to delete product:', error);
+            } finally {
+                setIsDeleting(false);
+            }
+        }
+    };
 
     return (
         <div className="space-y-4">
@@ -90,22 +126,23 @@ export function ProductTable({ data }: ProductTableProps) {
                                     </TableCell>
                                     <TableCell className="text-right">
                                         <DropdownMenu>
-                                            <DropdownMenuTrigger asChild>
-                                                <Button variant="ghost" size="icon">
-                                                    <MoreHorizontal className="h-4 w-4" />
-                                                    <span className="sr-only">Open menu</span>
-                                                </Button>
+                                            <DropdownMenuTrigger className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-8 w-8 p-0">
+                                                <MoreHorizontal className="h-4 w-4" />
+                                                <span className="sr-only">Open menu</span>
                                             </DropdownMenuTrigger>
                                             <DropdownMenuContent align="end">
                                                 <DropdownMenuLabel>{t('actions')}</DropdownMenuLabel>
-                                                <DropdownMenuItem asChild>
-                                                    <Link href={`/dashboard/products/${product.id}`}>
+                                                <DropdownMenuItem>
+                                                    <Link href={`/dashboard/products/${product.id}`} className="flex items-center w-full">
                                                         <Pencil className="mr-2 h-4 w-4" />
                                                         {t('edit')}
                                                     </Link>
                                                 </DropdownMenuItem>
                                                 <DropdownMenuSeparator />
-                                                <DropdownMenuItem className="text-red-600">
+                                                <DropdownMenuItem
+                                                    className="text-red-600 cursor-pointer"
+                                                    onClick={() => handleDeleteClick(product)}
+                                                >
                                                     <Trash2 className="mr-2 h-4 w-4" />
                                                     {t('delete')}
                                                 </DropdownMenuItem>
@@ -118,6 +155,32 @@ export function ProductTable({ data }: ProductTableProps) {
                     </TableBody>
                 </Table>
             </div>
+
+            <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>{t('deleteTitle') || 'Delete Product'}</DialogTitle>
+                        <DialogDescription>
+                            {t('deleteConfirmation') || 'Are you sure you want to delete this product? This action cannot be undone.'}
+                        </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter>
+                        <Button variant="outline" onClick={() => setDeleteDialogOpen(false)} disabled={isDeleting}>
+                            {t('cancel') || 'Cancel'}
+                        </Button>
+                        <Button variant="danger" onClick={confirmDelete} disabled={isDeleting}>
+                            {isDeleting ? (
+                                <>
+                                    <span className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                                    {t('delete') || 'Delete'}
+                                </>
+                            ) : (
+                                t('delete') || 'Delete'
+                            )}
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 }

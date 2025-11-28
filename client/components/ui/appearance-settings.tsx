@@ -1,12 +1,11 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useTheme } from '@/lib/theme';
 import { THEME_PALETTES, NEUTRAL_PALETTES } from '@/lib/themeSystem';
 import { ThemeName, NeutralColor } from '@/types';
 import { cn } from '@/lib/utils';
 import {
-    Palette,
     Moon,
     Sun,
     Monitor,
@@ -96,10 +95,7 @@ export function AppearanceSettings({ className }: AppearanceSettingsProps) {
                         >
                             <div className="flex items-center gap-2">
                                 <span>{t('primaryColor')}</span>
-                                <div
-                                    className="w-2 h-2 rounded-full"
-                                    style={{ backgroundColor: `var(--primary-500)` }}
-                                />
+                                <div className="w-2 h-2 rounded-full bg-primary-500" />
                             </div>
                             <ChevronRight className={cn("w-3 h-3 transition-transform", activeSection === 'primary' && "rotate-90")} />
                         </button>
@@ -132,10 +128,7 @@ export function AppearanceSettings({ className }: AppearanceSettingsProps) {
                         >
                             <div className="flex items-center gap-2">
                                 <span>{t('neutralColor')}</span>
-                                <div
-                                    className="w-2 h-2 rounded-full"
-                                    style={{ backgroundColor: `var(--secondary-500)` }}
-                                />
+                                <div className="w-2 h-2 rounded-full bg-secondary-500" />
                             </div>
                             <ChevronRight className={cn("w-3 h-3 transition-transform", activeSection === 'neutral' && "rotate-90")} />
                         </button>

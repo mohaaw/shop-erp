@@ -28,7 +28,7 @@ interface EditProductPageProps {
 }
 
 export default function EditProductPage({ params }: EditProductPageProps) {
-    const t = useTranslations('Products.edit');
+    const t = useTranslations('Products.editPage');
     const product = getProduct(params.id);
 
     return (

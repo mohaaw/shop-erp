@@ -20,9 +20,19 @@ const authMiddleware = withAuth(
 );
 
 export default function middleware(req: NextRequest) {
-    const publicPathnameRegex = /^(\/((en|ar)\/)?(login|api|_next|static|.*\\..*))|^\/((en|ar))?$/;
+    // Regex to exclude API, static files, and Next.js internals
+    const excludeRegex = /^\/(api|_next|static|.*\\..*)/;
 
-    if (publicPathnameRegex.test(req.nextUrl.pathname)) {
+    if (excludeRegex.test(req.nextUrl.pathname)) {
+        return;
+    }
+
+    // If it's a public path or already localized, let intlMiddleware handle it
+    // The authMiddleware will protect routes that need protection
+    const publicPathnameRegex = /^\/((en|ar)\/)?(login)$/;
+    const isPublicPage = publicPathnameRegex.test(req.nextUrl.pathname);
+
+    if (isPublicPage) {
         return intlMiddleware(req);
     } else {
         return (authMiddleware as any)(req);
@@ -30,5 +40,5 @@ export default function middleware(req: NextRequest) {
 }
 
 export const config = {
-    matcher: ['/((?!api|_next|.*\\..*).*)', '/', '/(ar|en)/:path*']
+    matcher: ['/((?!api|_next|.*\\..*).*)']
 };

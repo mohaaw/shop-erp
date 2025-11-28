@@ -4,7 +4,7 @@ import React from 'react';
 import { cn } from '@/lib/utils';
 
 export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
-  variant?: 'default' | 'success' | 'warning' | 'error' | 'info' | 'outline';
+  variant?: 'default' | 'success' | 'warning' | 'error' | 'info' | 'outline' | 'secondary';
   size?: 'sm' | 'md';
 }
 
@@ -19,6 +19,7 @@ const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
       error: 'bg-error-100 text-error-800 dark:bg-error-900 dark:text-error-100',
       info: 'bg-info-100 text-info-800 dark:bg-info-900 dark:text-info-100',
       outline: 'border-2 border-primary-500 text-primary-700 dark:border-primary-400 dark:text-primary-300',
+      secondary: 'bg-secondary-100 text-secondary-800 dark:bg-secondary-900 dark:text-secondary-100',
     };
 
     const sizeStyles = {

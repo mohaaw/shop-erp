@@ -32,7 +32,7 @@ interface ProductFormProps {
 }
 
 export function ProductForm({ initialData }: ProductFormProps) {
-    const t = useTranslations('Products.form');
+    const t = useTranslations('Products');
     const router = useRouter();
     const [loading, setLoading] = useState(false);
 
