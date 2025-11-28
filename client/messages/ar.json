@@ -1,0 +1,30 @@
+{
+    "Common": {
+        "dashboard": "لوحة التحكم",
+        "products": "المنتجات",
+        "inventory": "المخزون",
+        "sales": "المبيعات",
+        "customers": "العملاء",
+        "pos": "نقطة البيع",
+        "settings": "الإعدادات",
+        "logout": "تسجيل الخروج",
+        "profile": "الملف الشخصي",
+        "appearance": "المظهر",
+        "light": "فاتح",
+        "dark": "داكن",
+        "system": "النظام",
+        "language": "اللغة",
+        "english": "الإنجليزية",
+        "arabic": "العربية"
+    },
+    "Auth": {
+        "welcomeBack": "مرحباً بعودتك",
+        "signInSubtitle": "سجل الدخول للمتابعة",
+        "email": "البريد الإلكتروني",
+        "password": "كلمة المرور",
+        "signIn": "تسجيل الدخول",
+        "demoCredentials": "بيانات تجريبية: admin@example.com / password123",
+        "copyright": "© 2025 ERP-SHOP. جميع الحقوق محفوظة.",
+        "invalidCredentials": "البريد الإلكتروني أو كلمة المرور غير صحيحة"
+    }
+}

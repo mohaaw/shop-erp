@@ -5,13 +5,17 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/Input';
 import { Alert } from '@/components/ui/Alert';
 import { useState } from 'react';
-import Link from 'next/link';
+import { signIn } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import { useTranslations } from 'next-intl';
 
 export default function LoginPage() {
+  const t = useTranslations('Auth');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -19,13 +23,20 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
-      // Mock login - replace with actual API call
-      if (email === 'admin@example.com' && password === 'password123') {
-        localStorage.setItem('auth_token', 'mock-token-123');
-        window.location.href = '/dashboard';
+      const result = await signIn('credentials', {
+        redirect: false,
+        email,
+        password,
+      });
+
+      if (result?.error) {
+        setError(t('invalidCredentials'));
       } else {
-        setError('Invalid email or password');
+        router.push('/dashboard');
+        router.refresh();
       }
+    } catch (error) {
+      setError('An unexpected error occurred');
     } finally {
       setLoading(false);
     }
@@ -45,8 +56,8 @@ export default function LoginPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Welcome Back</CardTitle>
-            <CardDescription>Sign in to your account to continue</CardDescription>
+            <CardTitle>{t('welcomeBack')}</CardTitle>
+            <CardDescription>{t('signInSubtitle')}</CardDescription>
           </CardHeader>
 
           <CardContent>
@@ -54,7 +65,7 @@ export default function LoginPage() {
               {error && <Alert variant="error">{error}</Alert>}
 
               <Input
-                label="Email"
+                label={t('email')}
                 type="email"
                 placeholder="admin@example.com"
                 value={email}
@@ -63,7 +74,7 @@ export default function LoginPage() {
               />
 
               <Input
-                label="Password"
+                label={t('password')}
                 type="password"
                 placeholder="••••••••"
                 value={password}
@@ -72,18 +83,18 @@ export default function LoginPage() {
               />
 
               <Button type="submit" fullWidth loading={loading}>
-                Sign In
+                {t('signIn')}
               </Button>
 
               <div className="text-center text-sm text-secondary-600 dark:text-secondary-400">
-                Demo credentials: admin@example.com / password123
+                {t('demoCredentials')}
               </div>
             </form>
           </CardContent>
         </Card>
 
         <div className="mt-4 text-center text-sm text-secondary-600 dark:text-secondary-400">
-          <p>© 2025 ERP-SHOP. All rights reserved.</p>
+          <p>{t('copyright')}</p>
         </div>
       </div>
     </div>

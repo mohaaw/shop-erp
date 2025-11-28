@@ -1,0 +1,30 @@
+{
+  "Common": {
+    "dashboard": "Dashboard",
+    "products": "Products",
+    "inventory": "Inventory",
+    "sales": "Sales",
+    "customers": "Customers",
+    "pos": "POS",
+    "settings": "Settings",
+    "logout": "Logout",
+    "profile": "Profile",
+    "appearance": "Appearance",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System",
+    "language": "Language",
+    "english": "English",
+    "arabic": "Arabic"
+  },
+  "Auth": {
+    "welcomeBack": "Welcome Back",
+    "signInSubtitle": "Sign in to your account to continue",
+    "email": "Email",
+    "password": "Password",
+    "signIn": "Sign In",
+    "demoCredentials": "Demo credentials: admin@example.com / password123",
+    "copyright": "© 2025 ERP-SHOP. All rights reserved.",
+    "invalidCredentials": "Invalid email or password"
+  }
+}
