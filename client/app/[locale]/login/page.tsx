@@ -7,10 +7,11 @@ import { Alert } from '@/components/ui/Alert';
 import { useState } from 'react';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 
 export default function LoginPage() {
   const t = useTranslations('Auth');
+  const locale = useLocale();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -32,8 +33,8 @@ export default function LoginPage() {
       if (result?.error) {
         setError(t('invalidCredentials'));
       } else {
-        router.push('/dashboard');
         router.refresh();
+        router.push(`/${locale}/dashboard`);
       }
     } catch (error) {
       setError('An unexpected error occurred');
