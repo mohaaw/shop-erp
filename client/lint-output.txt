@@ -1,0 +1,64 @@
+
+> erp-shop@1.0.0 lint
+> next lint
+
+
+./app/[locale]/dashboard/categories/page.tsx
+6:10  Error: 'Button' is defined but never used.  @typescript-eslint/no-unused-vars
+
+./app/[locale]/dashboard/products/page.tsx
+5:10  Error: 'Button' is defined but never used.  @typescript-eslint/no-unused-vars
+
+./app/[locale]/dashboard/products/[id]/page.tsx
+8:21  Error: 'id' is defined but never used.  @typescript-eslint/no-unused-vars
+
+./app/[locale]/dashboard/settings/data/page.tsx
+6:10  Error: 'Database' is defined but never used.  @typescript-eslint/no-unused-vars
+
+./app/[locale]/dashboard/settings/integrations/page.tsx
+6:10  Error: 'Input' is defined but never used.  @typescript-eslint/no-unused-vars
+7:10  Error: 'Label' is defined but never used.  @typescript-eslint/no-unused-vars
+
+./app/[locale]/dashboard/settings/security/page.tsx
+10:11  Error: 'tGeneral' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+
+./app/[locale]/layout.tsx
+5:10  Error: 'getLocale' is defined but never used.  @typescript-eslint/no-unused-vars
+
+./app/[locale]/login/page.tsx
+39:14  Error: 'error' is defined but never used.  @typescript-eslint/no-unused-vars
+
+./components/products/category-table.tsx
+21:10  Error: 'Button' is defined but never used.  @typescript-eslint/no-unused-vars
+
+./components/products/product-form.tsx
+30:42  Error: 'Barcode' is defined but never used.  @typescript-eslint/no-unused-vars
+30:51  Error: 'Scale' is defined but never used.  @typescript-eslint/no-unused-vars
+30:58  Error: 'Ruler' is defined but never used.  @typescript-eslint/no-unused-vars
+30:65  Error: 'Truck' is defined but never used.  @typescript-eslint/no-unused-vars
+505:66  Error: 'Badge' is not defined.  react/jsx-no-undef
+
+./components/products/product-table.tsx
+32:42  Error: 'ArrowUpDown' is defined but never used.  @typescript-eslint/no-unused-vars
+
+./components/settings/translation-editor.tsx
+8:41  Error: 'CardTitle' is defined but never used.  @typescript-eslint/no-unused-vars
+22:11  Error: 't' is assigned a value but never used.  @typescript-eslint/no-unused-vars
+32:8  Warning: React Hook useEffect has a missing dependency: 'loadTerms'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+173:73  Error: `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`.  react/no-unescaped-entities
+173:87  Error: `"` can be escaped with `&quot;`, `&ldquo;`, `&#34;`, `&rdquo;`.  react/no-unescaped-entities
+
+./components/ui/appearance-settings.tsx
+74:73  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./components/ui/textarea.tsx
+5:18  Error: An interface declaring no members is equivalent to its supertype.  @typescript-eslint/no-empty-object-type
+
+./lib/auth.ts
+45:36  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+53:43  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+./lib/themeSystem.ts
+144:52  Error: Unexpected any. Specify a different type.  @typescript-eslint/no-explicit-any
+
+info  - Need to disable some ESLint rules? Learn more here: https://nextjs.org/docs/basic-features/eslint#disabling-rules

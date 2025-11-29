@@ -11,7 +11,8 @@ import {
     ChevronRight,
     Webhook,
     Database,
-    History
+    History,
+    Globe
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -54,6 +55,11 @@ export function SettingsSidebar() {
             label: t('audit'),
             href: '/dashboard/settings/audit',
             icon: History,
+        },
+        {
+            label: t('translations'),
+            href: '/dashboard/settings/translations',
+            icon: Globe,
         },
         {
             label: t('security'),

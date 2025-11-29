@@ -1,26 +1,5 @@
+
 import { z } from 'zod';
-
-export const productSchema = z.object({
-    name: z.string().min(2, 'Name must be at least 2 characters'),
-    description: z.string().optional(),
-    price: z.coerce.number().min(0, 'Price must be greater than or equal to 0'),
-    cost: z.coerce.number().min(0, 'Cost must be greater than or equal to 0').optional(),
-    sku: z.string().min(3, 'SKU must be at least 3 characters'),
-    barcode: z.string().optional(),
-    weight: z.coerce.number().min(0).optional(),
-    dimensions: z.object({
-        length: z.coerce.number().min(0),
-        width: z.coerce.number().min(0),
-        height: z.coerce.number().min(0),
-        unit: z.enum(['cm', 'in']),
-    }).optional(),
-    stock: z.coerce.number().int().min(0, 'Stock must be a positive integer'),
-    category: z.string().min(1, 'Category is required'),
-    status: z.enum(['active', 'draft', 'archived']),
-    image: z.string().optional(),
-});
-
-export type ProductFormValues = z.infer<typeof productSchema>;
 
 export const categorySchema = z.object({
     name: z.string().min(2, 'Name must be at least 2 characters'),
@@ -31,3 +10,46 @@ export const categorySchema = z.object({
 });
 
 export type CategoryFormValues = z.infer<typeof categorySchema>;
+
+export const productAttributeValueSchema = z.object({
+    id: z.string().optional(),
+    value: z.string().min(1, "Value is required"),
+    priceExtra: z.number().default(0),
+});
+
+export const productAttributeSchema = z.object({
+    id: z.string().optional(),
+    name: z.string().min(1, "Attribute name is required"),
+    values: z.array(productAttributeValueSchema),
+});
+
+export const productSchema = z.object({
+    name: z.string().min(2, "Name must be at least 2 characters"),
+    description: z.string().optional(),
+    type: z.enum(['storable', 'consumable', 'service']),
+    status: z.enum(['active', 'draft', 'archived']),
+    sku: z.string().optional(),
+    barcode: z.string().optional(),
+    internalReference: z.string().optional(),
+    price: z.coerce.number().min(0, "Price must be positive"),
+    cost: z.coerce.number().min(0, "Cost must be positive"),
+    stock: z.coerce.number().default(0),
+    category: z.string().min(1, "Category is required"),
+    uom: z.string().default('unit'),
+    weight: z.coerce.number().optional(),
+    volume: z.coerce.number().optional(),
+    tracking: z.enum(['none', 'lot', 'serial']).default('none'),
+    availableInPos: z.boolean().default(true),
+    posCategory: z.string().optional(),
+    hasVariants: z.boolean().default(false),
+    attributes: z.array(productAttributeSchema).optional(),
+    image: z.string().optional(),
+
+    // Accounting
+    incomeAccount: z.string().optional(),
+    expenseAccount: z.string().optional(),
+    customerTaxes: z.array(z.string()).optional(),
+    vendorTaxes: z.array(z.string()).optional(),
+});
+
+export type ProductFormValues = z.infer<typeof productSchema>;
