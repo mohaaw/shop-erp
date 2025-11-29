@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { CategoryTable } from '@/components/products/category-table';
-import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
 import { Category } from '@/types/product';

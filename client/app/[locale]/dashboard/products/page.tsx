@@ -2,7 +2,6 @@
 
 import { useTranslations } from 'next-intl';
 import { ProductTable } from '@/components/products/product-table';
-import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
 import { Product } from '@/types/product';
@@ -17,6 +16,12 @@ const products: Product[] = [
     stock: 50,
     category: 'Electronics',
     status: 'active',
+    type: 'storable',
+    uom: 'unit',
+    tracking: 'serial',
+    availableInPos: true,
+    hasVariants: false,
+    routes: [],
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   },
@@ -28,6 +33,12 @@ const products: Product[] = [
     stock: 15,
     category: 'Furniture',
     status: 'active',
+    type: 'storable',
+    uom: 'unit',
+    tracking: 'none',
+    availableInPos: false,
+    hasVariants: true,
+    routes: [],
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   },
@@ -39,6 +50,12 @@ const products: Product[] = [
     stock: 0,
     category: 'Electronics',
     status: 'draft',
+    type: 'storable',
+    uom: 'unit',
+    tracking: 'none',
+    availableInPos: true,
+    hasVariants: true,
+    routes: [],
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   },

@@ -1,14 +1,12 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Webhook, Key, Plug } from 'lucide-react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Key, Webhook, Plug } from 'lucide-react';
 
-export default function IntegrationsSettingsPage() {
-    const t = useTranslations('Settings.integrations');
+export default function IntegrationsPage() {
+    const t = useTranslations('Settings.Integrations');
 
     return (
         <div className="space-y-6">
@@ -85,6 +83,6 @@ export default function IntegrationsSettingsPage() {
                     </CardContent>
                 </Card>
             </div>
-        </div>
+        </div >
     );
 }

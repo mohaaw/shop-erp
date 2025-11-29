@@ -36,8 +36,17 @@ export const productSchema = z.object({
     stock: z.coerce.number().default(0),
     category: z.string().min(1, "Category is required"),
     uom: z.string().default('unit'),
+    purchaseUom: z.string().default('unit'),
+    uomRatio: z.coerce.number().default(1),
     weight: z.coerce.number().optional(),
     volume: z.coerce.number().optional(),
+    dimensions: z.object({
+        width: z.coerce.number().optional(),
+        height: z.coerce.number().optional(),
+        depth: z.coerce.number().optional(),
+    }).optional(),
+    hsCode: z.string().optional(),
+    countryOfOrigin: z.string().optional(),
     tracking: z.enum(['none', 'lot', 'serial']).default('none'),
     availableInPos: z.boolean().default(true),
     posCategory: z.string().optional(),
@@ -50,6 +59,25 @@ export const productSchema = z.object({
     expenseAccount: z.string().optional(),
     customerTaxes: z.array(z.string()).optional(),
     vendorTaxes: z.array(z.string()).optional(),
+
+    // POS Integration
+    toppings: z.string().optional(), // Comma separated for now
+    isCombo: z.boolean().default(false),
+    comboItems: z.string().optional(), // Comma separated IDs or names
+
+    // Inventory & Media
+    minStock: z.coerce.number().min(0).default(0),
+    images: z.array(z.string()).optional(),
+
+    // Variants
+    variants: z.array(z.object({
+        id: z.string().optional(),
+        name: z.string(),
+        sku: z.string().optional(),
+        price: z.coerce.number().min(0),
+        stock: z.coerce.number().default(0),
+        attributes: z.record(z.string()), // { "Color": "Red", "Size": "Small" }
+    })).optional(),
 });
 
 export type ProductFormValues = z.infer<typeof productSchema>;

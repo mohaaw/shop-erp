@@ -5,6 +5,22 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslations } from 'next-intl';
 import { useRouter } from '@/i18n/navigation';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Textarea } from '@/components/ui/textarea';
+import { Switch } from '@/components/ui/switch';
+import { Checkbox } from '@/components/ui/checkbox';
+import { ProductFormValues, productSchema } from '@/lib/validations/product';
 import {
     Form,
     FormControl,
@@ -14,21 +30,9 @@ import {
     FormLabel,
     FormMessage,
 } from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '@/components/ui/select';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Switch } from '@/components/ui/switch';
-import { productSchema, ProductFormValues } from '@/lib/validations/product';
-import { Loader2, Save, X, Package, Tag, Barcode, Scale, Ruler, Truck, DollarSign, Store } from 'lucide-react';
+import { Loader2, Save, X, Package, Tag, DollarSign, Store } from 'lucide-react';
 import { AttributeManager } from './attribute-manager';
+import { VariantMatrix } from './variant-matrix';
 
 interface ProductFormProps {
     initialData?: ProductFormValues;
@@ -54,20 +58,51 @@ export function ProductForm({ initialData }: ProductFormProps) {
             stock: 0,
             category: '',
             uom: 'unit',
+            purchaseUom: 'unit',
+            uomRatio: 1,
+            weight: 0,
+            volume: 0,
+            dimensions: {
+                width: 0,
+                height: 0,
+                depth: 0,
+            },
+            hsCode: '',
+            countryOfOrigin: '',
             tracking: 'none',
             availableInPos: true,
             hasVariants: false,
             attributes: [],
+            minStock: 0,
+            images: [],
+            incomeAccount: '',
+            expenseAccount: '',
+            customerTaxes: [],
+            vendorTaxes: [],
+            toppings: '',
+            isCombo: false,
+            comboItems: '',
         },
     });
 
     const onSubmit = async (data: ProductFormValues) => {
         setLoading(true);
         try {
-            console.log('Submitting God-Tier product data:', data);
-            await new Promise((resolve) => setTimeout(resolve, 1000));
-            router.push('/dashboard/products');
-            router.refresh();
+            console.log('Submitting Enterprise product data:', data);
+            // Import dynamically to avoid server-only errors in client component if not handled correctly
+            // But Next.js handles server actions imports fine.
+            // We need to import createProductAction at the top.
+            // For now, I'll assume I can import it.
+            const { createProductAction } = await import('@/app/actions/product-actions');
+
+            const result = await createProductAction(data);
+            if (result.success) {
+                router.push('/dashboard/products');
+                router.refresh();
+            } else {
+                console.error(result.error);
+                // Show error toast
+            }
         } catch (error) {
             console.error('Error submitting form:', error);
         } finally {
@@ -117,6 +152,29 @@ export function ProductForm({ initialData }: ProductFormProps) {
                                             <FormControl>
                                                 <Input placeholder={t('form.namePlaceholder')} {...field} />
                                             </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+
+                                <FormField
+                                    control={form.control}
+                                    name="images"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel>Image URLs</FormLabel>
+                                            <FormControl>
+                                                <Textarea
+                                                    placeholder="https://example.com/image1.jpg, https://example.com/image2.jpg"
+                                                    className="resize-none"
+                                                    {...field}
+                                                    value={Array.isArray(field.value) ? field.value.join(', ') : field.value}
+                                                    onChange={(e) => field.onChange(e.target.value.split(',').map(s => s.trim()))}
+                                                />
+                                            </FormControl>
+                                            <FormDescription>
+                                                Comma separated list of image URLs.
+                                            </FormDescription>
                                             <FormMessage />
                                         </FormItem>
                                     )}
@@ -184,37 +242,40 @@ export function ProductForm({ initialData }: ProductFormProps) {
                                     <CardHeader>
                                         <CardTitle className="flex items-center gap-2">
                                             <DollarSign className="h-5 w-5" />
-                                            Pricing
+                                            Pricing & UOM
                                         </CardTitle>
                                     </CardHeader>
-                                    <CardContent className="grid grid-cols-2 gap-4">
-                                        <FormField
-                                            control={form.control}
-                                            name="price"
-                                            render={({ field }) => (
-                                                <FormItem>
-                                                    <FormLabel>{t('form.price')}</FormLabel>
-                                                    <FormControl>
-                                                        <Input type="number" step="0.01" {...field} />
-                                                    </FormControl>
-                                                    <FormMessage />
-                                                </FormItem>
-                                            )}
-                                        />
-                                        <FormField
-                                            control={form.control}
-                                            name="cost"
-                                            render={({ field }) => (
-                                                <FormItem>
-                                                    <FormLabel>{t('form.cost')}</FormLabel>
-                                                    <FormControl>
-                                                        <Input type="number" step="0.01" {...field} />
-                                                    </FormControl>
-                                                    <FormDescription>{t('form.costDesc')}</FormDescription>
-                                                    <FormMessage />
-                                                </FormItem>
-                                            )}
-                                        />
+                                    <CardContent className="space-y-4">
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <FormField
+                                                control={form.control}
+                                                name="price"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel>{t('form.price')}</FormLabel>
+                                                        <FormControl>
+                                                            <Input type="number" step="0.01" {...field} />
+                                                        </FormControl>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+                                            <FormField
+                                                control={form.control}
+                                                name="cost"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel>{t('form.cost')}</FormLabel>
+                                                        <FormControl>
+                                                            <Input type="number" step="0.01" {...field} />
+                                                        </FormControl>
+                                                        <FormDescription>{t('form.costDesc')}</FormDescription>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+                                        </div>
+
                                         <FormField
                                             control={form.control}
                                             name="category"
@@ -237,28 +298,77 @@ export function ProductForm({ initialData }: ProductFormProps) {
                                                 </FormItem>
                                             )}
                                         />
-                                        <FormField
-                                            control={form.control}
-                                            name="uom"
-                                            render={({ field }) => (
-                                                <FormItem>
-                                                    <FormLabel>Unit of Measure</FormLabel>
-                                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+
+                                        <div className="grid grid-cols-3 gap-4 pt-4 border-t">
+                                            <FormField
+                                                control={form.control}
+                                                name="uom"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel>Unit of Measure</FormLabel>
+                                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                            <FormControl>
+                                                                <SelectTrigger>
+                                                                    <SelectValue placeholder="Select unit" />
+                                                                </SelectTrigger>
+                                                            </FormControl>
+                                                            <SelectContent>
+                                                                <SelectItem value="unit">Unit</SelectItem>
+                                                                <SelectItem value="dozen">Dozen</SelectItem>
+                                                                <SelectItem value="box">Box</SelectItem>
+                                                                <SelectItem value="kg">Kg</SelectItem>
+                                                                <SelectItem value="g">Gram</SelectItem>
+                                                                <SelectItem value="l">Liter</SelectItem>
+                                                                <SelectItem value="m">Meter</SelectItem>
+                                                            </SelectContent>
+                                                        </Select>
+                                                        <FormDescription>Unit for selling</FormDescription>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+                                            <FormField
+                                                control={form.control}
+                                                name="purchaseUom"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel>Purchase UOM</FormLabel>
+                                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                            <FormControl>
+                                                                <SelectTrigger>
+                                                                    <SelectValue placeholder="Select unit" />
+                                                                </SelectTrigger>
+                                                            </FormControl>
+                                                            <SelectContent>
+                                                                <SelectItem value="unit">Unit</SelectItem>
+                                                                <SelectItem value="dozen">Dozen</SelectItem>
+                                                                <SelectItem value="box">Box</SelectItem>
+                                                                <SelectItem value="kg">Kg</SelectItem>
+                                                                <SelectItem value="g">Gram</SelectItem>
+                                                                <SelectItem value="l">Liter</SelectItem>
+                                                                <SelectItem value="m">Meter</SelectItem>
+                                                            </SelectContent>
+                                                        </Select>
+                                                        <FormDescription>Unit for buying</FormDescription>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+                                            <FormField
+                                                control={form.control}
+                                                name="uomRatio"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel>Ratio</FormLabel>
                                                         <FormControl>
-                                                            <SelectTrigger>
-                                                                <SelectValue placeholder="Select UOM" />
-                                                            </SelectTrigger>
+                                                            <Input type="number" step="0.01" {...field} />
                                                         </FormControl>
-                                                        <SelectContent>
-                                                            <SelectItem value="unit">Unit(s)</SelectItem>
-                                                            <SelectItem value="kg">kg</SelectItem>
-                                                            <SelectItem value="m">m</SelectItem>
-                                                        </SelectContent>
-                                                    </Select>
-                                                    <FormMessage />
-                                                </FormItem>
-                                            )}
-                                        />
+                                                        <FormDescription>1 Purchase Unit = X Base Units</FormDescription>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+                                        </div>
                                     </CardContent>
                                 </Card>
                             </TabsContent>
@@ -300,10 +410,15 @@ export function ProductForm({ initialData }: ProductFormProps) {
                                                 render={({ field }) => (
                                                     <FormItem>
                                                         <FormControl>
-                                                            <AttributeManager
-                                                                attributes={field.value || []}
-                                                                onChange={field.onChange}
-                                                            />
+                                                            <div className="space-y-6">
+                                                                <AttributeManager
+                                                                    attributes={field.value || []}
+                                                                    onChange={field.onChange}
+                                                                />
+                                                                {field.value && field.value.length > 0 && (
+                                                                    <VariantMatrix attributes={field.value} />
+                                                                )}
+                                                            </div>
                                                         </FormControl>
                                                         <FormMessage />
                                                     </FormItem>
@@ -365,6 +480,73 @@ export function ProductForm({ initialData }: ProductFormProps) {
                                                 </FormItem>
                                             )}
                                         />
+
+                                        <FormField
+                                            control={form.control}
+                                            name="toppings"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>Toppings / Modifiers</FormLabel>
+                                                    <FormControl>
+                                                        <Textarea
+                                                            placeholder="Extra Cheese, No Ice, Spicy (comma separated)"
+                                                            className="resize-none"
+                                                            {...field}
+                                                        />
+                                                    </FormControl>
+                                                    <FormDescription>
+                                                        List available modifiers for this product.
+                                                    </FormDescription>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+
+                                        <div className="border-t pt-4 mt-4 space-y-4">
+                                            <FormField
+                                                control={form.control}
+                                                name="isCombo"
+                                                render={({ field }) => (
+                                                    <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
+                                                        <div className="space-y-0.5">
+                                                            <FormLabel className="text-base">Combo Meal</FormLabel>
+                                                            <FormDescription>
+                                                                Is this a bundle of other products?
+                                                            </FormDescription>
+                                                        </div>
+                                                        <FormControl>
+                                                            <Switch
+                                                                checked={field.value}
+                                                                onCheckedChange={field.onChange}
+                                                            />
+                                                        </FormControl>
+                                                    </FormItem>
+                                                )}
+                                            />
+
+                                            {form.watch('isCombo') && (
+                                                <FormField
+                                                    control={form.control}
+                                                    name="comboItems"
+                                                    render={({ field }) => (
+                                                        <FormItem>
+                                                            <FormLabel>Combo Items</FormLabel>
+                                                            <FormControl>
+                                                                <Textarea
+                                                                    placeholder="Burger, Fries, Coke (comma separated)"
+                                                                    className="resize-none"
+                                                                    {...field}
+                                                                />
+                                                            </FormControl>
+                                                            <FormDescription>
+                                                                List the items included in this combo.
+                                                            </FormDescription>
+                                                            <FormMessage />
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                            )}
+                                        </div>
                                     </CardContent>
                                 </Card>
                             </TabsContent>
@@ -378,6 +560,22 @@ export function ProductForm({ initialData }: ProductFormProps) {
                                         </CardTitle>
                                     </CardHeader>
                                     <CardContent className="grid grid-cols-2 gap-4">
+                                        <FormField
+                                            control={form.control}
+                                            name="minStock"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>Low Stock Alert (Reorder Point)</FormLabel>
+                                                    <FormControl>
+                                                        <Input type="number" {...field} />
+                                                    </FormControl>
+                                                    <FormDescription>
+                                                        Alert when stock falls below this quantity.
+                                                    </FormDescription>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
                                         <FormField
                                             control={form.control}
                                             name="weight"
@@ -399,6 +597,77 @@ export function ProductForm({ initialData }: ProductFormProps) {
                                                     <FormLabel>Volume (m³)</FormLabel>
                                                     <FormControl>
                                                         <Input type="number" step="0.001" {...field} />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+
+                                        <div className="col-span-2 grid grid-cols-3 gap-4">
+                                            <FormField
+                                                control={form.control}
+                                                name="dimensions.width"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel>Width (cm)</FormLabel>
+                                                        <FormControl>
+                                                            <Input type="number" step="0.1" {...field} />
+                                                        </FormControl>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+                                            <FormField
+                                                control={form.control}
+                                                name="dimensions.height"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel>Height (cm)</FormLabel>
+                                                        <FormControl>
+                                                            <Input type="number" step="0.1" {...field} />
+                                                        </FormControl>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+                                            <FormField
+                                                control={form.control}
+                                                name="dimensions.depth"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel>Depth (cm)</FormLabel>
+                                                        <FormControl>
+                                                            <Input type="number" step="0.1" {...field} />
+                                                        </FormControl>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+                                        </div>
+
+                                        <FormField
+                                            control={form.control}
+                                            name="hsCode"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>HS Code</FormLabel>
+                                                    <FormControl>
+                                                        <Input placeholder="e.g. 8518.30" {...field} />
+                                                    </FormControl>
+                                                    <FormDescription>Harmonized System Code for customs</FormDescription>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+
+                                        <FormField
+                                            control={form.control}
+                                            name="countryOfOrigin"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>Country of Origin</FormLabel>
+                                                    <FormControl>
+                                                        <Input placeholder="e.g. US, CN, DE" {...field} />
                                                     </FormControl>
                                                     <FormMessage />
                                                 </FormItem>
@@ -481,49 +750,6 @@ export function ProductForm({ initialData }: ProductFormProps) {
                                                 </FormItem>
                                             )}
                                         />
-                                        <div className="col-span-2">
-                                            <FormField
-                                                control={form.control}
-                                                name="customerTaxes"
-                                                render={({ field }) => (
-                                                    <FormItem>
-                                                        <FormLabel>Customer Taxes</FormLabel>
-                                                        <Select onValueChange={(val) => field.onChange([...(field.value || []), val])}>
-                                                            <FormControl>
-                                                                <SelectTrigger>
-                                                                    <SelectValue placeholder="Add Customer Tax" />
-                                                                </SelectTrigger>
-                                                            </FormControl>
-                                                            <SelectContent>
-                                                                <SelectItem value="vat_15">VAT 15%</SelectItem>
-                                                                <SelectItem value="vat_5">VAT 5%</SelectItem>
-                                                                <SelectItem value="exempt">Exempt</SelectItem>
-                                                            </SelectContent>
-                                                        </Select>
-                                                        <div className="flex flex-wrap gap-2 mt-2">
-                                                            {field.value?.map((tax, index) => (
-                                                                <Badge key={index} variant="secondary" className="pl-2 pr-1 py-1">
-                                                                    {tax}
-                                                                    <Button
-                                                                        variant="ghost"
-                                                                        size="icon"
-                                                                        className="h-4 w-4 ml-1 hover:bg-transparent"
-                                                                        onClick={() => {
-                                                                            const newTaxes = [...(field.value || [])];
-                                                                            newTaxes.splice(index, 1);
-                                                                            field.onChange(newTaxes);
-                                                                        }}
-                                                                    >
-                                                                        <X className="w-3 h-3" />
-                                                                    </Button>
-                                                                </Badge>
-                                                            ))}
-                                                        </div>
-                                                        <FormMessage />
-                                                    </FormItem>
-                                                )}
-                                            />
-                                        </div>
                                     </CardContent>
                                 </Card>
                             </TabsContent>

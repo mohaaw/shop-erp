@@ -17,7 +17,18 @@ const getProduct = (id: string): ProductFormValues => {
         stock: 50,
         category: 'electronics',
         status: 'active',
-        image: '',
+        type: 'storable',
+        uom: 'unit',
+        tracking: 'serial',
+        availableInPos: true,
+        hasVariants: false,
+        attributes: [],
+        minStock: 10,
+        images: [],
+        purchaseUom: 'unit',
+        uomRatio: 1,
+        isCombo: false,
+        comboItems: '',
     };
 };
 

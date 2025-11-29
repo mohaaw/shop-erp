@@ -1,12 +1,11 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useLocale, useTranslations } from 'next-intl';
-import { translationService, TranslationTerm } from '@/services/translation-service';
-import { Input } from '@/components/ui/input';
+import { useLocale } from 'next-intl';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Search, Save, Loader2, Globe } from 'lucide-react';
+import { Input } from '@/components/ui/input';
 import {
     Table,
     TableBody,
@@ -15,17 +14,18 @@ import {
     TableHeader,
     TableRow,
 } from '@/components/ui/table';
-import { Badge } from '@/components/ui/badge';
+import { Globe, Loader2, Save, Search } from 'lucide-react';
+import { TranslationTerm } from '@/lib/services/translation-service';
+import { getTranslationsAction, updateTranslationAction } from '@/app/actions/translation-actions';
 
 export function TranslationEditor() {
     const locale = useLocale();
-    const t = useTranslations('Settings'); // Assuming we'll add translations for this page later
+    const [loading, setLoading] = useState(false);
+    const [saving, setSaving] = useState(false);
     const [terms, setTerms] = useState<TranslationTerm[]>([]);
-    const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
     const [editingId, setEditingId] = useState<string | null>(null);
     const [editValue, setEditValue] = useState('');
-    const [saving, setSaving] = useState(false);
 
     useEffect(() => {
         loadTerms();
@@ -34,8 +34,12 @@ export function TranslationEditor() {
     const loadTerms = async () => {
         setLoading(true);
         try {
-            const data = await translationService.getTranslations(locale);
-            setTerms(data);
+            const data = await getTranslationsAction(locale);
+            const termList = Object.entries(data).map(([key, value]) => ({
+                key,
+                value: value as string
+            }));
+            setTerms(termList);
         } catch (error) {
             console.error('Failed to load translations:', error);
         } finally {
@@ -45,8 +49,7 @@ export function TranslationEditor() {
 
     const filteredTerms = terms.filter(term =>
         term.key.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        term.value.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        term.original.toLowerCase().includes(searchQuery.toLowerCase())
+        term.value.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
     const handleEdit = (term: TranslationTerm) => {
@@ -57,7 +60,7 @@ export function TranslationEditor() {
     const handleSave = async (key: string) => {
         setSaving(true);
         try {
-            await translationService.updateTranslation(key, editValue, locale);
+            await updateTranslationAction(key, editValue, locale);
 
             // Update local state
             setTerms(terms.map(t =>
@@ -120,12 +123,7 @@ export function TranslationEditor() {
                                 <TableBody>
                                     {filteredTerms.map((term) => (
                                         <TableRow key={term.key}>
-                                            <TableCell>
-                                                <div className="flex flex-col">
-                                                    <span className="font-medium">{term.original}</span>
-                                                    <span className="text-xs text-muted-foreground">{term.key}</span>
-                                                </div>
-                                            </TableCell>
+                                            <TableCell className="font-medium">{term.key}</TableCell>
                                             <TableCell>
                                                 {editingId === term.key ? (
                                                     <Input
@@ -177,9 +175,10 @@ export function TranslationEditor() {
                                 </TableBody>
                             </Table>
                         </div>
-                    )}
-                </CardContent>
-            </Card>
-        </div>
+                    )
+                    }
+                </CardContent >
+            </Card >
+        </div >
     );
 }

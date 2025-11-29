@@ -1,0 +1,112 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Translation {
+  id        Int      @id @default(autoincrement())
+  locale    String
+  namespace String   @default("common")
+  key       String
+  value     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([locale, namespace, key])
+}
+
+model Warehouse {
+  id        String     @id @default(cuid())
+  name      String
+  code      String     @unique
+  locations Location[]
+}
+
+model Location {
+  id          String   @id @default(cuid())
+  name        String
+  code        String   @unique
+  type        String   // internal, customer, supplier, inventory, production
+  warehouseId String?
+  warehouse   Warehouse? @relation(fields: [warehouseId], references: [id])
+  parentId    String?
+  parent      Location?  @relation("LocationHierarchy", fields: [parentId], references: [id])
+  children    Location[] @relation("LocationHierarchy")
+  
+  stockQuants    StockQuant[]
+  movesFrom      StockMovement[] @relation("SourceLocation")
+  movesTo        StockMovement[] @relation("DestLocation")
+}
+
+model StockMovement {
+  id             String   @id @default(cuid())
+  productId      String
+  quantity       Float
+  sourceLocationId String
+  sourceLocation Location @relation("SourceLocation", fields: [sourceLocationId], references: [id])
+  destLocationId   String
+  destLocation   Location @relation("DestLocation", fields: [destLocationId], references: [id])
+  reference      String?
+  state          String   @default("draft") // draft, done
+  date           DateTime @default(now())
+}
+
+model StockQuant {
+  id         String   @id @default(cuid())
+  productId  String
+  locationId String
+  location   Location @relation(fields: [locationId], references: [id])
+  quantity   Float
+
+  @@unique([productId, locationId])
+}
+
+model Category {
+  id        String     @id @default(cuid())
+  name      String
+  parentId  String?
+  parent    Category?  @relation("CategoryHierarchy", fields: [parentId], references: [id])
+  children  Category[] @relation("CategoryHierarchy")
+  products  Product[]
+}
+
+model Product {
+  id                String   @id @default(cuid())
+  name              String
+  description       String?
+  price             Float
+  cost              Float    @default(0)
+  sku               String?
+  barcode           String?
+  categoryId        String?
+  category          Category? @relation(fields: [categoryId], references: [id])
+  type              String   @default("storable") // storable, consumable, service
+  image             String?
+  
+  // POS
+  availableInPos    Boolean  @default(true)
+  posCategory       String?
+  toppings          String?  // Comma separated
+  isCombo           Boolean  @default(false)
+  comboItems        String?  // Comma separated IDs
+  
+  // Logistics
+  weight            Float?
+  volume            Float?
+  hsCode            String?
+  countryOfOrigin   String?
+
+  // Inventory & Media
+  minStock          Float    @default(0)
+  images            String?  // JSON string of image URLs
+  
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}

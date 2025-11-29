@@ -1,41 +1,70 @@
-'use client';
+import { getLowStockProductsAction } from '@/app/actions/inventory-actions';
+import { LowStockReport } from '@/components/inventory/low-stock-report';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { AlertTriangle, Package, ArrowRightLeft, DollarSign } from 'lucide-react';
+import { getTranslations } from 'next-intl/server';
 
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Box, Plus } from 'lucide-react';
+export default async function InventoryPage() {
+  const t = await getTranslations('Inventory');
+  const lowStockProducts = await getLowStockProductsAction();
 
-export default function InventoryPage() {
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-secondary-900 dark:text-white">Inventory</h1>
-          <p className="text-secondary-600 dark:text-secondary-400 mt-1">
-            Track stock levels and movements
-          </p>
-        </div>
-        <Button className="gap-2">
-          <Plus className="w-4 h-4" />
-          Stock Adjustment
-        </Button>
+        <h1 className="text-3xl font-bold tracking-tight">{t('title')}</h1>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Box className="w-5 h-5 text-primary-600" />
-            Stock Levels
-          </CardTitle>
-          <CardDescription>Real-time inventory status</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="h-64 flex items-center justify-center bg-secondary-50 dark:bg-secondary-800/50 rounded-lg">
-            <p className="text-secondary-500 dark:text-secondary-400">
-              Inventory table coming soon...
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">
+              Low Stock Alerts
+            </CardTitle>
+            <AlertTriangle className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{lowStockProducts.length}</div>
+            <p className="text-xs text-muted-foreground">
+              Items below reorder point
             </p>
+          </CardContent>
+        </Card>
+        {/* Other cards can be added here later */}
+      </div>
+
+      <Tabs defaultValue="low-stock" className="space-y-4">
+        <TabsList>
+          <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="stock">Stock</TabsTrigger>
+          <TabsTrigger value="movements">Movements</TabsTrigger>
+          <TabsTrigger value="valuation">Valuation</TabsTrigger>
+          <TabsTrigger value="low-stock">Low Stock Alerts</TabsTrigger>
+        </TabsList>
+        <TabsContent value="overview" className="space-y-4">
+          <div className="flex items-center justify-center h-96 border rounded-lg bg-muted/10">
+            <p className="text-muted-foreground">Overview Dashboard Coming Soon</p>
           </div>
-        </CardContent>
-      </Card>
+        </TabsContent>
+        <TabsContent value="stock" className="space-y-4">
+          <div className="flex items-center justify-center h-96 border rounded-lg bg-muted/10">
+            <p className="text-muted-foreground">Stock Management Coming Soon</p>
+          </div>
+        </TabsContent>
+        <TabsContent value="movements" className="space-y-4">
+          <div className="flex items-center justify-center h-96 border rounded-lg bg-muted/10">
+            <p className="text-muted-foreground">Stock Movements Coming Soon</p>
+          </div>
+        </TabsContent>
+        <TabsContent value="valuation" className="space-y-4">
+          <div className="flex items-center justify-center h-96 border rounded-lg bg-muted/10">
+            <p className="text-muted-foreground">Inventory Valuation Coming Soon</p>
+          </div>
+        </TabsContent>
+        <TabsContent value="low-stock" className="space-y-4">
+          <LowStockReport items={lowStockProducts} />
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

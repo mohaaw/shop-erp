@@ -106,7 +106,7 @@ export function AttributeManager({ attributes, onChange }: AttributeManagerProps
                             <Button
                                 variant="ghost"
                                 size="sm"
-                                onClick={() => removeAttribute(attribute.id)}
+                                onClick={() => attribute.id && removeAttribute(attribute.id)}
                                 className="text-destructive hover:text-destructive/90"
                             >
                                 <Trash2 className="w-4 h-4" />
@@ -122,7 +122,7 @@ export function AttributeManager({ attributes, onChange }: AttributeManagerProps
                                                 variant="ghost"
                                                 size="icon"
                                                 className="h-4 w-4 ml-1 hover:bg-transparent"
-                                                onClick={() => removeValue(attribute.id, val.id)}
+                                                onClick={() => attribute.id && val.id && removeValue(attribute.id, val.id)}
                                             >
                                                 <X className="w-3 h-3" />
                                             </Button>
@@ -135,7 +135,9 @@ export function AttributeManager({ attributes, onChange }: AttributeManagerProps
                                         onKeyDown={(e) => {
                                             if (e.key === "Enter") {
                                                 e.preventDefault();
-                                                addValue(attribute.id, e.currentTarget.value);
+                                                if (attribute.id) {
+                                                    addValue(attribute.id, e.currentTarget.value);
+                                                }
                                                 e.currentTarget.value = "";
                                             }
                                         }}
