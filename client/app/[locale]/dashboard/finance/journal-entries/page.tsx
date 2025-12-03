@@ -12,12 +12,14 @@ import {
 } from "@/components/ui/table";
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { BackButton } from '@/components/ui/back-button';
 
 export default async function JournalEntriesPage() {
     const entries = await getJournalEntriesAction();
 
     return (
         <div className="space-y-6">
+            <BackButton fallbackUrl="/dashboard/finance" />
             <div className="flex justify-between items-center">
                 <div>
                     <h1 className="text-3xl font-bold tracking-tight">Journal Entries</h1>

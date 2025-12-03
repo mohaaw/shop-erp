@@ -83,6 +83,100 @@ export default async function FinancePage() {
             </CardContent>
           </Link>
         </Card>
+
+        <Card className="hover:bg-secondary-50 dark:hover:bg-secondary-900 transition-colors cursor-pointer">
+          <Link href="/dashboard/finance/general-ledger">
+            <CardHeader>
+              <CardTitle className="flex items-center justify-between">
+                General Ledger
+                <ArrowRight className="h-4 w-4" />
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground">
+                View detailed transaction history by account.
+              </p>
+            </CardContent>
+          </Link>
+        </Card>
+
+        <Card className="hover:bg-secondary-50 dark:hover:bg-secondary-900 transition-colors cursor-pointer">
+          <Link href="/dashboard/finance/reports">
+            <CardHeader>
+              <CardTitle className="flex items-center justify-between">
+                Financial Reports
+                <ArrowRight className="h-4 w-4" />
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground">
+                Balance Sheet and Profit & Loss Statement.
+              </p>
+            </CardContent>
+          </Link>
+        </Card>
+
+        <Card className="hover:bg-secondary-50 dark:hover:bg-secondary-900 transition-colors cursor-pointer">
+          <Link href="/dashboard/finance/invoices">
+            <CardHeader>
+              <CardTitle className="flex items-center justify-between">
+                Sales Invoices
+                <ArrowRight className="h-4 w-4" />
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground">
+                Create and manage customer invoices.
+              </p>
+            </CardContent>
+          </Link>
+        </Card>
+
+        <Card className="hover:bg-secondary-50 dark:hover:bg-secondary-900 transition-colors cursor-pointer">
+          <Link href="/dashboard/finance/purchase-invoices">
+            <CardHeader>
+              <CardTitle className="flex items-center justify-between">
+                Purchase Invoices
+                <ArrowRight className="h-4 w-4" />
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground">
+                Record bills from suppliers.
+              </p>
+            </CardContent>
+          </Link>
+        </Card>
+        <Card className="hover:bg-secondary-50 dark:hover:bg-secondary-900 transition-colors cursor-pointer">
+          <Link href="/dashboard/finance/aging-reports">
+            <CardHeader>
+              <CardTitle className="flex items-center justify-between">
+                Aging Reports
+                <ArrowRight className="h-4 w-4" />
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground">
+                View AR and AP aging summaries.
+              </p>
+            </CardContent>
+          </Link>
+        </Card>
+        <Card className="hover:bg-secondary-50 dark:hover:bg-secondary-900 transition-colors cursor-pointer">
+          <Link href="/dashboard/finance/settings/tax">
+            <CardHeader>
+              <CardTitle className="flex items-center justify-between">
+                Tax Settings
+                <ArrowRight className="h-4 w-4" />
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-muted-foreground">
+                Manage tax rates and rules.
+              </p>
+            </CardContent>
+          </Link>
+        </Card>
       </div>
     </div>
   );

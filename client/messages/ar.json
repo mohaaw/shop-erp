@@ -302,5 +302,79 @@
         "deleteConfirmation": "هل أنت متأكد أنك تريد حذف هذه الفئة؟",
         "save": "حفظ",
         "cancel": "إلغاء"
+    },
+    "Employees": {
+        "title": "الموظفين",
+        "subtitle": "إدارة موظفي مؤسستك",
+        "newEmployee": "موظف جديد",
+        "employeeNumber": "رقم الموظف",
+        "firstName": "الاسم الأول",
+        "lastName": "اسم العائلة",
+        "email": "البريد الإلكتروني",
+        "phone": "الهاتف",
+        "department": "القسم",
+        "designation": "المسمى الوظيفي",
+        "dateOfJoining": "تاريخ الانضمام",
+        "salary": "الراتب",
+        "status": "الحالة",
+        "form": {
+            "title": "موظف جديد",
+            "subtitle": "إضافة موظف جديد إلى مؤسستك",
+            "personalInfo": "المعلومات الشخصية",
+            "employmentDetails": "تفاصيل التوظيف",
+            "create": "إنشاء موظف",
+            "creating": "جاري الإنشاء...",
+            "cancel": "إلغاء",
+            "success": "تم إنشاء الموظف بنجاح!",
+            "error": "فشل إنشاء الموظف"
+        }
+    },
+    "CRM": {
+        "leads": {
+            "title": "العملاء المحتملين",
+            "subtitle": "إدارة العملاء المحتملين والفرص البيعية",
+            "newLead": "عميل محتمل جديد",
+            "company": "الشركة",
+            "source": "المصدر",
+            "score": "النقاط",
+            "status": "الحالة"
+        },
+        "opportunities": {
+            "title": "الفرص",
+            "subtitle": "تتبع خط أنابيب المبيعات والصفقات",
+            "newOpportunity": "فرصة جديدة",
+            "stage": "المرحلة",
+            "expectedRevenue": "الإيرادات المتوقعة",
+            "probability": "الاحتمالية",
+            "expectedClose": "تاريخ الإغلاق المتوقع"
+        }
+    },
+    "Manufacturing": {
+        "bom": {
+            "title": "قائمة المواد (BOM)",
+            "subtitle": "إدارة قوائم المواد ووصفات التصنيع",
+            "newBOM": "قائمة مواد جديدة",
+            "product": "المنتج",
+            "quantity": "الكمية",
+            "notes": "ملاحظات"
+        },
+        "productionOrders": {
+            "title": "أوامر الإنتاج",
+            "subtitle": "إدارة أوامر التصنيع والإنتاج",
+            "newOrder": "أمر إنتاج جديد",
+            "orderNumber": "رقم الأمر",
+            "plannedStart": "البداية المخططة",
+            "status": "الحالة"
+        }
+    },
+    "Projects": {
+        "title": "المشاريع",
+        "subtitle": "إدارة مشاريع مؤسستك",
+        "newProject": "مشروع جديد",
+        "code": "الكود",
+        "name": "الاسم",
+        "budget": "الميزانية",
+        "actualCost": "التكلفة الفعلية",
+        "status": "الحالة"
     }
 }

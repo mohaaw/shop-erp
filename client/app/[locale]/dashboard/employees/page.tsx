@@ -1,41 +1,91 @@
-'use client';
-
+import { getEmployeesAction } from '@/app/actions/employee-actions';
+import { BackButton } from '@/components/ui/back-button';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Users2, Plus } from 'lucide-react';
+import { DataTable, SortableHeader } from '@/components/ui/data-table';
+import { Badge } from '@/components/ui/badge';
+import { Plus } from 'lucide-react';
+import Link from 'next/link';
+import { ColumnDef } from '@tanstack/react-table';
+import { Employee } from '@/lib/services/employee-service';
+import { getTranslations } from 'next-intl/server';
 
-export default function EmployeesPage() {
+export default async function EmployeesPage() {
+  const t = await getTranslations('Employees');
+  const employees = await getEmployeesAction();
+
+  const columns: ColumnDef<Employee>[] = [
+    {
+      accessorKey: 'employeeNumber',
+      header: ({ column }) => <SortableHeader column={column}>{t('employeeNumber')}</SortableHeader>,
+    },
+    {
+      accessorKey: 'firstName',
+      header: ({ column }) => <SortableHeader column={column}>{t('firstName')}</SortableHeader>,
+    },
+    {
+      accessorKey: 'lastName',
+      header: ({ column }) => <SortableHeader column={column}>{t('lastName')}</SortableHeader>,
+    },
+    {
+      accessorKey: 'email',
+      header: t('email'),
+    },
+    {
+      accessorKey: 'departmentName',
+      header: t('department'),
+      cell: ({ row }) => row.original.departmentName || '-',
+    },
+    {
+      accessorKey: 'designation',
+      header: t('designation'),
+      cell: ({ row }) => row.original.designation || '-',
+    },
+    {
+      accessorKey: 'status',
+      header: t('status'),
+      cell: ({ row }) => {
+        const status = row.original.status;
+        return (
+          <Badge variant={status === 'active' ? 'default' : 'secondary'}>
+            {status}
+          </Badge>
+        );
+      },
+    },
+    {
+      id: 'actions',
+      cell: ({ row }) => (
+        <Link href={`/dashboard/employees/${row.original.id}`}>
+          <Button variant="ghost" size="sm">View</Button>
+        </Link>
+      ),
+    },
+  ];
+
   return (
-    <div className="space-y-8">
-      <div className="flex items-center justify-between">
+    <div className="space-y-6">
+      <BackButton fallbackUrl="/dashboard" />
+      <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold text-secondary-900 dark:text-white">Employees</h1>
-          <p className="text-secondary-600 dark:text-secondary-400 mt-1">
-            Manage staff and payroll
+          <h1 className="text-3xl font-bold tracking-tight">{t('title')}</h1>
+          <p className="text-muted-foreground">
+            {t('subtitle')}
           </p>
         </div>
-        <Button className="gap-2">
-          <Plus className="w-4 h-4" />
-          New Employee
-        </Button>
+        <Link href="/dashboard/employees/new">
+          <Button>
+            <Plus className="mr-2 h-4 w-4" />
+            {t('newEmployee')}
+          </Button>
+        </Link>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Users2 className="w-5 h-5 text-primary-600" />
-            Staff Directory
-          </CardTitle>
-          <CardDescription>All employees and staff members</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="h-64 flex items-center justify-center bg-secondary-50 dark:bg-secondary-800/50 rounded-lg">
-            <p className="text-secondary-500 dark:text-secondary-400">
-              Employee directory coming soon...
-            </p>
-          </div>
-        </CardContent>
-      </Card>
+      <DataTable
+        columns={columns}
+        data={employees}
+        searchKey="firstName"
+        searchPlaceholder={t('firstName')}
+      />
     </div>
   );
 }

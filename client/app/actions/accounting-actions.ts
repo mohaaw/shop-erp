@@ -29,8 +29,28 @@ export async function getJournalEntriesAction() {
     return await accountingService.getJournalEntries();
 }
 
+export async function getGeneralLedgerAction(accountId?: string, startDate?: string, endDate?: string) {
+    return await accountingService.getGeneralLedger(accountId, startDate, endDate);
+}
+
 export async function getAccountsAction() {
     return await accountingService.getAccounts();
+}
+
+export async function getBalanceSheetAction() {
+    return await accountingService.getBalanceSheet();
+}
+
+export async function getProfitAndLossAction(startDate?: string, endDate?: string) {
+    return await accountingService.getProfitAndLoss(startDate, endDate);
+}
+
+export async function getAgingReportAction(type: 'AR' | 'AP') {
+    return await accountingService.getAgingReport(type);
+}
+
+export async function getCashFlowStatementAction(startDate?: string, endDate?: string) {
+    return await accountingService.getCashFlowStatement(startDate, endDate);
 }
 
 export async function createJournalEntryAction(data: {
