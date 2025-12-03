@@ -34,7 +34,7 @@ export default function LoginPage() {
         setError(t('invalidCredentials'));
       } else {
         router.refresh();
-        router.push(`/${locale}/dashboard`);
+        router.push('/dashboard');
       }
     } catch (error) {
       setError(t('unexpectedError'));

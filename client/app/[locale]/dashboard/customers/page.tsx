@@ -3,8 +3,30 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Users, Plus } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { customersApi } from '@/lib/api';
 
 export default function CustomersPage() {
+  const [customers, setCustomers] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchCustomers = async () => {
+      try {
+        const response = await customersApi.getAll();
+        if (response.data.success) {
+          setCustomers(response.data.data as any[]);
+        }
+      } catch (error) {
+        console.error('Failed to fetch customers:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCustomers();
+  }, []);
+
   return (
     <div className="space-y-8">
       <div className="flex items-center justify-between">
@@ -29,11 +51,29 @@ export default function CustomersPage() {
           <CardDescription>All your customers</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="h-64 flex items-center justify-center bg-secondary-50 dark:bg-secondary-800/50 rounded-lg">
-            <p className="text-secondary-500 dark:text-secondary-400">
-              Customer list table coming soon...
-            </p>
-          </div>
+          {loading ? (
+            <div className="text-center py-8">Loading...</div>
+          ) : customers.length === 0 ? (
+            <div className="h-64 flex items-center justify-center bg-secondary-50 dark:bg-secondary-800/50 rounded-lg">
+              <p className="text-secondary-500 dark:text-secondary-400">
+                No customers found.
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {customers.map((customer) => (
+                <div key={customer.id} className="flex justify-between items-center p-4 border rounded-lg">
+                  <div>
+                    <p className="font-medium">{customer.name}</p>
+                    <p className="text-sm text-gray-500">{customer.email}</p>
+                  </div>
+                  <div className="text-sm text-gray-500">
+                    {customer.phone || 'No phone'}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>

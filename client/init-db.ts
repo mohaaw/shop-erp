@@ -80,9 +80,40 @@ CREATE TABLE IF NOT EXISTS "Product" (
     "volume" REAL,
     "hsCode" TEXT,
     "countryOfOrigin" TEXT,
+    "minStock" REAL DEFAULT 0,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY ("categoryId") REFERENCES "Category" ("id") ON DELETE SET NULL ON UPDATE CASCADE
+);
+CREATE TABLE IF NOT EXISTS "Customer" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "name" TEXT NOT NULL,
+    "email" TEXT,
+    "phone" TEXT,
+    "address" TEXT,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS "Order" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "customerId" TEXT,
+    "total" REAL NOT NULL DEFAULT 0,
+    "status" TEXT NOT NULL DEFAULT 'pending',
+    "paymentStatus" TEXT NOT NULL DEFAULT 'unpaid',
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY ("customerId") REFERENCES "Customer" ("id") ON DELETE SET NULL
+);
+
+CREATE TABLE IF NOT EXISTS "OrderItem" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "orderId" TEXT NOT NULL,
+    "productId" TEXT NOT NULL,
+    "quantity" REAL NOT NULL,
+    "price" REAL NOT NULL,
+    FOREIGN KEY ("orderId") REFERENCES "Order" ("id") ON DELETE CASCADE,
+    FOREIGN KEY ("productId") REFERENCES "Product" ("id") ON DELETE RESTRICT
 );
 `;
 

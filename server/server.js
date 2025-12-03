@@ -109,13 +109,13 @@ const authenticateToken = (req, res, next) => {
 
   if (token == null) {
     console.log('Backend Auth Middleware: No token provided.');
-    return res.status(401).json({ success: false, message: "Access denied. No token provided."});
+    return res.status(401).json({ success: false, message: "Access denied. No token provided." });
   }
 
   jwt.verify(token, JWT_SECRET, (err, user) => {
     if (err) {
       console.log('Backend Auth Middleware: Token verification failed.', err.message);
-      return res.status(403).json({ success: false, message: "Access denied. Token is not valid or expired."});
+      return res.status(403).json({ success: false, message: "Access denied. Token is not valid or expired." });
     }
     req.user = user; // Add decoded user payload to request object
     // console.log('Backend Auth Middleware: Token verified for user:', user.email);
@@ -130,31 +130,116 @@ app.get('/api/auth/me', authenticateToken, (req, res) => {
   // In a real app, you might fetch fresh user details from DB using req.user.id
   const userProfile = MOCK_USERS.find(u => u.id === req.user.id);
   if (!userProfile) {
-     return res.status(404).json({success: false, message: "User profile not found after token authentication."})
+    return res.status(404).json({ success: false, message: "User profile not found after token authentication." })
   }
   const { passwordHash, ...profileToReturn } = userProfile; // Exclude password hash
   res.status(200).json({ success: true, user: profileToReturn });
 });
-   
+
 // POST /api/auth/logout (Mock - real logout often involves blacklisting tokens)
 app.post('/api/auth/logout', authenticateToken, (req, res) => {
-    console.log(`Backend: User ${req.user.email} logged out (server-side notification).`);
-    res.status(200).json({ success: true, message: 'Logged out successfully.' });
+  console.log(`Backend: User ${req.user.email} logged out (server-side notification).`);
+  res.status(200).json({ success: true, message: 'Logged out successfully.' });
 });
 
-// --- Placeholder for other API routes (Products, Customers, etc.) ---
-// Example:
-// app.get('/api/products', authenticateToken, (req, res) => { res.json({success: true, data: []}); });
+const db = require('./db');
+
+// --- API Routes ---
+
+// Products
+app.get('/api/products', authenticateToken, (req, res) => {
+  try {
+    const products = db.prepare(`
+            SELECT 
+                p.*,
+                c.name as category,
+                COALESCE((SELECT SUM(quantity) FROM StockQuant WHERE productId = p.id), 0) as stock
+            FROM Product p 
+            LEFT JOIN Category c ON p.categoryId = c.id
+            ORDER BY p.name
+        `).all();
+    res.json({ success: true, data: products });
+  } catch (error) {
+    console.error('Error fetching products:', error);
+    res.status(500).json({ success: false, message: 'Failed to fetch products' });
+  }
+});
+
+app.get('/api/products/:id', authenticateToken, (req, res) => {
+  try {
+    const product = db.prepare('SELECT * FROM Product WHERE id = ?').get(req.params.id);
+    if (!product) return res.status(404).json({ success: false, message: 'Product not found' });
+    res.json({ success: true, data: product });
+  } catch (error) {
+    res.status(500).json({ success: false, message: 'Failed to fetch product' });
+  }
+});
+
+// Customers
+app.get('/api/customers', authenticateToken, (req, res) => {
+  try {
+    // Check if table exists
+    const tableExists = db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='Customer'").get();
+    if (!tableExists) {
+      return res.json({ success: true, data: [] });
+    }
+    const customers = db.prepare('SELECT * FROM Customer ORDER BY name').all();
+    res.json({ success: true, data: customers });
+  } catch (error) {
+    console.error('Error fetching customers:', error);
+    res.status(500).json({ success: false, message: 'Failed to fetch customers' });
+  }
+});
+
+// Orders
+app.get('/api/orders', authenticateToken, (req, res) => {
+  try {
+    const tableExists = db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='Order'").get();
+    if (!tableExists) {
+      return res.json({ success: true, data: [] });
+    }
+    const orders = db.prepare('SELECT * FROM "Order" ORDER BY createdAt DESC').all();
+    res.json({ success: true, data: orders });
+  } catch (error) {
+    console.error('Error fetching orders:', error);
+    res.status(500).json({ success: false, message: 'Failed to fetch orders' });
+  }
+});
+
+// Dashboard Stats
+app.get('/api/dashboard/stats', authenticateToken, (req, res) => {
+  try {
+    const productCount = db.prepare('SELECT COUNT(*) as count FROM Product').get().count;
+    // Mocking others until tables exist
+    const customerCount = db.prepare('SELECT COUNT(*) as count FROM Customer').get().count;
+    const orderCount = db.prepare('SELECT COUNT(*) as count FROM "Order"').get().count;
+    const totalSales = db.prepare('SELECT SUM(total) as total FROM "Order"').get().total || 0;
+
+    res.json({
+      success: true,
+      data: {
+        totalSales,
+        orderCount,
+        customerCount,
+        productCount
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching stats:', error);
+    res.status(500).json({ success: false, message: 'Failed to fetch stats' });
+  }
+});
+
 app.get('/api/test', (req, res) => {
-    console.log("Backend: GET /api/test reached");
-    res.status(200).json({ success: true, message: "Backend API is reachable!" });
+  console.log("Backend: GET /api/test reached");
+  res.status(200).json({ success: true, message: "Backend API is reachable!" });
 });
 
 
 // Catch-all for unhandled API routes (must be AFTER specific API routes)
 // This middleware will only be reached if no other /api/... route matched.
 app.use('/api', (req, res, next) => {
-  if (!res.headersSent) { 
+  if (!res.headersSent) {
     console.warn(`Backend: 404 - API route not found: ${req.method} ${req.originalUrl}`);
     res.status(404).json({ success: false, message: `The API endpoint ${req.method} ${req.path} was not found on this server.` });
   }

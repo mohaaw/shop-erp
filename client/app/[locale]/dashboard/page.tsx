@@ -12,36 +12,62 @@ import {
   TrendingUp,
   BarChart3,
 } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { dashboardApi } from '@/lib/api';
 
 export default function DashboardPage() {
   const t = useTranslations('Dashboard');
+  const [stats, setStats] = useState({
+    totalSales: 0,
+    orderCount: 0,
+    customerCount: 0,
+    productCount: 0
+  });
+  const [loading, setLoading] = useState(true);
 
-  const stats = [
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const response = await dashboardApi.getStats();
+        if (response.data.success) {
+          setStats(response.data.data as { totalSales: number; orderCount: number; customerCount: number; productCount: number; });
+        }
+      } catch (error) {
+        console.error('Failed to fetch dashboard stats:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchStats();
+  }, []);
+
+  const statCards = [
     {
       title: t('stats.totalSales'),
-      value: '$45,231.89',
-      change: '+20.1%',
+      value: `$${stats.totalSales.toFixed(2)}`,
+      change: '+0.0%', // TODO: Calculate change
       positive: true,
       icon: DollarSign,
     },
     {
       title: t('stats.orders'),
-      value: '1,234',
-      change: '+15%',
+      value: stats.orderCount.toString(),
+      change: '+0%',
       positive: true,
       icon: ShoppingCart,
     },
     {
       title: t('stats.customers'),
-      value: '892',
-      change: '+8.2%',
+      value: stats.customerCount.toString(),
+      change: '+0%',
       positive: true,
       icon: Users,
     },
     {
       title: t('stats.products'),
-      value: '2,456',
-      change: '+2.5%',
+      value: stats.productCount.toString(),
+      change: '+0%',
       positive: true,
       icon: Package,
     },
@@ -59,7 +85,7 @@ export default function DashboardPage() {
 
       {/* KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {stats.map((stat) => {
+        {statCards.map((stat) => {
           const Icon = stat.icon;
           return (
             <Card key={stat.title}>
@@ -70,7 +96,7 @@ export default function DashboardPage() {
                       {stat.title}
                     </p>
                     <p className="text-2xl font-bold text-secondary-900 dark:text-white mt-1">
-                      {stat.value}
+                      {loading ? '...' : stat.value}
                     </p>
                     <Badge
                       variant={stat.positive ? 'success' : 'error'}
@@ -140,15 +166,17 @@ export default function DashboardPage() {
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
-            {[1, 2, 3, 4, 5].map((order) => (
-              <div key={order} className="flex items-center justify-between p-3 border border-secondary-200 dark:border-secondary-700 rounded-lg">
+            {[].map((order: any) => (
+              <div key={order.id} className="flex items-center justify-between p-3 border border-secondary-200 dark:border-secondary-700 rounded-lg">
                 <div>
-                  <p className="font-medium text-secondary-900 dark:text-white">{t('recentOrders.orderPrefix')}{1001 + order}</p>
+                  <p className="font-medium text-secondary-900 dark:text-white">{t('recentOrders.orderPrefix')}{order.id}</p>
                   <p className="text-sm text-secondary-600 dark:text-secondary-400">{t('recentOrders.hoursAgo')}</p>
                 </div>
                 <Badge variant="success">{t('recentOrders.completed')}</Badge>
               </div>
             ))}
+            {/* Placeholder if no orders */}
+            <div className="text-center text-sm text-secondary-500">No recent orders</div>
           </div>
         </CardContent>
       </Card>

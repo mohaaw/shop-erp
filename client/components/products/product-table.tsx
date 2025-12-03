@@ -21,16 +21,7 @@ import {
 // import { Product } from '@prisma/client'; // Prisma generation failed, using local type
 import { useRouter } from '@/i18n/navigation';
 
-interface Product {
-    id: string;
-    name: string;
-    sku: string | null;
-    category: string | null;
-    price: number;
-    stock: number | null;
-    status: string;
-    image?: string;
-}
+import { Product } from '@/types/product';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -45,6 +36,8 @@ import {
     DialogHeader,
     DialogTitle,
 } from '@/components/ui/dialog';
+import { deleteProductAction } from '@/app/actions/product-actions';
+import { StockAdjustmentDialog } from './stock-adjustment-dialog';
 
 interface ProductTableProps {
     data: Product[];
@@ -68,27 +61,24 @@ export function ProductTable({ data }: ProductTableProps) {
         setDeleteDialogOpen(true);
     };
 
+
+
     const confirmDelete = async () => {
         if (productToDelete) {
             setIsDeleting(true);
             try {
-                // Assuming deleteProduct is a static method or we need to implement it
-                // ProductService.deleteProduct(productToDelete.id);
-                // But ProductService might not have deleteProduct yet?
-                // Let's check ProductService.
-                // For now, I'll assume it exists or I'll comment it out if it fails.
-                // Actually, I should check ProductService content.
-                // I'll assume it's static.
-                // await ProductService.deleteProduct(productToDelete.id);
-                // Wait, I can't call server action/db directly from client component!
-                // I need a server action for delete.
-                // I'll import deleteProductAction from actions.
-                // But for now to fix the type error:
-                console.log('Delete not implemented yet');
-                // await ProductService.deleteProduct(productToDelete.id); 
-                router.refresh();
-                setDeleteDialogOpen(false);
-                setProductToDelete(null);
+                const result = await deleteProductAction(productToDelete.id);
+                if (result.success) {
+                    setDeleteDialogOpen(false);
+                    setProductToDelete(null);
+                    // Router refresh is handled by revalidatePath in the action, 
+                    // but we might want to refresh client side state if needed.
+                    // Since we are using data prop passed from parent (Server Component),
+                    // router.refresh() is needed to re-fetch the data.
+                    router.refresh();
+                } else {
+                    console.error('Failed to delete product:', result.error);
+                }
             } catch (error) {
                 console.error('Failed to delete product:', error);
             } finally {
@@ -132,9 +122,12 @@ export function ProductTable({ data }: ProductTableProps) {
                             filteredData.map((product) => (
                                 <TableRow key={product.id}>
                                     <TableCell>
-                                        <div className="w-12 h-12 bg-secondary-100 rounded-md flex items-center justify-center text-secondary-400">
-                                            {/* Placeholder for image */}
-                                            IMG
+                                        <div className="w-12 h-12 bg-secondary-100 rounded-md flex items-center justify-center text-secondary-400 overflow-hidden">
+                                            {product.image ? (
+                                                <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
+                                            ) : (
+                                                <span className="text-xs">IMG</span>
+                                            )}
                                         </div>
                                     </TableCell>
                                     <TableCell className="font-medium">{product.name}</TableCell>
@@ -147,7 +140,8 @@ export function ProductTable({ data }: ProductTableProps) {
                                             {t(`status.${product.status}`)}
                                         </Badge>
                                     </TableCell>
-                                    <TableCell className="text-right">
+                                    <TableCell className="text-right flex items-center justify-end gap-2">
+                                        <StockAdjustmentDialog product={product} />
                                         <DropdownMenu>
                                             <DropdownMenuTrigger className="inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-8 w-8 p-0">
                                                 <MoreHorizontal className="h-4 w-4" />
@@ -207,3 +201,4 @@ export function ProductTable({ data }: ProductTableProps) {
         </div>
     );
 }
+

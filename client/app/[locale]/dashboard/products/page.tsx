@@ -1,68 +1,12 @@
-'use client';
-
-import { useTranslations } from 'next-intl';
+import { getTranslations } from 'next-intl/server';
 import { ProductTable } from '@/components/products/product-table';
 import { Plus } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
-import { Product } from '@/types/product';
+import { getProductsAction } from '@/app/actions/product-actions';
 
-// Mock data
-const products: Product[] = [
-  {
-    id: '1',
-    name: 'Wireless Headphones',
-    sku: 'WH-001',
-    price: 99.99,
-    stock: 50,
-    category: 'Electronics',
-    status: 'active',
-    type: 'storable',
-    uom: 'unit',
-    tracking: 'serial',
-    availableInPos: true,
-    hasVariants: false,
-    routes: [],
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: '2',
-    name: 'Ergonomic Chair',
-    sku: 'EC-100',
-    price: 249.00,
-    stock: 15,
-    category: 'Furniture',
-    status: 'active',
-    type: 'storable',
-    uom: 'unit',
-    tracking: 'none',
-    availableInPos: false,
-    hasVariants: true,
-    routes: [],
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-  {
-    id: '3',
-    name: 'Mechanical Keyboard',
-    sku: 'MK-88',
-    price: 120.50,
-    stock: 0,
-    category: 'Electronics',
-    status: 'draft',
-    type: 'storable',
-    uom: 'unit',
-    tracking: 'none',
-    availableInPos: true,
-    hasVariants: true,
-    routes: [],
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  },
-];
-
-export default function ProductsPage() {
-  const t = useTranslations('Products');
+export default async function ProductsPage() {
+  const t = await getTranslations('Products');
+  const { products } = await getProductsAction();
 
   return (
     <div className="space-y-6">
@@ -78,7 +22,7 @@ export default function ProductsPage() {
           {t('addProduct')}
         </Link>
       </div>
-      <ProductTable data={products} />
+      <ProductTable data={products as any || []} />
     </div>
   );
 }

@@ -26,6 +26,32 @@ export async function getProductsAction() {
     }
 }
 
+export async function deleteProductAction(id: string) {
+    try {
+        ProductService.deleteProduct(id);
+        revalidatePath('/dashboard/products');
+        return { success: true };
+    } catch (error) {
+        console.error('Failed to delete product:', error);
+        return { success: false, error: 'Failed to delete product' };
+    }
+}
+
+export async function bulkDeleteProductsAction(ids: string[]) {
+    try {
+        // We can optimize this to a single query later if ProductService supports it.
+        // For now, loop.
+        for (const id of ids) {
+            ProductService.deleteProduct(id);
+        }
+        revalidatePath('/dashboard/products');
+        return { success: true };
+    } catch (error) {
+        console.error('Failed to bulk delete products:', error);
+        return { success: false, error: 'Failed to bulk delete products' };
+    }
+}
+
 export async function getPosProductsAction() {
     try {
         const products = ProductService.getPosProducts();

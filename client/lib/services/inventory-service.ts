@@ -130,5 +130,72 @@ export const inventoryService = {
             GROUP BY p.id
         `).all();
         return products as (any & { stock: number })[];
+    },
+
+    getAllStockQuants: () => {
+        return db.prepare(`
+            SELECT sq.*, p.name as productName, l.name as locationName 
+            FROM StockQuant sq
+            JOIN Product p ON sq.productId = p.id
+            JOIN Location l ON sq.locationId = l.id
+        `).all();
+    },
+
+    updateStock: (productId: string, locationId: string, newQuantity: number) => {
+        // This is a "Physical Inventory" adjustment.
+        // We calculate the difference and create a movement to/from "Inventory Adjustment" location.
+        // For simplicity, we'll just assume a direct update for now, but ideally we should find/create a virtual location for adjustments.
+
+        // 1. Get current stock
+        const currentQty = inventoryService.getStockLevel(productId, locationId);
+        const diff = newQuantity - currentQty;
+
+        if (diff === 0) return;
+
+        // 2. Determine Source/Dest
+        // If diff > 0, we are adding stock. Source: Virtual/Adjustment, Dest: locationId
+        // If diff < 0, we are removing stock. Source: locationId, Dest: Virtual/Adjustment
+
+        // Let's find or create a Virtual Location for adjustments
+        let adjustmentLoc = db.prepare("SELECT id FROM Location WHERE type = 'virtual' AND name = 'Inventory Adjustment'").get() as { id: string } | undefined;
+
+        if (!adjustmentLoc) {
+            const id = randomUUID();
+            db.prepare("INSERT INTO Location (id, name, code, type) VALUES (?, ?, ?, ?)").run(id, 'Inventory Adjustment', 'VIRTUAL/ADJ', 'virtual');
+            adjustmentLoc = { id };
+        }
+
+        if (diff > 0) {
+            inventoryService.createStockMovement({
+                productId,
+                quantity: diff,
+                sourceLocationId: adjustmentLoc.id,
+                destLocationId: locationId,
+                reference: 'Inventory Adjustment'
+            });
+        } else {
+            inventoryService.createStockMovement({
+                productId,
+                quantity: Math.abs(diff),
+                sourceLocationId: locationId,
+                destLocationId: adjustmentLoc.id,
+                reference: 'Inventory Adjustment'
+            });
+        }
+    },
+
+    getLowStockProducts: () => {
+        // Get products where stock < minStock
+        // Note: We need to aggregate stock first.
+        // This query gets products, sums their internal stock, and filters by minStock.
+        return db.prepare(`
+            SELECT * FROM (
+                SELECT p.*, COALESCE(SUM(sq.quantity), 0) as stock
+                FROM Product p
+                LEFT JOIN StockQuant sq ON p.id = sq.productId
+                LEFT JOIN Location l ON sq.locationId = l.id AND l.type = 'internal'
+                GROUP BY p.id
+            ) WHERE minStock > 0 AND stock < minStock
+        `).all();
     }
 };

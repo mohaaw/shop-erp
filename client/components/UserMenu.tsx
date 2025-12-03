@@ -15,7 +15,7 @@ import {
   Palette,
 } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
-import { LanguageSwitcher } from '@/components/ui/LanguageSwitcher';
+import { LanguageSwitcher } from '@/components/ui/language-switcher';
 import {
   getThemeMode,
   setThemeMode,

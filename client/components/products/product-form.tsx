@@ -33,6 +33,8 @@ import {
 import { Loader2, Save, X, Package, Tag, DollarSign, Store } from 'lucide-react';
 import { AttributeManager } from './attribute-manager';
 import { VariantMatrix } from './variant-matrix';
+import { createProductAction } from '@/app/actions/product-actions';
+import { uploadImageAction } from '@/app/actions/upload-actions';
 
 interface ProductFormProps {
     initialData?: ProductFormValues;
@@ -88,12 +90,7 @@ export function ProductForm({ initialData }: ProductFormProps) {
     const onSubmit = async (data: ProductFormValues) => {
         setLoading(true);
         try {
-            console.log('Submitting Enterprise product data:', data);
-            // Import dynamically to avoid server-only errors in client component if not handled correctly
-            // But Next.js handles server actions imports fine.
-            // We need to import createProductAction at the top.
-            // For now, I'll assume I can import it.
-            const { createProductAction } = await import('@/app/actions/product-actions');
+
 
             const result = await createProductAction(data);
             if (result.success) {
@@ -162,18 +159,38 @@ export function ProductForm({ initialData }: ProductFormProps) {
                                     name="images"
                                     render={({ field }) => (
                                         <FormItem>
-                                            <FormLabel>Image URLs</FormLabel>
+                                            <FormLabel>Images</FormLabel>
                                             <FormControl>
-                                                <Textarea
-                                                    placeholder="https://example.com/image1.jpg, https://example.com/image2.jpg"
-                                                    className="resize-none"
-                                                    {...field}
-                                                    value={Array.isArray(field.value) ? field.value.join(', ') : field.value}
-                                                    onChange={(e) => field.onChange(e.target.value.split(',').map(s => s.trim()))}
-                                                />
+                                                <div className="space-y-2">
+                                                    <Input
+                                                        type="file"
+                                                        accept="image/*"
+                                                        onChange={async (e) => {
+                                                            const file = e.target.files?.[0];
+                                                            if (file) {
+                                                                const formData = new FormData();
+                                                                formData.append('file', file);
+                                                                const result = await uploadImageAction(formData);
+                                                                if (result.success && result.url) {
+                                                                    const currentImages = Array.isArray(field.value) ? field.value : (field.value ? [field.value] : []);
+                                                                    const newImages = [...currentImages, result.url];
+                                                                    field.onChange(newImages);
+                                                                } else {
+                                                                    console.error(result.error);
+                                                                }
+                                                            }
+                                                        }}
+                                                    />
+                                                    <Textarea
+                                                        placeholder="https://example.com/image1.jpg, https://example.com/image2.jpg"
+                                                        className="resize-none"
+                                                        value={Array.isArray(field.value) ? field.value.join(', ') : field.value}
+                                                        onChange={(e) => field.onChange(e.target.value.split(',').map(s => s.trim()))}
+                                                    />
+                                                </div>
                                             </FormControl>
                                             <FormDescription>
-                                                Comma separated list of image URLs.
+                                                Upload an image or enter URLs (comma separated).
                                             </FormDescription>
                                             <FormMessage />
                                         </FormItem>

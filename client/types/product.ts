@@ -84,9 +84,9 @@ export interface Product {
     };
 
     // Inventory & Logistics
-    stock: number;
-    category: string;
-    uom: string; // Unit of Measure ID
+    stock?: number;
+    category?: string;
+    uom?: string; // Unit of Measure ID
     purchaseUom?: string; // Purchase Unit of Measure ID
     weight?: number;
     volume?: number;
@@ -96,17 +96,17 @@ export interface Product {
         height: number;
         unit: 'cm' | 'in' | 'm';
     };
-    tracking: TrackingMethod;
-    routes: SupplyRoute[];
+    tracking?: TrackingMethod;
+    routes?: SupplyRoute[];
     leadTime?: number; // Days
 
     // Variants
-    hasVariants: boolean;
+    hasVariants?: boolean;
     attributes?: ProductAttribute[];
     variants?: ProductVariant[];
 
     // POS
-    availableInPos: boolean;
+    availableInPos?: boolean;
     posCategory?: string;
 
     createdAt: string;

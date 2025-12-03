@@ -3,8 +3,30 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ShoppingCart, Plus } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { ordersApi } from '@/lib/api';
 
 export default function SalesPage() {
+  const [orders, setOrders] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        const response = await ordersApi.getAll();
+        if (response.data.success) {
+          setOrders(response.data.data as any[]);
+        }
+      } catch (error) {
+        console.error('Failed to fetch orders:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchOrders();
+  }, []);
+
   return (
     <div className="space-y-8">
       <div className="flex items-center justify-between">
@@ -29,11 +51,30 @@ export default function SalesPage() {
           <CardDescription>All customer orders</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="h-64 flex items-center justify-center bg-secondary-50 dark:bg-secondary-800/50 rounded-lg">
-            <p className="text-secondary-500 dark:text-secondary-400">
-              Sales orders table coming soon...
-            </p>
-          </div>
+          {loading ? (
+            <div className="text-center py-8">Loading...</div>
+          ) : orders.length === 0 ? (
+            <div className="h-64 flex items-center justify-center bg-secondary-50 dark:bg-secondary-800/50 rounded-lg">
+              <p className="text-secondary-500 dark:text-secondary-400">
+                No orders found.
+              </p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {orders.map((order) => (
+                <div key={order.id} className="flex justify-between items-center p-4 border rounded-lg">
+                  <div>
+                    <p className="font-medium">Order #{order.id}</p>
+                    <p className="text-sm text-gray-500">{new Date(order.createdAt).toLocaleDateString()}</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="font-bold">${order.total?.toFixed(2) || '0.00'}</p>
+                    <p className="text-sm text-gray-500 capitalize">{order.status}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>

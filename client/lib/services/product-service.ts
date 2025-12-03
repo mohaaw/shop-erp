@@ -53,10 +53,29 @@ export class ProductService {
     }
 
     static getProducts() {
-        return db.prepare('SELECT * FROM Product ORDER BY name').all();
+        return db.prepare(`
+            SELECT 
+                p.*,
+                c.name as category,
+                COALESCE((SELECT SUM(quantity) FROM StockQuant WHERE productId = p.id), 0) as stock
+            FROM Product p 
+            LEFT JOIN Category c ON p.categoryId = c.id
+            ORDER BY p.name
+        `).all();
     }
 
     static getPosProducts() {
-        return db.prepare('SELECT * FROM Product WHERE availableInPos = 1 ORDER BY posCategory, name').all();
+        return db.prepare(`
+            SELECT 
+                p.*,
+                COALESCE((SELECT SUM(quantity) FROM StockQuant WHERE productId = p.id), 0) as stock
+            FROM Product p 
+            WHERE p.availableInPos = 1 
+            ORDER BY p.posCategory, p.name
+        `).all();
+    }
+
+    static deleteProduct(id: string) {
+        return db.prepare('DELETE FROM Product WHERE id = ?').run(id);
     }
 }
