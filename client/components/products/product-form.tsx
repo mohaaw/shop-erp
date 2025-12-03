@@ -798,52 +798,81 @@ export function ProductForm({ initialData }: ProductFormProps) {
                                     <CardHeader>
                                         <CardTitle className="flex items-center gap-2">
                                             <DollarSign className="h-5 w-5" />
-                                            Accounting
+                                            Accounting & Valuation
                                         </CardTitle>
                                     </CardHeader>
-                                    <CardContent className="grid grid-cols-2 gap-4">
-                                        <FormField
-                                            control={form.control}
-                                            name="incomeAccount"
-                                            render={({ field }) => (
-                                                <FormItem>
-                                                    <FormLabel>Income Account</FormLabel>
-                                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                    <CardContent className="space-y-4">
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <FormField
+                                                control={form.control}
+                                                name="valuationMethod"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel>Valuation Method</FormLabel>
+                                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                            <FormControl>
+                                                                <SelectTrigger>
+                                                                    <SelectValue placeholder="Select method" />
+                                                                </SelectTrigger>
+                                                            </FormControl>
+                                                            <SelectContent>
+                                                                <SelectItem value="FIFO">First In First Out (FIFO)</SelectItem>
+                                                                <SelectItem value="LIFO">Last In First Out (LIFO)</SelectItem>
+                                                                <SelectItem value="AVCO">Average Cost (AVCO)</SelectItem>
+                                                            </SelectContent>
+                                                        </Select>
+                                                        <FormDescription>
+                                                            How inventory value is calculated.
+                                                        </FormDescription>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+                                            <FormField
+                                                control={form.control}
+                                                name="standardPrice"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel>Standard Price</FormLabel>
                                                         <FormControl>
-                                                            <SelectTrigger>
-                                                                <SelectValue placeholder="Select Income Account" />
-                                                            </SelectTrigger>
+                                                            <Input type="number" step="0.01" {...field} />
                                                         </FormControl>
-                                                        <SelectContent>
-                                                            <SelectItem value="400000">400000 Product Sales</SelectItem>
-                                                            <SelectItem value="400100">400100 Service Revenue</SelectItem>
-                                                        </SelectContent>
-                                                    </Select>
-                                                    <FormMessage />
-                                                </FormItem>
-                                            )}
-                                        />
-                                        <FormField
-                                            control={form.control}
-                                            name="expenseAccount"
-                                            render={({ field }) => (
-                                                <FormItem>
-                                                    <FormLabel>Expense Account</FormLabel>
-                                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                        <FormDescription>
+                                                            Used for standard costing.
+                                                        </FormDescription>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+                                        </div>
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <FormField
+                                                control={form.control}
+                                                name="incomeAccount"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel>Income Account</FormLabel>
                                                         <FormControl>
-                                                            <SelectTrigger>
-                                                                <SelectValue placeholder="Select Expense Account" />
-                                                            </SelectTrigger>
+                                                            <Input placeholder="e.g. 4000 Sales" {...field} />
                                                         </FormControl>
-                                                        <SelectContent>
-                                                            <SelectItem value="600000">600000 Cost of Goods Sold</SelectItem>
-                                                            <SelectItem value="600100">600100 Service Costs</SelectItem>
-                                                        </SelectContent>
-                                                    </Select>
-                                                    <FormMessage />
-                                                </FormItem>
-                                            )}
-                                        />
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+                                            <FormField
+                                                control={form.control}
+                                                name="expenseAccount"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel>Expense Account</FormLabel>
+                                                        <FormControl>
+                                                            <Input placeholder="e.g. 5000 COGS" {...field} />
+                                                        </FormControl>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+                                        </div>
                                     </CardContent>
                                 </Card>
                             </TabsContent>
@@ -898,8 +927,8 @@ export function ProductForm({ initialData }: ProductFormProps) {
                             </CardContent>
                         </Card>
                     </div>
-                </div>
-            </form>
+                </div >
+            </form >
         </Form >
     );
 }

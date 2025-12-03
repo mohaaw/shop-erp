@@ -80,6 +80,11 @@ export default async function EditProductPage({ params }: EditProductPageProps) 
         model: product.model || '',
         specifications: product.specifications || '',
         warranty: product.warranty || '',
+        valuationMethod: product.valuationMethod || 'FIFO',
+        standardPrice: product.standardPrice || 0,
+        shelfLife: product.shelfLife,
+        weightUom: product.weightUom,
+        volumeUom: product.volumeUom,
         variants: (product.variants || []).map(v => ({
             id: v.id,
             name: Object.values(v.attributes).join(' / '), // Generate name from attributes

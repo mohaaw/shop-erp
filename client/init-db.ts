@@ -85,6 +85,12 @@ CREATE TABLE IF NOT EXISTS "Product" (
     "specifications" TEXT,
     "warranty" TEXT,
     "minStock" REAL DEFAULT 0,
+    "valuationMethod" TEXT DEFAULT 'FIFO',
+    "standardPrice" REAL DEFAULT 0,
+    "shelfLife" REAL,
+    "weightUom" TEXT,
+    "volumeUom" TEXT,
+    "dimensions" TEXT,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY ("categoryId") REFERENCES "Category" ("id") ON DELETE SET NULL ON UPDATE CASCADE
@@ -99,6 +105,16 @@ CREATE TABLE IF NOT EXISTS "Customer" (
     "updatedAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE IF NOT EXISTS "User" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "name" TEXT NOT NULL,
+    "email" TEXT NOT NULL UNIQUE,
+    "password" TEXT NOT NULL,
+    "role" TEXT NOT NULL DEFAULT 'user',
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
 CREATE TABLE IF NOT EXISTS "Order" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "customerId" TEXT,
@@ -108,6 +124,40 @@ CREATE TABLE IF NOT EXISTS "Order" (
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY ("customerId") REFERENCES "Customer" ("id") ON DELETE SET NULL
+    FOREIGN KEY ("productId") REFERENCES "Product" ("id") ON DELETE RESTRICT
+);
+
+CREATE TABLE IF NOT EXISTS "Account" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "name" TEXT NOT NULL,
+    "code" TEXT NOT NULL UNIQUE,
+    "type" TEXT NOT NULL,
+    "parentId" TEXT,
+    "balance" REAL NOT NULL DEFAULT 0,
+    "isGroup" BOOLEAN NOT NULL DEFAULT 0,
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY ("parentId") REFERENCES "Account" ("id") ON DELETE SET NULL
+);
+
+CREATE TABLE IF NOT EXISTS "JournalEntry" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "date" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "reference" TEXT,
+    "description" TEXT,
+    "status" TEXT NOT NULL DEFAULT 'draft',
+    "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS "JournalItem" (
+    "id" TEXT NOT NULL PRIMARY KEY,
+    "journalEntryId" TEXT NOT NULL,
+    "accountId" TEXT NOT NULL,
+    "debit" REAL NOT NULL DEFAULT 0,
+    "credit" REAL NOT NULL DEFAULT 0,
+    FOREIGN KEY ("journalEntryId") REFERENCES "JournalEntry" ("id") ON DELETE CASCADE,
+    FOREIGN KEY ("accountId") REFERENCES "Account" ("id") ON DELETE RESTRICT
 );
 
 CREATE TABLE IF NOT EXISTS "OrderItem" (

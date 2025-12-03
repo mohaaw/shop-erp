@@ -15,27 +15,26 @@ export const authOptions: NextAuthOptions = {
                 if (!credentials?.email || !credentials?.password) return null;
 
                 try {
-                    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`, {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({
-                            email: credentials.email,
-                            password: credentials.password,
-                        }),
-                    });
+                    const { userService } = await import('./services/user-service');
+                    const user = await userService.getUserByEmail(credentials.email);
 
-                    const data = await res.json();
-
-                    if (res.ok && data.user) {
-                        return {
-                            id: data.user.id,
-                            name: data.user.name,
-                            email: data.user.email,
-                            role: data.user.role,
-                            accessToken: data.token,
-                        };
+                    if (!user || !user.password) {
+                        return null;
                     }
-                    return null;
+
+                    const isValid = await userService.verifyPassword(credentials.password, user.password);
+
+                    if (!isValid) {
+                        return null;
+                    }
+
+                    return {
+                        id: user.id,
+                        name: user.name,
+                        email: user.email,
+                        role: user.role,
+                        accessToken: 'local-token', // We don't need a real token for local auth anymore, but keeping structure
+                    };
                 } catch (error: unknown) {
                     console.error("Auth error:", error);
                     return null;

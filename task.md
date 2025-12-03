@@ -49,55 +49,137 @@ This document serves as the central blueprint for the ERP-SHOP project, synthesi
     - [x] **Industry Suitability Audit**
         - [x] Tech/PC: Verified `attributes` for specs, `tracking` for serials.
         - [x] Clothing: Verified `variants` for size/color.
-- [ ] **Sales & Orders (POS Foundation)**
+- [x] **Sales & Orders (POS Foundation)**
     - [x] Order Creation Logic (Backend)
     - [x] "New Order" / POS Interface (Frontend)
     - [x] Order Status Workflow (Pending -> Paid -> Shipped)
     - [x] Order History & Details View
     - [x] Invoice Generation (PDF)
-- [ ] **Authentication Consolidation**
-    - [ ] Migrate Users from Mock Array to SQLite Database
-    - [ ] Implement Registration Flow
-    - [ ] Role-Based Access Control (RBAC) Middleware
+- [x] **Authentication Consolidation**
+    - [x] Migrate Users from Mock Array to SQLite Database
+    - [x] Implement Registration Flow
+    - [x] Update NextAuth to use local DB(RBAC) Middleware
 
-## 📋 Phase 3: Advanced UI & Experience
+## 🏢 Phase 3: Enterprise ERP Modules (ERPNext Parity)
+*Goal: Match and exceed ERPNext functionality with a modern tech stack.*
+
+### 3.1 Financial Management Module
+- [ ] **Accounting Core**
+    - [ ] Chart of Accounts (Tree View)
+    - [ ] Journal Entries & General Ledger
+    - [ ] Multi-Currency Support (Real-time rates)
+    - [ ] Fiscal Years & Period Closing
+- [ ] **Receivables & Payables**
+    - [ ] Sales Invoices & Payment Entries
+    - [ ] Purchase Invoices & Payment Requests
+    - [ ] Aging Reports (AR/AP)
+    - [ ] Dunning Management
+- [ ] **Banking & Tax**
+    - [ ] Bank Reconciliation Tool
+    - [ ] Tax Rules & Templates (Regional)
+    - [ ] Payment Gateway Integration (Stripe/PayPal)
+- [ ] **Financial Reporting**
+    - [ ] Balance Sheet, P&L, Cash Flow
+    - [ ] Cost Centers & Budgeting
+    - [ ] Asset Management (Depreciation Schedules)
+
+### 3.2 Supply Chain Management (SCM)
+- [ ] **Advanced Inventory**
+    - [ ] Multi-Warehouse Management (Zones/Bins)
+    - [ ] Serial No. & Batch Tracking
+    - [ ] Barcode/QR Code Scanning (Mobile Support)
+    - [ ] Stock Valuation (FIFO/Moving Average)
+- [ ] **Procurement**
+    - [ ] Supplier Portal
+    - [ ] Request for Quotation (RFQ)
+    - [ ] Purchase Orders & Receipts
+    - [ ] Quality Inspections on Receipt
+- [ ] **Logistics**
+    - [ ] Shipment Tracking
+    - [ ] Delivery Trips & Driver Management
+    - [ ] Landed Cost Vouchers
+
+### 3.3 Customer Relationship Management (CRM)
+- [ ] **Sales Pipeline**
+    - [ ] Lead Management & Scoring
+    - [ ] Opportunity Tracking (Kanban View)
+    - [ ] Customer 360 View (History, Notes, Issues)
+- [ ] **Communication**
+    - [ ] Email Integration (Inbox/Sent)
+    - [ ] Activity Logging (Calls, Meetings)
+    - [ ] Newsletter & Campaign Management
+- [ ] **Support**
+    - [ ] Help Desk / Ticketing System
+    - [ ] Knowledge Base
+    - [ ] Service Level Agreements (SLA)
+
+### 3.4 Human Capital Management (HCM)
+- [ ] **Employee Lifecycle**
+    - [ ] Employee Database & Profiles
+    - [ ] Onboarding/Offboarding Workflows
+    - [ ] Department & Designation Tree
+- [ ] **Operations**
+    - [ ] Attendance Tracking (Check-in/out)
+    - [ ] Leave Management (Applications/Approvals)
+    - [ ] Shift Management
+- [ ] **Payroll**
+    - [ ] Salary Structures & Components
+    - [ ] Payroll Processing & Slips
+    - [ ] Expense Claims
+
+### 3.5 Manufacturing Execution System (MES)
+- [ ] **Production Planning**
+    - [ ] Bill of Materials (BOM) - Multi-level
+    - [ ] Work Stations & Operations
+    - [ ] Production Orders
+- [ ] **Execution**
+    - [ ] Job Cards & Time Logs
+    - [ ] Material Requests for Production
+    - [ ] Scrap & Waste Management
+    - [ ] Capacity Planning
+
+### 3.6 Project Portfolio Management (PPM)
+- [ ] **Project Management**
+    - [ ] Projects & Tasks (Gantt/Kanban)
+    - [ ] Time Tracking & Timesheets
+    - [ ] Project Costing & Profitability
+- [ ] **Collaboration**
+    - [ ] Team Chat / Discussions
+    - [ ] File Sharing & Document Management
+
+### 3.7 Digital Commerce & Web Presence
+- [ ] **Online Store**
+    - [ ] Product Catalog & Search
+    - [ ] Shopping Cart & Checkout
+    - [ ] Customer Portal (Orders, Invoices, Issues)
+- [ ] **Content Management**
+    - [ ] Blog & Pages
+    - [ ] Web Forms
+
+## 🎨 Phase 4: Advanced UI & Experience
 - [ ] **Advanced Components**
-    - [ ] **DataTable**: Sorting, Pagination, Filtering, Row Selection
+    - [ ] **DataTable**: Sorting, Pagination, Filtering, Row Selection, Export
     - [ ] **Forms**: Select with Search, DatePicker, FileUpload, RichText Editor
-    - [ ] **Overlays**: Dialog/Modal System, Slide-over Panels
+    - [ ] **Overlays**: Dialog/Modal System, Slide-over Panels, Command Palette (Ctrl+K)
 - [ ] **Dashboard Enhancements**
-    - [ ] Interactive Charts (Recharts) for Sales/Revenue
-    - [ ] Draggable Widgets
-    - [ ] Date Range Pickers for Stats
+    - [ ] Interactive Charts (Recharts) for Sales/Revenue/Inventory
+    - [ ] Draggable/Resizable Widgets
+    - [ ] Global Date Range Pickers
 - [ ] **UX Polish**
     - [ ] Skeleton Loading States
     - [ ] Toast Notifications (Success/Error feedback)
-    - [ ] Keyboard Shortcuts
+    - [ ] Keyboard Shortcuts (Global)
     - [ ] Breadcrumb Navigation
-
-## 💼 Phase 4: Business Logic Expansion
-- [ ] **Customer Relationship Management (CRM)**
-    - [ ] Customer Profiles with Order History
-    - [ ] Customer Notes & Interaction Logs
-    - [ ] Loyalty Points System
-- [ ] **Financial Module**
-    - [ ] Expense Tracking
-    - [ ] Profit/Loss Calculation
-    - [ ] Tax Management & Calculation
-- [ ] **Supplier Management**
-    - [ ] Supplier Directory
-    - [ ] Purchase Orders (Restocking)
-    - [ ] Supplier Performance Metrics
 
 ## 🚀 Phase 5: Production Readiness & Scale
 - [ ] **Security Hardening**
-    - [ ] Rate Limiting
+    - [ ] Rate Limiting (Redis)
     - [ ] Input Validation (Zod everywhere)
     - [ ] Security Headers (Helmet)
-    - [ ] Audit Logging
+    - [ ] Audit Logging (Middleware)
 - [ ] **Performance Optimization**
     - [ ] Image Optimization (next/image)
-    - [ ] Database Indexing
+    - [ ] Database Indexing & Query Optimization
     - [ ] Caching Strategy (Redis/In-memory)
 - [ ] **Testing**
     - [ ] Unit Tests (Jest/Vitest)
@@ -106,12 +188,12 @@ This document serves as the central blueprint for the ERP-SHOP project, synthesi
     - [ ] Docker Containerization
     - [ ] CI/CD Pipeline (GitHub Actions)
 
-## 🔮 Phase 6: God-Tier Vision (Long Term)
+## 🔮 Phase 6: Future Innovation
 *Derived from `future.md`*
 - [ ] **AI Integration**
     - [ ] Demand Forecasting (ML)
     - [ ] Smart Inventory Recommendations
-    - [ ] Natural Language Search
+    - [ ] Natural Language Search / Chat with Data
 - [ ] **Omnichannel**
     - [ ] E-commerce Integration (Shopify/WooCommerce Sync)
     - [ ] Mobile App (React Native)
@@ -121,5 +203,5 @@ This document serves as the central blueprint for the ERP-SHOP project, synthesi
     - [ ] Voice Commands for POS
 
 ---
-**Current Status**: Transitioning from Phase 1 to Phase 2.
-**Immediate Next Step**: Implement Inventory Management (`StockQuant` updates).
+**Current Status**: Completed Phase 2. Starting Phase 3 (ERPNext Parity).
+**Immediate Next Step**: Begin Phase 3.1 - Financial Management (Accounting Core).

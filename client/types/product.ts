@@ -124,6 +124,11 @@ export interface Product {
     // Extra
     uomRatio?: number;
     images?: string[];
+    valuationMethod?: 'FIFO' | 'LIFO' | 'AVCO';
+    standardPrice?: number;
+    shelfLife?: number;
+    weightUom?: string;
+    volumeUom?: string;
 
     createdAt: string;
     updatedAt: string;

@@ -71,6 +71,11 @@ export const productSchema = z.object({
 
     // Inventory & Media
     minStock: z.coerce.number().min(0).default(0),
+    valuationMethod: z.enum(['FIFO', 'LIFO', 'AVCO']).default('FIFO'),
+    standardPrice: z.coerce.number().min(0).default(0),
+    shelfLife: z.coerce.number().optional(),
+    weightUom: z.string().optional(),
+    volumeUom: z.string().optional(),
     images: z.array(z.string()).optional(),
 
     // Variants
