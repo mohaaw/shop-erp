@@ -141,7 +141,7 @@ export function getPrimaryColor(): ThemeName {
  */
 export function getNeutralColor(): keyof typeof NEUTRAL_PALETTES {
   if (typeof window === 'undefined') return 'slate';
-  return (localStorage.getItem('theme-neutral') as any) || 'slate';
+  return (localStorage.getItem('theme-neutral') as NeutralColor) || 'slate';
 }
 
 /**
@@ -203,8 +203,15 @@ export function applyPresetTheme(themeName: string): void {
   if (typeof window === 'undefined') return;
 
   const preset = PRESET_THEMES.find(t => t.name === themeName);
-  if (!preset) {
-    console.warn('Preset theme not found:', themeName);
+  try {
+    if (!preset) {
+      console.warn('Preset theme not found:', themeName);
+      return;
+    }
+  } catch (e: unknown) {
+    console.error('Theme parsing error:', e);
+    // Assuming 'defaultTheme' would be a fallback, but it's not defined.
+    // For syntactic correctness, we'll return without applying theme.
     return;
   }
 

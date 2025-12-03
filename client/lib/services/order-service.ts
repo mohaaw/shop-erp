@@ -71,11 +71,17 @@ export const orderService = {
     },
 
     getOrderById: (id: string) => {
-        const order = db.prepare('SELECT * FROM "Order" WHERE id = ?').get(id);
+        const order = db.prepare(`
+            SELECT o.*, c.name as customerName, c.email as customerEmail
+            FROM "Order" o
+            LEFT JOIN Customer c ON o.customerId = c.id
+            WHERE o.id = ?
+        `).get(id);
+
         if (order) {
             // @ts-expect-error: Adding items property to order object which is not in the type definition yet
             order.items = db.prepare(`
-                SELECT oi.*, p.name as productName 
+                SELECT oi.*, p.name as productName, p.sku as productSku
                 FROM OrderItem oi
                 JOIN Product p ON oi.productId = p.id
                 WHERE oi.orderId = ?

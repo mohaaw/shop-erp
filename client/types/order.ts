@@ -16,3 +16,9 @@ export interface Order {
     createdAt: string;
     items?: OrderItem[];
 }
+
+export interface OrderWithDetails extends Order {
+    customerName?: string;
+    customerEmail?: string;
+    items: (OrderItem & { productSku?: string })[];
+}

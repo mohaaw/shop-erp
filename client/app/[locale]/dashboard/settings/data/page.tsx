@@ -3,7 +3,7 @@
 import { useTranslations } from 'next-intl';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Database, Download, Upload, Trash2 } from 'lucide-react';
+import { Download, Upload, Trash2 } from 'lucide-react';
 
 export default function DataSettingsPage() {
     const t = useTranslations('Settings.data');

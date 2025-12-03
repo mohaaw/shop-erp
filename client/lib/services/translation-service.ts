@@ -41,11 +41,12 @@ export const translationService = {
         }
     },
 
-    getTranslations: async (locale: string): Promise<Record<string, any>> => {
+    getTranslations: async (locale: string): Promise<Record<string, unknown>> => {
         try {
             const stmt = db.prepare('SELECT key, value FROM Translation WHERE locale = ?');
             const translations = stmt.all(locale) as { key: string; value: string }[];
 
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const result: Record<string, any> = {};
 
             translations.forEach((t) => {
@@ -63,15 +64,16 @@ export const translationService = {
             });
 
             return result;
-        } catch (error) {
+        } catch (error: unknown) {
             console.error('Failed to fetch translations:', error);
             return {};
         }
     },
 
-    seed: async (locale: string, messages: Record<string, any>) => {
+    seed: async (locale: string, messages: Record<string, unknown>) => {
         try {
-            const flatten = (obj: Record<string, any>, prefix = ''): Record<string, string> => {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const flatten = (obj: any, prefix = ''): Record<string, string> => {
                 return Object.keys(obj).reduce((acc: Record<string, string>, k) => {
                     const pre = prefix.length ? prefix + '.' : '';
                     if (typeof obj[k] === 'object' && obj[k] !== null) {
@@ -100,7 +102,7 @@ export const translationService = {
             insertMany(flatMessages);
             console.log(`Seeded translations for ${locale}`);
             return { success: true };
-        } catch (error) {
+        } catch (error: unknown) {
             console.error('Failed to seed translations:', error);
             return { success: false, error };
         }

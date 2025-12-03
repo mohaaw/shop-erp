@@ -7,7 +7,6 @@ import { Separator } from '@/components/ui/separator';
 
 export default function SecuritySettingsPage() {
     const t = useTranslations('Settings.security');
-    const tGeneral = useTranslations('Settings.general');
 
     return (
         <div className="space-y-6">

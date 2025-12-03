@@ -36,16 +36,25 @@ This document serves as the central blueprint for the ERP-SHOP project, synthesi
     - [x] Stock adjustment functionality (In/Out)
     - [x] Real-time stock calculation triggers
     - [x] Low stock alerts logic
-- [ ] **Product Management Enhancements**
+- [x] **Product Management Enhancements**
     - [x] Product Delete Functionality
     - [x] Bulk Product Operations (Delete, Update)
     - [x] Advanced Product Filtering & Search
     - [x] Image Upload Handling (Multer/UploadThing)
+    - [x] **Code Audit & Quality Check**
+    - [x] Review previous steps for errors <!-- id: 9 -->
+    - [x] Fix type safety issues (Order/Product types) <!-- id: 10 -->
+    - [x] Fix lint errors (unused vars, any types) <!-- id: 11 -->
+    - [x] Verify build success <!-- id: 12 -->
+    - [x] **Industry Suitability Audit**
+        - [x] Tech/PC: Verified `attributes` for specs, `tracking` for serials.
+        - [x] Clothing: Verified `variants` for size/color.
 - [ ] **Sales & Orders (POS Foundation)**
     - [x] Order Creation Logic (Backend)
     - [x] "New Order" / POS Interface (Frontend)
     - [x] Order Status Workflow (Pending -> Paid -> Shipped)
-    - [ ] Invoice Generation (PDF)
+    - [x] Order History & Details View
+    - [x] Invoice Generation (PDF)
 - [ ] **Authentication Consolidation**
     - [ ] Migrate Users from Mock Array to SQLite Database
     - [ ] Implement Registration Flow

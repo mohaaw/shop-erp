@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useTranslations, useLocale } from 'next-intl';
+import { useTranslations } from 'next-intl';
 import { useRouter } from '@/i18n/navigation';
 import { signIn } from 'next-auth/react';
 import { Button } from '@/components/ui/button';
@@ -11,7 +11,6 @@ import { Alert } from '@/components/ui/alert';
 
 export default function LoginPage() {
   const t = useTranslations('Auth');
-  const locale = useLocale();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -37,7 +36,8 @@ export default function LoginPage() {
         router.push('/dashboard');
       }
     } catch (error) {
-      setError(t('unexpectedError'));
+      console.error(error);
+      alert(t('loginFailed'));
     } finally {
       setLoading(false);
     }

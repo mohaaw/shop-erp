@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useTheme } from '@/lib/theme';
-import { THEME_PALETTES, NEUTRAL_PALETTES } from '@/lib/themeSystem';
+import { THEME_PALETTES, NEUTRAL_PALETTES, ThemeMode } from '@/lib/themeSystem';
 import { ThemeName, NeutralColor } from '@/types';
 import { cn } from '@/lib/utils';
 import {
@@ -71,7 +71,7 @@ export function AppearanceSettings({ className }: AppearanceSettingsProps) {
                                 ].map(({ mode, icon: Icon, label }) => (
                                     <button
                                         key={mode}
-                                        onClick={() => setTheme(mode as any)}
+                                        onClick={() => setTheme(mode as ThemeMode)}
                                         className={cn(
                                             "flex flex-col items-center justify-center gap-1 p-2 rounded-md border text-xs font-medium transition-all",
                                             theme === mode

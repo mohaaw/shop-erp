@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useLocale } from 'next-intl';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import {
     Table,
@@ -168,7 +168,7 @@ export function TranslationEditor() {
                                     {filteredTerms.length === 0 && (
                                         <TableRow>
                                             <TableCell colSpan={3} className="text-center py-8 text-muted-foreground">
-                                                No terms found matching "{searchQuery}"
+                                                No terms found matching &quot;{searchQuery}&quot;
                                             </TableCell>
                                         </TableRow>
                                     )}

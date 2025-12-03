@@ -26,6 +26,16 @@ export async function getOrdersAction() {
     }
 }
 
+export async function getOrderAction(id: string) {
+    try {
+        const order = orderService.getOrderById(id);
+        return { success: true, order };
+    } catch (error) {
+        console.error('Failed to get order:', error);
+        return { success: false, error: 'Failed to get order' };
+    }
+}
+
 export async function updateOrderStatusAction(id: string, status: string) {
     try {
         orderService.updateOrderStatus(id, status);
