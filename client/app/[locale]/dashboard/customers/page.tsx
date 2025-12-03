@@ -5,9 +5,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Users, Plus } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { customersApi } from '@/lib/api';
+import { Customer } from '@/types/customer';
 
 export default function CustomersPage() {
-  const [customers, setCustomers] = useState<any[]>([]);
+  const [customers, setCustomers] = useState<Customer[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -15,7 +16,7 @@ export default function CustomersPage() {
       try {
         const response = await customersApi.getAll();
         if (response.data.success) {
-          setCustomers(response.data.data as any[]);
+          setCustomers(response.data.data as Customer[]);
         }
       } catch (error) {
         console.error('Failed to fetch customers:', error);

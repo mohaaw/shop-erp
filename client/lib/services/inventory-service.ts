@@ -1,5 +1,6 @@
 import { db } from '@/lib/db';
 import { randomUUID } from 'crypto';
+import { Product } from '@/types/product';
 
 export interface Warehouse {
     id: string;
@@ -129,7 +130,7 @@ export const inventoryService = {
             LEFT JOIN Location l ON sq.locationId = l.id AND l.type = 'internal'
             GROUP BY p.id
         `).all();
-        return products as (any & { stock: number })[];
+        return products as (Product & { stock: number })[];
     },
 
     getAllStockQuants: () => {

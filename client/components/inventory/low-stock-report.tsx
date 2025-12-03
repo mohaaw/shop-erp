@@ -5,7 +5,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Badge } from '@/components/ui/badge';
 import { AlertTriangle } from 'lucide-react';
 
-interface LowStockItem {
+export interface LowStockItem {
     id: string;
     name: string;
     sku: string;

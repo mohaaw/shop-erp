@@ -1,5 +1,6 @@
 import { db } from '@/lib/db';
 import { ProductFormValues } from '@/lib/validations/product';
+import { Product } from '@/types/product';
 import { randomUUID } from 'crypto';
 
 export class ProductService {
@@ -7,16 +8,16 @@ export class ProductService {
         const id = randomUUID();
         const stmt = db.prepare(`
             INSERT INTO Product (
-                id, name, description, price, cost, sku, barcode, 
-                type, availableInPos, posCategory, toppings, isCombo, comboItems,
-                weight, volume, hsCode, countryOfOrigin,
-                minStock, images,
+                id, name, description, price, cost, sku, barcode, categoryId,
+                type, image, availableInPos, posCategory, toppings, isCombo, comboItems,
+                weight, volume, dimensions, hsCode, countryOfOrigin, tracking,
+                brand, model, specifications, warranty, minStock,
                 updatedAt
             ) VALUES (
-                @id, @name, @description, @price, @cost, @sku, @barcode,
-                @type, @availableInPos, @posCategory, @toppings, @isCombo, @comboItems,
-                @weight, @volume, @hsCode, @countryOfOrigin,
-                @minStock, @images,
+                @id, @name, @description, @price, @cost, @sku, @barcode, @categoryId,
+                @type, @image, @availableInPos, @posCategory, @toppings, @isCombo, @comboItems,
+                @weight, @volume, @dimensions, @hsCode, @countryOfOrigin, @tracking,
+                @brand, @model, @specifications, @warranty, @minStock,
                 CURRENT_TIMESTAMP
             )
         `);
@@ -30,7 +31,9 @@ export class ProductService {
                 cost: data.cost || 0,
                 sku: data.sku || null,
                 barcode: data.barcode || null,
+                categoryId: data.category || null,
                 type: data.type,
+                image: data.images && data.images.length > 0 ? data.images[0] : null, // New field, derived from images
                 availableInPos: data.availableInPos ? 1 : 0,
                 posCategory: data.posCategory || null,
                 toppings: data.toppings || null,
@@ -48,9 +51,7 @@ export class ProductService {
         run();
         return this.getProduct(id);
     }
-    static getProduct(id: string) {
-        return db.prepare('SELECT * FROM Product WHERE id = ?').get(id);
-    }
+
 
     static getProducts() {
         return db.prepare(`
@@ -73,6 +74,21 @@ export class ProductService {
             WHERE p.availableInPos = 1 
             ORDER BY p.posCategory, p.name
         `).all();
+    }
+
+    static getProduct(id: string): Product | null {
+        const stmt = db.prepare('SELECT * FROM Product WHERE id = ?');
+        const product = stmt.get(id) as Omit<Product, 'availableInPos' | 'isCombo' | 'dimensions'> & { availableInPos: number; isCombo: number; dimensions: string };
+
+        if (!product) return null;
+
+        return {
+            ...product,
+            availableInPos: Boolean(product.availableInPos),
+            isCombo: Boolean(product.isCombo),
+            images: product.image ? [product.image] : [],
+            dimensions: product.dimensions ? JSON.parse(product.dimensions) : undefined,
+        };
     }
 
     static deleteProduct(id: string) {

@@ -100,6 +100,15 @@ export interface Product {
     routes?: SupplyRoute[];
     leadTime?: number; // Days
 
+    // New Fields
+    brand?: string;
+    model?: string;
+    specifications?: string; // JSON string
+    warranty?: string;
+    minStock?: number;
+    hsCode?: string;
+    countryOfOrigin?: string;
+
     // Variants
     hasVariants?: boolean;
     attributes?: ProductAttribute[];
@@ -108,6 +117,13 @@ export interface Product {
     // POS
     availableInPos?: boolean;
     posCategory?: string;
+    toppings?: string;
+    isCombo?: boolean;
+    comboItems?: string;
+
+    // Extra
+    uomRatio?: number;
+    images?: string[];
 
     createdAt: string;
     updatedAt: string;

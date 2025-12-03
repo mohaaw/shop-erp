@@ -166,7 +166,7 @@ export default function DashboardPage() {
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
-            {[].map((order: any) => (
+            {/* {[].map((order: any) => (
               <div key={order.id} className="flex items-center justify-between p-3 border border-secondary-200 dark:border-secondary-700 rounded-lg">
                 <div>
                   <p className="font-medium text-secondary-900 dark:text-white">{t('recentOrders.orderPrefix')}{order.id}</p>
@@ -174,7 +174,7 @@ export default function DashboardPage() {
                 </div>
                 <Badge variant="success">{t('recentOrders.completed')}</Badge>
               </div>
-            ))}
+            ))} */}
             {/* Placeholder if no orders */}
             <div className="text-center text-sm text-secondary-500">No recent orders</div>
           </div>

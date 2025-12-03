@@ -25,3 +25,25 @@ export async function getOrdersAction() {
         return { success: false, error: 'Failed to fetch orders' };
     }
 }
+
+export async function updateOrderStatusAction(id: string, status: string) {
+    try {
+        orderService.updateOrderStatus(id, status);
+        revalidatePath('/dashboard/sales');
+        return { success: true };
+    } catch (error) {
+        console.error('Failed to update order status:', error);
+        return { success: false, error: 'Failed to update order status' };
+    }
+}
+
+export async function updatePaymentStatusAction(id: string, status: string) {
+    try {
+        orderService.updatePaymentStatus(id, status);
+        revalidatePath('/dashboard/sales');
+        return { success: true };
+    } catch (error) {
+        console.error('Failed to update payment status:', error);
+        return { success: false, error: 'Failed to update payment status' };
+    }
+}

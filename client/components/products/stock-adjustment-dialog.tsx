@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useTranslations } from 'next-intl';
+
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -30,11 +30,18 @@ interface StockAdjustmentDialogProps {
     trigger?: React.ReactNode;
 }
 
+interface Location {
+    id: string;
+    name: string;
+    code: string;
+    type: string;
+}
+
 export function StockAdjustmentDialog({ product, trigger }: StockAdjustmentDialogProps) {
-    const t = useTranslations('Products'); // Assuming we have translations, or fallback
+    // const t = useTranslations('Products');
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [locations, setLocations] = useState<any[]>([]);
+    const [locations, setLocations] = useState<Location[]>([]);
     const [selectedLocation, setSelectedLocation] = useState('');
     const [quantity, setQuantity] = useState(product.stock?.toString() || '0');
 
@@ -48,9 +55,10 @@ export function StockAdjustmentDialog({ product, trigger }: StockAdjustmentDialo
     const loadLocations = async () => {
         const result = await getLocationsAction();
         if (result.success && result.data) {
-            setLocations(result.data.filter((l: any) => l.type === 'internal'));
+            const locs = result.data as Location[];
+            setLocations(locs.filter((l) => l.type === 'internal'));
             // Default to WH01/STOCK if available
-            const defaultLoc = result.data.find((l: any) => l.code.endsWith('/STOCK'));
+            const defaultLoc = locs.find((l) => l.code.endsWith('/STOCK'));
             if (defaultLoc) setSelectedLocation(defaultLoc.id);
             else if (result.data.length > 0) setSelectedLocation(result.data[0].id);
         }

@@ -3,6 +3,7 @@ import { ProductTable } from '@/components/products/product-table';
 import { Plus } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
 import { getProductsAction } from '@/app/actions/product-actions';
+import { Product } from '@/types/product';
 
 export default async function ProductsPage() {
   const t = await getTranslations('Products');
@@ -22,7 +23,7 @@ export default async function ProductsPage() {
           {t('addProduct')}
         </Link>
       </div>
-      <ProductTable data={products as any || []} />
+      <ProductTable data={(products as Product[]) || []} />
     </div>
   );
 }

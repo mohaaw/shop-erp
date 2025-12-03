@@ -47,6 +47,10 @@ export const productSchema = z.object({
     }).optional(),
     hsCode: z.string().optional(),
     countryOfOrigin: z.string().optional(),
+    brand: z.string().optional(),
+    model: z.string().optional(),
+    specifications: z.string().optional(), // JSON string or simple text
+    warranty: z.string().optional(),
     tracking: z.enum(['none', 'lot', 'serial']).default('none'),
     availableInPos: z.boolean().default(true),
     posCategory: z.string().optional(),

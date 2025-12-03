@@ -22,6 +22,10 @@ This document serves as the central blueprint for the ERP-SHOP project, synthesi
     - [x] AI Agent Guide
 - [x] **Initial Data Connection**
     - [x] Connect Dashboard to Real Data (SQLite)
+    - [x] Enhance Product Schema and Form
+    - [x] Add Brand, Model, Specs, Warranty fields
+    - [x] Update Product Form UI
+    - [x] Update Product Service and Actions
     - [x] Connect Products to Real Data
     - [x] Connect Customers/Sales to Real Data
     - [x] Implement Basic Server Actions
@@ -34,13 +38,13 @@ This document serves as the central blueprint for the ERP-SHOP project, synthesi
     - [x] Low stock alerts logic
 - [ ] **Product Management Enhancements**
     - [x] Product Delete Functionality
-    - [ ] Bulk Product Operations (Delete, Update)
-    - [ ] Advanced Product Filtering & Search
+    - [x] Bulk Product Operations (Delete, Update)
+    - [x] Advanced Product Filtering & Search
     - [x] Image Upload Handling (Multer/UploadThing)
 - [ ] **Sales & Orders (POS Foundation)**
-    - [ ] Order Creation Logic (Backend)
-    - [ ] "New Order" / POS Interface (Frontend)
-    - [ ] Order Status Workflow (Pending -> Paid -> Shipped)
+    - [x] Order Creation Logic (Backend)
+    - [x] "New Order" / POS Interface (Frontend)
+    - [x] Order Status Workflow (Pending -> Paid -> Shipped)
     - [ ] Invoice Generation (PDF)
 - [ ] **Authentication Consolidation**
     - [ ] Migrate Users from Mock Array to SQLite Database

@@ -26,6 +26,16 @@ export async function getProductsAction() {
     }
 }
 
+export async function getProductAction(id: string) {
+    try {
+        const product = ProductService.getProduct(id);
+        return { success: true, product };
+    } catch (error) {
+        console.error('Failed to get product:', error);
+        return { success: false, error: 'Failed to get product' };
+    }
+}
+
 export async function deleteProductAction(id: string) {
     try {
         ProductService.deleteProduct(id);

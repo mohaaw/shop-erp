@@ -73,7 +73,7 @@ export const orderService = {
     getOrderById: (id: string) => {
         const order = db.prepare('SELECT * FROM "Order" WHERE id = ?').get(id);
         if (order) {
-            // @ts-ignore
+            // @ts-expect-error: Adding items property to order object which is not in the type definition yet
             order.items = db.prepare(`
                 SELECT oi.*, p.name as productName 
                 FROM OrderItem oi
@@ -82,5 +82,13 @@ export const orderService = {
             `).all(id);
         }
         return order;
+    },
+
+    updateOrderStatus: (id: string, status: string) => {
+        return db.prepare('UPDATE "Order" SET status = ? WHERE id = ?').run(status, id);
+    },
+
+    updatePaymentStatus: (id: string, status: string) => {
+        return db.prepare('UPDATE "Order" SET paymentStatus = ? WHERE id = ?').run(status, id);
     }
 };

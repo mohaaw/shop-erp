@@ -1,13 +1,14 @@
 import { getLowStockProductsAction } from '@/app/actions/inventory-actions';
-import { LowStockReport } from '@/components/inventory/low-stock-report';
+import { LowStockReport, LowStockItem } from '@/components/inventory/low-stock-report';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { AlertTriangle, Package, ArrowRightLeft, DollarSign } from 'lucide-react';
+import { AlertTriangle } from 'lucide-react';
 import { getTranslations } from 'next-intl/server';
 
 export default async function InventoryPage() {
   const t = await getTranslations('Inventory');
-  const lowStockProducts = await getLowStockProductsAction();
+  const result = await getLowStockProductsAction();
+  const lowStockProducts = (result.success && result.data ? result.data : []) as LowStockItem[];
 
   return (
     <div className="space-y-6">

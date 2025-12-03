@@ -7,7 +7,7 @@ import { useTranslations } from 'next-intl';
 import { useRouter } from '@/i18n/navigation';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
     Select,
@@ -19,7 +19,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Textarea } from '@/components/ui/textarea';
 import { Switch } from '@/components/ui/switch';
-import { Checkbox } from '@/components/ui/checkbox';
+
 import { ProductFormValues, productSchema } from '@/lib/validations/product';
 import {
     Form,
@@ -246,13 +246,90 @@ export function ProductForm({ initialData }: ProductFormProps) {
                         </Card>
 
                         <Tabs defaultValue="general" className="w-full">
-                            <TabsList className="grid w-full grid-cols-5">
+                            <TabsList className="grid w-full grid-cols-6">
                                 <TabsTrigger value="general">General</TabsTrigger>
+                                <TabsTrigger value="details">Details</TabsTrigger>
                                 <TabsTrigger value="variants">Variants</TabsTrigger>
                                 <TabsTrigger value="sales">Sales</TabsTrigger>
                                 <TabsTrigger value="inventory">Inventory</TabsTrigger>
                                 <TabsTrigger value="accounting">Accounting</TabsTrigger>
                             </TabsList>
+
+                            <TabsContent value="details" className="space-y-4">
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle className="flex items-center gap-2">
+                                            <Tag className="h-5 w-5" />
+                                            Product Details
+                                        </CardTitle>
+                                    </CardHeader>
+                                    <CardContent className="space-y-4">
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <FormField
+                                                control={form.control}
+                                                name="brand"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel>Brand</FormLabel>
+                                                        <FormControl>
+                                                            <Input placeholder="e.g. Dell, HP, Apple" {...field} />
+                                                        </FormControl>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+                                            <FormField
+                                                control={form.control}
+                                                name="model"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel>Model</FormLabel>
+                                                        <FormControl>
+                                                            <Input placeholder="e.g. XPS 15, MacBook Pro" {...field} />
+                                                        </FormControl>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
+                                        </div>
+
+                                        <FormField
+                                            control={form.control}
+                                            name="warranty"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>Warranty Info</FormLabel>
+                                                    <FormControl>
+                                                        <Input placeholder="e.g. 2 Years Manufacturer" {...field} />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+
+                                        <FormField
+                                            control={form.control}
+                                            name="specifications"
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormLabel>Specifications (JSON or Text)</FormLabel>
+                                                    <FormControl>
+                                                        <Textarea
+                                                            placeholder='{"CPU": "i9", "RAM": "32GB"} or just text description'
+                                                            className="min-h-[150px] font-mono"
+                                                            {...field}
+                                                        />
+                                                    </FormControl>
+                                                    <FormDescription>
+                                                        Enter technical specifications. You can use JSON format for structured data.
+                                                    </FormDescription>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}
+                                        />
+                                    </CardContent>
+                                </Card>
+                            </TabsContent>
 
                             <TabsContent value="general" className="space-y-4">
                                 <Card>
@@ -823,6 +900,6 @@ export function ProductForm({ initialData }: ProductFormProps) {
                     </div>
                 </div>
             </form>
-        </Form>
+        </Form >
     );
 }

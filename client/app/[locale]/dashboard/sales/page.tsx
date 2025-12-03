@@ -1,31 +1,14 @@
-'use client';
-
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ShoppingCart, Plus } from 'lucide-react';
-import { useEffect, useState } from 'react';
-import { ordersApi } from '@/lib/api';
+import { getOrdersAction } from '@/app/actions/order-actions';
+import { SalesTable } from '@/components/orders/sales-table';
+import { Link } from '@/i18n/navigation';
+import { Order } from '@/types/order';
 
-export default function SalesPage() {
-  const [orders, setOrders] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchOrders = async () => {
-      try {
-        const response = await ordersApi.getAll();
-        if (response.data.success) {
-          setOrders(response.data.data as any[]);
-        }
-      } catch (error) {
-        console.error('Failed to fetch orders:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchOrders();
-  }, []);
+export default async function SalesPage() {
+  const result = await getOrdersAction();
+  const orders = result.success && result.data ? result.data : [];
 
   return (
     <div className="space-y-8">
@@ -36,10 +19,12 @@ export default function SalesPage() {
             Manage orders and invoices
           </p>
         </div>
-        <Button className="gap-2">
-          <Plus className="w-4 h-4" />
-          New Order
-        </Button>
+        <Link href="/dashboard/pos">
+          <Button className="gap-2">
+            <Plus className="w-4 h-4" />
+            New Order (POS)
+          </Button>
+        </Link>
       </div>
 
       <Card>
@@ -51,30 +36,7 @@ export default function SalesPage() {
           <CardDescription>All customer orders</CardDescription>
         </CardHeader>
         <CardContent>
-          {loading ? (
-            <div className="text-center py-8">Loading...</div>
-          ) : orders.length === 0 ? (
-            <div className="h-64 flex items-center justify-center bg-secondary-50 dark:bg-secondary-800/50 rounded-lg">
-              <p className="text-secondary-500 dark:text-secondary-400">
-                No orders found.
-              </p>
-            </div>
-          ) : (
-            <div className="space-y-4">
-              {orders.map((order) => (
-                <div key={order.id} className="flex justify-between items-center p-4 border rounded-lg">
-                  <div>
-                    <p className="font-medium">Order #{order.id}</p>
-                    <p className="text-sm text-gray-500">{new Date(order.createdAt).toLocaleDateString()}</p>
-                  </div>
-                  <div className="text-right">
-                    <p className="font-bold">${order.total?.toFixed(2) || '0.00'}</p>
-                    <p className="text-sm text-gray-500 capitalize">{order.status}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
+          <SalesTable data={orders as Order[]} />
         </CardContent>
       </Card>
     </div>
