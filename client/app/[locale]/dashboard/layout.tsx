@@ -20,11 +20,32 @@ import {
 } from 'lucide-react';
 import { UserMenu } from '@/components/UserMenu';
 
+import { useSettingsStore } from '@/lib/stores/settings-store';
+import { useEffect } from 'react';
+import { getSettingsAction } from '@/app/actions/settings-actions';
+
 function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   const pathname = usePathname();
   const locale = useLocale();
   const t = useTranslations('Common');
   const isRtl = locale === 'ar';
+  const { storeName, setStoreName } = useSettingsStore();
+
+  // Fetch settings on mount
+  useEffect(() => {
+    getSettingsAction().then((settings) => {
+      if (settings?.storeName) {
+        setStoreName(settings.storeName);
+      }
+    });
+  }, [setStoreName]);
+
+  const initials = storeName
+    .split(' ')
+    .map((n) => n[0])
+    .join('')
+    .substring(0, 2)
+    .toUpperCase();
 
   const menuItems = [
     { label: t('dashboard'), href: '/dashboard', icon: LayoutDashboard },
@@ -62,10 +83,10 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
           <div className="px-6 py-4 border-b border-secondary-200 dark:border-secondary-800">
             <Link href="/dashboard" className="flex items-center gap-2">
               <div className="w-10 h-10 bg-primary-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold">ES</span>
+                <span className="text-white font-bold">{initials}</span>
               </div>
               <div>
-                <p className="font-bold text-secondary-900 dark:text-white text-sm">ERP-SHOP</p>
+                <p className="font-bold text-secondary-900 dark:text-white text-sm">{storeName}</p>
                 <p className="text-xs text-secondary-500 dark:text-secondary-400">{t('retailErp')}</p>
               </div>
             </Link>

@@ -3,9 +3,11 @@ import { getProjectsAction, getTasksAction } from '@/app/actions/project-actions
 import { getEmployeesAction } from '@/app/actions/employee-actions';
 
 export default async function NewTimesheetPage() {
-    const projects = await getProjectsAction();
-    const tasks = await getTasksAction();
-    const employees = await getEmployeesAction();
+    const [projects, tasks, employees] = await Promise.all([
+        getProjectsAction(),
+        getTasksAction(),
+        getEmployeesAction(),
+    ]);
 
     return <TimesheetForm projects={projects} tasks={tasks} employees={employees} />;
 }

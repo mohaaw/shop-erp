@@ -3,8 +3,10 @@ import { getCustomersAction } from '@/app/actions/customer-actions';
 import { getLeadsAction } from '@/app/actions/crm-actions';
 
 export default async function NewActivityPage() {
-    const customers = await getCustomersAction();
-    const leads = await getLeadsAction();
+    const [customers, leads] = await Promise.all([
+        getCustomersAction(),
+        getLeadsAction(),
+    ]);
 
     return <ActivityForm customers={customers} leads={leads} />;
 }

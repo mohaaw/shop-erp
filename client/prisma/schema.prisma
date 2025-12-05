@@ -1,8 +1,5 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
-  provider = "prisma-client"
+  provider = "prisma-client-js"
 }
 
 datasource db {
@@ -30,83 +27,853 @@ model Warehouse {
 }
 
 model Location {
-  id          String   @id @default(cuid())
-  name        String
-  code        String   @unique
-  type        String   // internal, customer, supplier, inventory, production
-  warehouseId String?
-  warehouse   Warehouse? @relation(fields: [warehouseId], references: [id])
-  parentId    String?
-  parent      Location?  @relation("LocationHierarchy", fields: [parentId], references: [id])
-  children    Location[] @relation("LocationHierarchy")
-  
-  stockQuants    StockQuant[]
-  movesFrom      StockMovement[] @relation("SourceLocation")
-  movesTo        StockMovement[] @relation("DestLocation")
+  id                  String                @id @default(cuid())
+  name                String
+  code                String                @unique
+  type                String
+  warehouseId         String?
+  parentId            String?
+  parent              Location?             @relation("LocationHierarchy", fields: [parentId], references: [id])
+  children            Location[]            @relation("LocationHierarchy")
+  warehouse           Warehouse?            @relation(fields: [warehouseId], references: [id])
+  PurchaseReceiptItem PurchaseReceiptItem[] @ignore
+  movesTo             StockMovement[]       @relation("DestLocation")
+  movesFrom           StockMovement[]       @relation("SourceLocation")
+  stockQuants         StockQuant[]
 }
 
 model StockMovement {
-  id             String   @id @default(cuid())
-  productId      String
-  quantity       Float
+  id               String   @id @default(cuid())
+  productId        String
+  quantity         Float
   sourceLocationId String
-  sourceLocation Location @relation("SourceLocation", fields: [sourceLocationId], references: [id])
   destLocationId   String
-  destLocation   Location @relation("DestLocation", fields: [destLocationId], references: [id])
-  reference      String?
-  state          String   @default("draft") // draft, done
-  date           DateTime @default(now())
+  reference        String?
+  state            String   @default("draft")
+  date             DateTime @default(now())
+  destLocation     Location @relation("DestLocation", fields: [destLocationId], references: [id])
+  sourceLocation   Location @relation("SourceLocation", fields: [sourceLocationId], references: [id])
+
+  @@index([date], map: "idx_stock_movement_date")
+  @@index([productId], map: "idx_stock_movement_product")
 }
 
 model StockQuant {
   id         String   @id @default(cuid())
   productId  String
   locationId String
-  location   Location @relation(fields: [locationId], references: [id])
   quantity   Float
+  location   Location @relation(fields: [locationId], references: [id])
 
   @@unique([productId, locationId])
+  @@index([locationId], map: "idx_stock_quant_location")
+  @@index([productId], map: "idx_stock_quant_product")
 }
 
 model Category {
-  id        String     @id @default(cuid())
-  name      String
-  parentId  String?
-  parent    Category?  @relation("CategoryHierarchy", fields: [parentId], references: [id])
-  children  Category[] @relation("CategoryHierarchy")
-  products  Product[]
+  id       String     @id @default(cuid())
+  name     String
+  parentId String?
+  parent   Category?  @relation("CategoryHierarchy", fields: [parentId], references: [id])
+  children Category[] @relation("CategoryHierarchy")
+  products Product[]
 }
 
 model Product {
-  id                String   @id @default(cuid())
-  name              String
-  description       String?
-  price             Float
-  cost              Float    @default(0)
-  sku               String?
-  barcode           String?
-  categoryId        String?
-  category          Category? @relation(fields: [categoryId], references: [id])
-  type              String   @default("storable") // storable, consumable, service
-  image             String?
-  
-  // POS
-  availableInPos    Boolean  @default(true)
-  posCategory       String?
-  toppings          String?  // Comma separated
-  isCombo           Boolean  @default(false)
-  comboItems        String?  // Comma separated IDs
-  
-  // Logistics
-  weight            Float?
-  volume            Float?
-  hsCode            String?
-  countryOfOrigin   String?
+  id                  String                @id @default(cuid())
+  name                String
+  description         String?
+  price               Float
+  cost                Float                 @default(0)
+  sku                 String?
+  barcode             String?
+  categoryId          String?
+  type                String                @default("storable")
+  image               String?
+  availableInPos      Boolean               @default(true)
+  posCategory         String?
+  toppings            String?
+  isCombo             Boolean               @default(false)
+  comboItems          String?
+  weight              Float?
+  volume              Float?
+  hsCode              String?
+  countryOfOrigin     String?
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime              @default(now()) @updatedAt
+  minStock            Float?                @default(0)
+  images              String?
+  brand               String?
+  model               String?
+  specifications      String?
+  warranty            String?
+  BOM                 BOM[]                 @ignore
+  BOMItem             BOMItem[]             @ignore
+  CartItem            CartItem[]            @ignore
+  InvoiceItem         InvoiceItem[]
+  MaterialRequestItem MaterialRequestItem[] @ignore
+  OrderItem           OrderItem[]
+  category            Category?             @relation(fields: [categoryId], references: [id])
+  ProductionOrder     ProductionOrder[]
+  PurchaseOrderItem   PurchaseOrderItem[]   @ignore
+  PurchaseReceiptItem PurchaseReceiptItem[] @ignore
+  RFQItem             RFQItem[]             @ignore
 
-  // Inventory & Media
-  minStock          Float    @default(0)
-  images            String?  // JSON string of image URLs
-  
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
+  @@index([categoryId], map: "idx_product_category")
+  @@index([barcode], map: "idx_product_barcode")
+  @@index([sku], map: "idx_product_sku")
+}
+
+model User {
+  id               String             @id @default(cuid())
+  name             String
+  email            String             @unique(map: "sqlite_autoindex_User_2")
+  password         String
+  role             String             @default("user")
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @default(now()) @updatedAt
+  Activity         Activity[]         @ignore
+  AuditLog         AuditLog[]         @ignore
+  Department       Department[]
+  Employee         Employee?
+  ExpenseClaim     ExpenseClaim[]     @ignore
+  Lead             Lead[]             @ignore
+  LeaveApplication LeaveApplication[] @ignore
+  MaterialRequest  MaterialRequest[]
+  Note             Note[]             @ignore
+  Opportunity      Opportunity[]      @ignore
+  Project          Project[]
+  Task             Task[]             @ignore
+  Ticket           Ticket[]
+  WebPage          WebPage[]
+}
+
+model Account {
+  id                  String                @id
+  name                String
+  code                String                @unique(map: "sqlite_autoindex_Account_2")
+  type                String
+  parentId            String?
+  balance             Float                 @default(0)
+  isGroup             Boolean               @default(false)
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime              @default(now())
+  Account             Account?              @relation("AccountToAccount", fields: [parentId], references: [id], onUpdate: NoAction)
+  other_Account       Account[]             @relation("AccountToAccount")
+  JournalItem         JournalItem[]
+  PurchaseInvoiceItem PurchaseInvoiceItem[]
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model Activity {
+  id          String @id
+  type        String
+  subject     String
+  description String?
+  relatedTo   String?
+  relatedId   String?
+  assignedTo  String?
+  dueDate     String?
+  status      String? @default("pending")
+  createdAt   String
+  updatedAt   String
+  User        User?   @relation(fields: [assignedTo], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model Attendance {
+  id         String @id
+  employeeId String
+  date       String
+  checkIn    String?
+  checkOut   String?
+  status     String?  @default("present")
+  notes      String?
+  createdAt  String
+  Employee   Employee @relation(fields: [employeeId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([date], map: "idx_attendance_date")
+  @@index([employeeId], map: "idx_attendance_employee")
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model AuditLog {
+  id        String @id
+  userId    String?
+  action    String
+  entity    String
+  entityId  String?
+  changes   String?
+  ipAddress String?
+  userAgent String?
+  timestamp String
+  User      User?   @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([timestamp], map: "idx_audit_log_timestamp")
+  @@index([entity, entityId], map: "idx_audit_log_entity")
+  @@index([userId], map: "idx_audit_log_user")
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model BOM {
+  id              String @id
+  productId       String
+  quantity        Float?            @default(1)
+  isActive        Boolean?          @default(true)
+  notes           String?
+  createdAt       String
+  updatedAt       String
+  Product         Product           @relation(fields: [productId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  BOMItem         BOMItem[]
+  ProductionOrder ProductionOrder[]
+
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model BOMItem {
+  id        String @id
+  bomId     String
+  productId String
+  quantity  Float
+  scrapRate Float?  @default(0)
+  Product   Product @relation(fields: [productId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  BOM       BOM     @relation(fields: [bomId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model Cart {
+  id         String @id
+  customerId String?
+  sessionId  String?
+  status     String?    @default("active")
+  createdAt  String
+  updatedAt  String
+  Customer   Customer?  @relation(fields: [customerId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  CartItem   CartItem[]
+
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model CartItem {
+  id        String @id
+  cartId    String
+  productId String
+  quantity  Float
+  price     Float
+  Product   Product @relation(fields: [productId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Cart      Cart    @relation(fields: [cartId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@ignore
+}
+
+model Customer {
+  id          String        @id
+  name        String
+  email       String?
+  phone       String?
+  address     String?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @default(now())
+  Cart        Cart[]        @ignore
+  Invoice     Invoice[]
+  Opportunity Opportunity[] @ignore
+  Order       Order[]
+  Project     Project[]
+  Ticket      Ticket[]
+}
+
+model Department {
+  id               String @id
+  name             String
+  code             String       @unique(map: "sqlite_autoindex_Department_2")
+  parentId         String?
+  managerId        String?
+  createdAt        String
+  User             User?        @relation(fields: [managerId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Department       Department?  @relation("DepartmentToDepartment", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  other_Department Department[] @relation("DepartmentToDepartment")
+  Employee         Employee[]
+}
+
+model Employee {
+  id               String @id
+  userId           String?            @unique(map: "sqlite_autoindex_Employee_2")
+  employeeNumber   String             @unique(map: "sqlite_autoindex_Employee_3")
+  firstName        String
+  lastName         String
+  email            String?
+  phone            String?
+  departmentId     String?
+  designation      String?
+  dateOfJoining    String?
+  dateOfBirth      String?
+  status           String?            @default("active")
+  salary           Float?             @default(0)
+  createdAt        String
+  updatedAt        String
+  Attendance       Attendance[]       @ignore
+  Department       Department?        @relation(fields: [departmentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  User             User?              @relation(fields: [userId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  ExpenseClaim     ExpenseClaim[]     @ignore
+  JobCard          JobCard[]          @ignore
+  LeaveApplication LeaveApplication[] @ignore
+  Payroll          Payroll[]          @ignore
+  Timesheet        Timesheet[]        @ignore
+
+  @@index([status], map: "idx_employee_status")
+  @@index([departmentId], map: "idx_employee_department")
+  @@index([employeeNumber], map: "idx_employee_number")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model ExpenseClaim {
+  id          String @id
+  employeeId  String
+  date        String
+  category    String
+  amount      Float
+  description String?
+  status      String?  @default("pending")
+  approvedBy  String?
+  createdAt   String
+  User        User?    @relation(fields: [approvedBy], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Employee    Employee @relation(fields: [employeeId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@ignore
+}
+
+model Invoice {
+  id             String        @id
+  number         String        @unique(map: "sqlite_autoindex_Invoice_2")
+  customerId     String
+  orderId        String?
+  date           String
+  dueDate        String
+  status         String
+  totalAmount    Float?        @default(0)
+  taxAmount      Float?        @default(0)
+  journalEntryId String?
+  createdAt      String
+  updatedAt      String
+  JournalEntry   JournalEntry? @relation(fields: [journalEntryId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Order          Order?        @relation(fields: [orderId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Customer       Customer      @relation(fields: [customerId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  InvoiceItem    InvoiceItem[]
+
+  @@index([number], map: "idx_invoice_number")
+  @@index([date], map: "idx_invoice_date")
+  @@index([status], map: "idx_invoice_status")
+  @@index([customerId], map: "idx_invoice_customer")
+}
+
+model InvoiceItem {
+  id          String  @id
+  invoiceId   String
+  productId   String
+  description String?
+  quantity    Float?  @default(1)
+  unitPrice   Float?  @default(0)
+  taxRate     Float?  @default(0)
+  amount      Float?  @default(0)
+  Product     Product @relation(fields: [productId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Invoice     Invoice @relation(fields: [invoiceId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model JobCard {
+  id                String @id
+  productionOrderId String
+  workStationId     String
+  employeeId        String?
+  operation         String
+  plannedDuration   Float?          @default(0)
+  actualDuration    Float?          @default(0)
+  startTime         String?
+  endTime           String?
+  status            String?         @default("pending")
+  createdAt         String
+  Employee          Employee?       @relation(fields: [employeeId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  WorkStation       WorkStation     @relation(fields: [workStationId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  ProductionOrder   ProductionOrder @relation(fields: [productionOrderId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@ignore
+}
+
+model JournalEntry {
+  id              String            @id
+  date            DateTime          @default(now())
+  reference       String?
+  description     String?
+  status          String            @default("draft")
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @default(now())
+  Invoice         Invoice[]
+  JournalItem     JournalItem[]
+  PurchaseInvoice PurchaseInvoice[]
+
+  @@index([status], map: "idx_journal_entry_status")
+  @@index([date], map: "idx_journal_entry_date")
+}
+
+model JournalItem {
+  id             String       @id
+  journalEntryId String
+  accountId      String
+  debit          Float        @default(0)
+  credit         Float        @default(0)
+  Account        Account      @relation(fields: [accountId], references: [id], onUpdate: NoAction)
+  JournalEntry   JournalEntry @relation(fields: [journalEntryId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@index([accountId], map: "idx_journal_item_account")
+  @@index([journalEntryId], map: "idx_journal_item_entry")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model Lead {
+  id          String @id
+  firstName   String
+  lastName    String
+  email       String?
+  phone       String?
+  company     String?
+  source      String?
+  status      String        @default("new")
+  score       Int?          @default(0)
+  assignedTo  String?
+  notes       String?
+  createdAt   String
+  updatedAt   String
+  User        User?         @relation(fields: [assignedTo], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Opportunity Opportunity[]
+
+  @@index([email], map: "idx_lead_email")
+  @@index([status], map: "idx_lead_status")
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model LeaveApplication {
+  id         String @id
+  employeeId String
+  leaveType  String
+  fromDate   String
+  toDate     String
+  days       Float
+  reason     String?
+  status     String?  @default("pending")
+  approvedBy String?
+  createdAt  String
+  updatedAt  String
+  User       User?    @relation(fields: [approvedBy], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Employee   Employee @relation(fields: [employeeId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@ignore
+}
+
+model MaterialRequest {
+  id                  String @id
+  number              String                @unique(map: "sqlite_autoindex_MaterialRequest_2")
+  productionOrderId   String?
+  requestedBy         String?
+  requestDate         String
+  requiredDate        String?
+  status              String?               @default("pending")
+  createdAt           String
+  User                User?                 @relation(fields: [requestedBy], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  ProductionOrder     ProductionOrder?      @relation(fields: [productionOrderId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  MaterialRequestItem MaterialRequestItem[] @ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model MaterialRequestItem {
+  id              String @id
+  requestId       String
+  productId       String
+  quantity        Float
+  issuedQty       Float?          @default(0)
+  Product         Product         @relation(fields: [productId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  MaterialRequest MaterialRequest @relation(fields: [requestId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model Note {
+  id        String @id
+  relatedTo String
+  relatedId String
+  content   String
+  createdBy String?
+  createdAt String
+  User      User?   @relation(fields: [createdBy], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model Opportunity {
+  id                String @id
+  name              String
+  customerId        String?
+  leadId            String?
+  stage             String    @default("qualification")
+  expectedRevenue   Float?    @default(0)
+  probability       Int?      @default(0)
+  expectedCloseDate String?
+  assignedTo        String?
+  notes             String?
+  createdAt         String
+  updatedAt         String
+  User              User?     @relation(fields: [assignedTo], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Lead              Lead?     @relation(fields: [leadId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Customer          Customer? @relation(fields: [customerId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@index([customerId], map: "idx_opportunity_customer")
+  @@index([stage], map: "idx_opportunity_stage")
+  @@ignore
+}
+
+model Order {
+  id            String      @id
+  customerId    String?
+  total         Float       @default(0)
+  status        String      @default("pending")
+  paymentStatus String      @default("unpaid")
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @default(now())
+  Invoice       Invoice[]
+  Customer      Customer?   @relation(fields: [customerId], references: [id], onUpdate: NoAction)
+  OrderItem     OrderItem[]
+
+  @@index([createdAt], map: "idx_order_date")
+  @@index([status], map: "idx_order_status")
+  @@index([customerId], map: "idx_order_customer")
+}
+
+model OrderItem {
+  id        String  @id
+  orderId   String
+  productId String
+  quantity  Float
+  price     Float
+  Product   Product @relation(fields: [productId], references: [id], onUpdate: NoAction)
+  Order     Order   @relation(fields: [orderId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model Payroll {
+  id          String @id
+  employeeId  String
+  month       String
+  year        Int
+  basicSalary Float?   @default(0)
+  allowances  Float?   @default(0)
+  deductions  Float?   @default(0)
+  netSalary   Float?   @default(0)
+  status      String?  @default("draft")
+  paidDate    String?
+  createdAt   String
+  Employee    Employee @relation(fields: [employeeId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@ignore
+}
+
+model ProductionOrder {
+  id               String @id
+  number           String            @unique(map: "sqlite_autoindex_ProductionOrder_2")
+  productId        String
+  bomId            String?
+  quantity         Float
+  plannedStartDate String?
+  plannedEndDate   String?
+  actualStartDate  String?
+  actualEndDate    String?
+  status           String?           @default("draft")
+  createdAt        String
+  updatedAt        String
+  JobCard          JobCard[]         @ignore
+  MaterialRequest  MaterialRequest[]
+  BOM              BOM?              @relation(fields: [bomId], references: [id], onDelete: NoAction, onUpdate: NoAction) @ignore
+  Product          Product           @relation(fields: [productId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model Project {
+  id             String @id
+  name           String
+  code           String      @unique(map: "sqlite_autoindex_Project_2")
+  customerId     String?
+  status         String?     @default("planning")
+  startDate      String?
+  endDate        String?
+  budget         Float?      @default(0)
+  actualCost     Float?      @default(0)
+  projectManager String?
+  description    String?
+  createdAt      String
+  updatedAt      String
+  User           User?       @relation(fields: [projectManager], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Customer       Customer?   @relation(fields: [customerId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Task           Task[]      @ignore
+  Timesheet      Timesheet[] @ignore
+}
+
+model PurchaseInvoice {
+  id                  String                @id
+  number              String                @unique(map: "sqlite_autoindex_PurchaseInvoice_2")
+  supplierId          String
+  date                String
+  dueDate             String
+  status              String
+  totalAmount         Float?                @default(0)
+  taxAmount           Float?                @default(0)
+  journalEntryId      String?
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime              @default(now())
+  JournalEntry        JournalEntry?         @relation(fields: [journalEntryId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Supplier            Supplier              @relation(fields: [supplierId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  PurchaseInvoiceItem PurchaseInvoiceItem[]
+
+  @@index([date], map: "idx_purchase_invoice_date")
+  @@index([status], map: "idx_purchase_invoice_status")
+  @@index([supplierId], map: "idx_purchase_invoice_supplier")
+}
+
+model PurchaseInvoiceItem {
+  id              String          @id
+  invoiceId       String
+  description     String?
+  accountId       String
+  quantity        Float?          @default(1)
+  unitPrice       Float?          @default(0)
+  amount          Float?          @default(0)
+  Account         Account         @relation(fields: [accountId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  PurchaseInvoice PurchaseInvoice @relation(fields: [invoiceId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model PurchaseOrder {
+  id                String @id
+  number            String              @unique(map: "sqlite_autoindex_PurchaseOrder_2")
+  supplierId        String
+  rfqId             String?
+  date              String
+  expectedDate      String?
+  status            String              @default("draft")
+  totalAmount       Float?              @default(0)
+  createdAt         String
+  updatedAt         String
+  RFQ               RFQ?                @relation(fields: [rfqId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Supplier          Supplier            @relation(fields: [supplierId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  PurchaseOrderItem PurchaseOrderItem[] @ignore
+  PurchaseReceipt   PurchaseReceipt[]
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model PurchaseOrderItem {
+  id            String @id
+  orderId       String
+  productId     String
+  quantity      Float?        @default(1)
+  unitPrice     Float?        @default(0)
+  receivedQty   Float?        @default(0)
+  Product       Product       @relation(fields: [productId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  PurchaseOrder PurchaseOrder @relation(fields: [orderId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@ignore
+}
+
+model PurchaseReceipt {
+  id                  String @id
+  number              String                @unique(map: "sqlite_autoindex_PurchaseReceipt_2")
+  purchaseOrderId     String
+  date                String
+  status              String                @default("draft")
+  notes               String?
+  createdAt           String
+  updatedAt           String
+  PurchaseOrder       PurchaseOrder         @relation(fields: [purchaseOrderId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  PurchaseReceiptItem PurchaseReceiptItem[] @ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model PurchaseReceiptItem {
+  id              String @id
+  receiptId       String
+  productId       String
+  quantity        Float?          @default(1)
+  locationId      String?
+  batchNumber     String?
+  Location        Location?       @relation(fields: [locationId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Product         Product         @relation(fields: [productId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  PurchaseReceipt PurchaseReceipt @relation(fields: [receiptId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@ignore
+}
+
+model RFQ {
+  id            String @id
+  number        String          @unique(map: "sqlite_autoindex_RFQ_2")
+  supplierId    String
+  date          String
+  status        String          @default("draft")
+  notes         String?
+  createdAt     String
+  updatedAt     String
+  PurchaseOrder PurchaseOrder[]
+  Supplier      Supplier        @relation(fields: [supplierId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  RFQItem       RFQItem[]       @ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model RFQItem {
+  id          String @id
+  rfqId       String
+  productId   String
+  quantity    Float?  @default(1)
+  quotedPrice Float?  @default(0)
+  notes       String?
+  Product     Product @relation(fields: [productId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  RFQ         RFQ     @relation(fields: [rfqId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@ignore
+}
+
+model Supplier {
+  id              String            @id
+  name            String
+  email           String?
+  phone           String?
+  address         String?
+  taxId           String?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @default(now())
+  PurchaseInvoice PurchaseInvoice[]
+  PurchaseOrder   PurchaseOrder[]
+  RFQ             RFQ[]
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model Task {
+  id             String @id
+  projectId      String
+  title          String
+  description    String?
+  assignedTo     String?
+  status         String?     @default("todo")
+  priority       String?     @default("medium")
+  startDate      String?
+  dueDate        String?
+  estimatedHours Float?      @default(0)
+  actualHours    Float?      @default(0)
+  parentTaskId   String?
+  createdAt      String
+  updatedAt      String
+  Task           Task?       @relation("TaskToTask", fields: [parentTaskId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  other_Task     Task[]      @relation("TaskToTask")
+  User           User?       @relation(fields: [assignedTo], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Project        Project     @relation(fields: [projectId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Timesheet      Timesheet[]
+
+  @@ignore
+}
+
+model Ticket {
+  id          String @id
+  number      String   @unique(map: "sqlite_autoindex_Ticket_2")
+  customerId  String
+  subject     String
+  description String?
+  priority    String?  @default("medium")
+  status      String?  @default("open")
+  assignedTo  String?
+  createdAt   String
+  updatedAt   String
+  User        User?    @relation(fields: [assignedTo], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Customer    Customer @relation(fields: [customerId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model Settings {
+  id           String   @id @default(cuid())
+  storeName    String   @default("ERP-SHOP")
+  supportEmail String?
+  currency     String   @default("usd")
+  timezone     String   @default("utc")
+  updatedAt    DateTime @updatedAt
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model Timesheet {
+  id          String @id
+  employeeId  String
+  projectId   String?
+  taskId      String?
+  date        String
+  hours       Float
+  description String?
+  billable    Boolean? @default(true)
+  createdAt   String
+  Task        Task?    @relation(fields: [taskId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Project     Project? @relation(fields: [projectId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  Employee    Employee @relation(fields: [employeeId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model WebForm {
+  id                String @id
+  name              String
+  title             String
+  description       String?
+  fields            String
+  submitAction      String?
+  isActive          Boolean?            @default(true)
+  createdAt         String
+  WebFormSubmission WebFormSubmission[]
+
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model WebFormSubmission {
+  id          String @id
+  formId      String
+  data        String
+  ipAddress   String?
+  submittedAt String
+  WebForm     WebForm @relation(fields: [formId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@ignore
+}
+
+model WebPage {
+  id          String @id
+  title       String
+  slug        String   @unique(map: "sqlite_autoindex_WebPage_2")
+  content     String?
+  type        String?  @default("page")
+  published   Boolean? @default(false)
+  publishedAt String?
+  createdBy   String?
+  createdAt   String
+  updatedAt   String
+  User        User?    @relation(fields: [createdBy], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model WorkStation {
+  id          String @id
+  name        String
+  code        String    @unique(map: "sqlite_autoindex_WorkStation_2")
+  capacity    Float?    @default(1)
+  costPerHour Float?    @default(0)
+  status      String?   @default("active")
+  createdAt   String
+  JobCard     JobCard[] @ignore
 }

@@ -5,3 +5,4 @@ const dbPath = path.join(process.cwd(), 'dev.db');
 
 export const db = new Database(dbPath, { verbose: console.log });
 db.pragma('journal_mode = WAL');
+

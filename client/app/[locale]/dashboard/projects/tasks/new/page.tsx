@@ -3,8 +3,10 @@ import { getProjectsAction } from '@/app/actions/project-actions';
 import { getEmployeesAction } from '@/app/actions/employee-actions';
 
 export default async function NewTaskPage() {
-    const projects = await getProjectsAction();
-    const employees = await getEmployeesAction();
+    const [projects, employees] = await Promise.all([
+        getProjectsAction(),
+        getEmployeesAction(),
+    ]);
 
     return <TaskForm projects={projects} employees={employees} />;
 }
