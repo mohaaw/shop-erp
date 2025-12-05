@@ -13,6 +13,17 @@ export interface CreateOrderData {
     paymentStatus?: 'unpaid' | 'paid';
 }
 
+export interface Order {
+    id: string;
+    number: string;
+    customerId?: string;
+    total: number;
+    status: string;
+    paymentStatus: string;
+    createdAt: string;
+    updatedAt: string;
+}
+
 export const orderService = {
     createOrder: (data: CreateOrderData) => {
         const orderId = randomUUID();

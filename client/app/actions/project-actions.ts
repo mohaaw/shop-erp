@@ -1,6 +1,6 @@
 'use server';
 
-import { projectService, Project, Task } from '@/lib/services/project-service';
+import { projectService, Project, Task, Timesheet } from '@/lib/services/project-service';
 import { revalidatePath } from 'next/cache';
 
 // Project actions
@@ -31,4 +31,15 @@ export async function createTaskAction(data: Omit<Task, 'id' | 'createdAt'>) {
     const task = projectService.createTask(data);
     revalidatePath('/dashboard/projects/tasks');
     return task;
+}
+
+// Timesheet actions
+export async function getTimesheetsAction() {
+    return projectService.getTimesheets();
+}
+
+export async function createTimesheetAction(data: Omit<Timesheet, 'id' | 'projectName' | 'taskTitle'>) {
+    const timesheet = projectService.createTimesheet(data);
+    revalidatePath('/dashboard/projects/timesheets');
+    return timesheet;
 }

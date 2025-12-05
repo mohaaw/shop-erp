@@ -329,10 +329,40 @@
             "error": "فشل إنشاء الموظف"
         }
     },
+    "SCM": {
+        "suppliers": {
+            "title": "الموردين",
+            "subtitle": "إدارة الموردين والبائعين",
+            "newSupplier": "مورد جديد",
+            "name": "الاسم",
+            "email": "البريد الإلكتروني",
+            "phone": "الهاتف",
+            "taxId": "الرقم الضريبي"
+        },
+        "purchaseOrders": {
+            "title": "أوامر الشراء",
+            "subtitle": "إدارة طلبات الشراء",
+            "newOrder": "أمر شراء جديد",
+            "orderNumber": "رقم الطلب",
+            "supplier": "المورد",
+            "date": "التاريخ",
+            "totalAmount": "المبلغ الإجمالي",
+            "status": "الحالة"
+        }
+    },
     "CRM": {
+        "customers": {
+            "title": "العملاء",
+            "subtitle": "إدارة قاعدة العملاء",
+            "newCustomer": "عميل جديد",
+            "name": "الاسم",
+            "email": "البريد الإلكتروني",
+            "phone": "الهاتف",
+            "address": "العنوان"
+        },
         "leads": {
             "title": "العملاء المحتملين",
-            "subtitle": "إدارة العملاء المحتملين والفرص البيعية",
+            "subtitle": "إدارة العملاء المحتملين والمبيعات",
             "newLead": "عميل محتمل جديد",
             "company": "الشركة",
             "source": "المصدر",
@@ -341,12 +371,32 @@
         },
         "opportunities": {
             "title": "الفرص",
-            "subtitle": "تتبع خط أنابيب المبيعات والصفقات",
+            "subtitle": "تتبع مسار المبيعات والصفقات",
             "newOpportunity": "فرصة جديدة",
             "stage": "المرحلة",
             "expectedRevenue": "الإيرادات المتوقعة",
             "probability": "الاحتمالية",
             "expectedClose": "تاريخ الإغلاق المتوقع"
+        },
+        "activities": {
+            "title": "الأنشطة",
+            "subtitle": "تتبع أنشطة العملاء",
+            "newActivity": "نشاط جديد",
+            "subject": "الموضوع",
+            "type": "النوع",
+            "lead": "العميل المحتمل",
+            "customer": "العميل",
+            "date": "التاريخ",
+            "status": "الحالة"
+        },
+        "tickets": {
+            "title": "تذاكر الدعم",
+            "subtitle": "إدارة تذاكر الدعم",
+            "newTicket": "تذكرة جديدة",
+            "subject": "الموضوع",
+            "customer": "العميل",
+            "priority": "الأولوية",
+            "status": "الحالة"
         }
     },
     "Manufacturing": {
@@ -365,16 +415,130 @@
             "orderNumber": "رقم الأمر",
             "plannedStart": "البداية المخططة",
             "status": "الحالة"
+        },
+        "workstations": {
+            "title": "محطات العمل",
+            "subtitle": "إدارة محطات العمل والآلات",
+            "newWorkstation": "محطة عمل جديدة",
+            "name": "الاسم",
+            "code": "الرمز",
+            "status": "الحالة"
+        },
+        "jobCards": {
+            "title": "بطاقات العمل",
+            "subtitle": "تتبع عمليات الإنتاج",
+            "newJobCard": "بطاقة عمل جديدة",
+            "productionOrder": "أمر الإنتاج",
+            "workstation": "محطة العمل",
+            "operation": "العملية",
+            "status": "الحالة"
+        }
+    },
+    "Inventory": {
+        "warehouses": {
+            "title": "المستودعات",
+            "subtitle": "إدارة مواقع التخزين",
+            "newWarehouse": "مستودع جديد",
+            "name": "الاسم",
+            "code": "الرمز"
+        },
+        "stockTransfers": {
+            "title": "تحويلات المخزون",
+            "subtitle": "نقل المخزون بين المواقع",
+            "newTransfer": "تحويل جديد",
+            "product": "المنتج",
+            "from": "من",
+            "to": "إلى",
+            "quantity": "الكمية",
+            "date": "التاريخ",
+            "status": "الحالة"
+        },
+        "adjustments": {
+            "title": "تعديلات المخزون",
+            "subtitle": "تصحيح مستويات المخزون",
+            "newAdjustment": "تعديل جديد"
+        }
+    },
+    "HCM": {
+        "attendance": {
+            "title": "الحضور",
+            "subtitle": "تتبع حضور الموظفين",
+            "newAttendance": "سجل جديد",
+            "employee": "الموظف",
+            "date": "التاريخ",
+            "checkIn": "تسجيل الدخول",
+            "checkOut": "تسجيل الخروج",
+            "status": "الحالة"
+        },
+        "leave": {
+            "title": "طلبات الإجازة",
+            "subtitle": "إدارة طلبات الإجازة",
+            "newLeave": "طلب جديد",
+            "employee": "الموظف",
+            "type": "النوع",
+            "startDate": "تاريخ البدء",
+            "endDate": "تاريخ الانتهاء",
+            "status": "الحالة"
+        },
+        "payroll": {
+            "title": "الرواتب",
+            "subtitle": "إدارة رواتب الموظفين",
+            "newPayroll": "راتب جديد",
+            "employee": "الموظف",
+            "month": "الشهر",
+            "netSalary": "صافي الراتب",
+            "status": "الحالة"
         }
     },
     "Projects": {
         "title": "المشاريع",
-        "subtitle": "إدارة مشاريع مؤسستك",
+        "subtitle": "إدارة مشاريع المؤسسة",
         "newProject": "مشروع جديد",
-        "code": "الكود",
+        "code": "الرمز",
         "name": "الاسم",
         "budget": "الميزانية",
         "actualCost": "التكلفة الفعلية",
-        "status": "الحالة"
+        "status": "الحالة",
+        "tasks": {
+            "title": "المهام",
+            "subtitle": "إدارة مهام المشروع",
+            "newTask": "مهمة جديدة",
+            "taskTitle": "العنوان",
+            "project": "المشروع",
+            "priority": "الأولوية",
+            "status": "الحالة",
+            "dueDate": "تاريخ الاستحقاق"
+        },
+        "timesheets": {
+            "title": "الجداول الزمنية",
+            "subtitle": "تتبع الوقت المستغرق في المشاريع",
+            "newTimesheet": "سجل جديد",
+            "date": "التاريخ",
+            "project": "المشروع",
+            "task": "المهمة",
+            "hours": "الساعات",
+            "description": "الوصف"
+        }
+    },
+    "Finance": {
+        "payments": {
+            "title": "المدفوعات",
+            "subtitle": "إدارة المدفوعات",
+            "newPayment": "دفعة جديدة",
+            "date": "التاريخ",
+            "customer": "العميل",
+            "amount": "المبلغ",
+            "method": "الطريقة",
+            "status": "الحالة"
+        },
+        "taxRates": {
+            "title": "معدلات الضرائب",
+            "subtitle": "إدارة معدلات الضرائب",
+            "newTaxRate": "معدل ضريبة جديد",
+            "name": "الاسم",
+            "rate": "المعدل",
+            "code": "الرمز",
+            "default": "الافتراضي"
+        }
     }
 }

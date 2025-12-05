@@ -9,6 +9,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Search, ShoppingCart, Plus, Minus, Trash2 } from 'lucide-react';
 import { createOrderAction } from '@/app/actions/order-actions';
 import { Badge } from '@/components/ui/badge';
+import Image from 'next/image';
 
 interface PosInterfaceProps {
     products: Product[];
@@ -114,7 +115,7 @@ export function PosInterface({ products }: PosInterfaceProps) {
                                 <CardContent className="p-4 flex flex-col gap-2">
                                     <div className="aspect-square bg-secondary rounded-md overflow-hidden relative">
                                         {product.image ? (
-                                            <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
+                                            <Image src={product.image} alt={product.name} fill className="object-cover" />
                                         ) : (
                                             <div className="w-full h-full flex items-center justify-center text-muted-foreground">
                                                 IMG

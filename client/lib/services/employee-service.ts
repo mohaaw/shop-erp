@@ -29,6 +29,40 @@ export interface Department {
     createdAt: string;
 }
 
+export interface Attendance {
+    id: string;
+    employeeId: string;
+    date: string;
+    status: string;
+    checkIn?: string;
+    checkOut?: string;
+    employeeName?: string;
+}
+
+export interface LeaveApplication {
+    id: string;
+    employeeId: string;
+    type: string;
+    startDate: string;
+    endDate: string;
+    reason?: string;
+    status: string;
+    employeeName?: string;
+}
+
+export interface Payroll {
+    id: string;
+    employeeId: string;
+    month: number;
+    year: number;
+    basicSalary: number;
+    allowances: number;
+    deductions: number;
+    netSalary: number;
+    status: string;
+    employeeName?: string;
+}
+
 export const employeeService = {
     getEmployees(): Employee[] {
         const stmt = db.prepare(`
@@ -148,4 +182,74 @@ export const employeeService = {
 
         return { ...data, id, createdAt: now };
     },
+
+    // Attendance methods
+    getAttendance(): Attendance[] {
+        return db.prepare(`
+            SELECT a.*, e.firstName || ' ' || e.lastName as employeeName
+            FROM Attendance a
+            LEFT JOIN Employee e ON a.employeeId = e.id
+            ORDER BY a.date DESC
+        `).all() as Attendance[];
+    },
+
+    createAttendance(data: Omit<Attendance, 'id' | 'employeeName'>): Attendance {
+        const id = uuidv4();
+        const stmt = db.prepare(`
+            INSERT INTO Attendance (id, employeeId, date, status, checkIn, checkOut)
+            VALUES (?, ?, ?, ?, ?, ?)
+        `);
+        stmt.run(id, data.employeeId, data.date, data.status, data.checkIn || null, data.checkOut || null);
+        return { id, ...data };
+    },
+
+    // Leave methods
+    getLeaves(): LeaveApplication[] {
+        return db.prepare(`
+            SELECT l.*, e.firstName || ' ' || e.lastName as employeeName
+            FROM LeaveApplication l
+            LEFT JOIN Employee e ON l.employeeId = e.id
+            ORDER BY l.startDate DESC
+        `).all() as LeaveApplication[];
+    },
+
+    createLeave(data: Omit<LeaveApplication, 'id' | 'employeeName'>): LeaveApplication {
+        const id = uuidv4();
+        const stmt = db.prepare(`
+            INSERT INTO LeaveApplication (id, employeeId, type, startDate, endDate, reason, status)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        `);
+        stmt.run(id, data.employeeId, data.type, data.startDate, data.endDate, data.reason || null, data.status || 'pending');
+        return { id, ...data };
+    },
+
+    // Payroll methods
+    getPayroll(): Payroll[] {
+        return db.prepare(`
+            SELECT p.*, e.firstName || ' ' || e.lastName as employeeName
+            FROM Payroll p
+            LEFT JOIN Employee e ON p.employeeId = e.id
+            ORDER BY p.month DESC
+        `).all() as Payroll[];
+    },
+
+    createPayroll(data: Omit<Payroll, 'id' | 'employeeName'>): Payroll {
+        const id = uuidv4();
+        const stmt = db.prepare(`
+            INSERT INTO Payroll (id, employeeId, month, year, basicSalary, allowances, deductions, netSalary, status)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `);
+        stmt.run(
+            id,
+            data.employeeId,
+            data.month,
+            data.year,
+            data.basicSalary,
+            data.allowances || 0,
+            data.deductions || 0,
+            data.netSalary,
+            data.status || 'draft'
+        );
+        return { id, ...data };
+    }
 };

@@ -37,6 +37,30 @@ export interface ProductionOrder {
     updatedAt: string;
 }
 
+export interface Workstation {
+    id: string;
+    name: string;
+    code: string;
+    description?: string;
+    status: string;
+    createdAt: string;
+    updatedAt: string;
+}
+
+export interface JobCard {
+    id: string;
+    productionOrderId: string;
+    workstationId: string;
+    operation?: string;
+    status: string;
+    startTime?: string;
+    endTime?: string;
+    productionOrderNumber?: string;
+    workstationName?: string;
+    createdAt: string;
+    updatedAt: string;
+}
+
 export const manufacturingService = {
     // BOM methods
     getBOMs(): BOM[] {
@@ -149,4 +173,52 @@ export const manufacturingService = {
 
         return this.getProductionOrderById(id)!;
     },
+
+    // Workstation methods
+    getWorkstations(): Workstation[] {
+        return db.prepare('SELECT * FROM WorkStation ORDER BY name').all() as Workstation[];
+    },
+
+    createWorkstation(data: Omit<Workstation, 'id' | 'createdAt' | 'updatedAt'>): Workstation {
+        const id = uuidv4();
+        const now = new Date().toISOString();
+        const stmt = db.prepare(`
+            INSERT INTO WorkStation (id, name, code, description, status, createdAt, updatedAt)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        `);
+        stmt.run(id, data.name, data.code, data.description || null, data.status || 'active', now, now);
+        return { id, ...data, createdAt: now, updatedAt: now };
+    },
+
+    // Job Card methods
+    getJobCards(): JobCard[] {
+        return db.prepare(`
+            SELECT jc.*, po.number as productionOrderNumber, ws.name as workstationName
+            FROM JobCard jc
+            LEFT JOIN ProductionOrder po ON jc.productionOrderId = po.id
+            LEFT JOIN WorkStation ws ON jc.workstationId = ws.id
+            ORDER BY jc.createdAt DESC
+        `).all() as JobCard[];
+    },
+
+    createJobCard(data: Omit<JobCard, 'id' | 'createdAt' | 'updatedAt' | 'productionOrderNumber' | 'workstationName'>): JobCard {
+        const id = uuidv4();
+        const now = new Date().toISOString();
+        const stmt = db.prepare(`
+            INSERT INTO JobCard (id, productionOrderId, workstationId, operation, status, startTime, endTime, createdAt, updatedAt)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `);
+        stmt.run(
+            id,
+            data.productionOrderId,
+            data.workstationId,
+            data.operation || null,
+            data.status || 'pending',
+            data.startTime || null,
+            data.endTime || null,
+            now,
+            now
+        );
+        return { id, ...data, createdAt: now, updatedAt: now };
+    }
 };

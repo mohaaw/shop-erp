@@ -29,6 +29,18 @@ export interface Task {
     createdAt: string;
 }
 
+export interface Timesheet {
+    id: string;
+    projectId: string;
+    taskId?: string;
+    employeeId: string;
+    date: string;
+    hours: number;
+    description?: string;
+    projectName?: string;
+    taskTitle?: string;
+}
+
 export const projectService = {
     // Project methods
     getProjects(): Project[] {
@@ -116,4 +128,33 @@ export const projectService = {
 
         return this.getTaskById(id)!;
     },
+
+    // Timesheet methods
+    getTimesheets(): Timesheet[] {
+        return db.prepare(`
+            SELECT t.*, p.name as projectName, task.title as taskTitle
+            FROM Timesheet t
+            LEFT JOIN Project p ON t.projectId = p.id
+            LEFT JOIN Task task ON t.taskId = task.id
+            ORDER BY t.date DESC
+        `).all() as Timesheet[];
+    },
+
+    createTimesheet(data: Omit<Timesheet, 'id' | 'projectName' | 'taskTitle'>): Timesheet {
+        const id = uuidv4();
+        const stmt = db.prepare(`
+            INSERT INTO Timesheet (id, projectId, taskId, employeeId, date, hours, description)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        `);
+        stmt.run(
+            id,
+            data.projectId,
+            data.taskId || null,
+            data.employeeId,
+            data.date,
+            data.hours,
+            data.description || null
+        );
+        return { id, ...data };
+    }
 };

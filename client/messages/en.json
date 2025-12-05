@@ -327,54 +327,176 @@
       "cancel": "Cancel",
       "success": "Employee created successfully!",
       "error": "Failed to create employee"
+    },
+    "SCM": {
+      "suppliers": {
+        "title": "Suppliers",
+        "subtitle": "Manage your vendors and suppliers",
+        "newSupplier": "New Supplier",
+        "name": "Name",
+        "email": "Email",
+        "phone": "Phone",
+        "taxId": "Tax ID"
+      },
+      "purchaseOrders": {
+        "title": "Purchase Orders",
+        "subtitle": "Manage your procurement orders",
+        "newOrder": "New Purchase Order",
+        "orderNumber": "Order #",
+        "supplier": "Supplier",
+        "date": "Date",
+        "totalAmount": "Total Amount",
+        "status": "Status"
+      }
+    },
+    "CRM": {
+      "customers": {
+        "title": "Customers",
+        "subtitle": "Manage your customer base",
+        "newCustomer": "New Customer",
+        "name": "Name",
+        "email": "Email",
+        "phone": "Phone",
+        "address": "Address"
+      },
+      "leads": {
+        "title": "Leads",
+        "subtitle": "Manage your sales leads and prospects",
+        "newLead": "New Lead",
+        "company": "Company",
+        "source": "Source",
+        "score": "Score",
+        "status": "Status"
+      },
+      "opportunities": {
+        "title": "Opportunities",
+        "subtitle": "Track your sales pipeline and deals",
+        "newOpportunity": "New Opportunity",
+        "stage": "Stage",
+        "expectedRevenue": "Expected Revenue",
+        "probability": "Probability",
+        "expectedClose": "Expected Close"
+      }
+    },
+    "Manufacturing": {
+      "bom": {
+        "title": "Bill of Materials",
+        "subtitle": "Manage product BOMs and manufacturing recipes",
+        "newBOM": "New BOM",
+        "product": "Product",
+        "quantity": "Quantity",
+        "notes": "Notes"
+      },
+      "productionOrders": {
+        "title": "Production Orders",
+        "subtitle": "Manage manufacturing production orders",
+        "newOrder": "New Production Order",
+        "status": "Status"
+      }
+    },
+    "HCM": {
+      "attendance": {
+        "title": "Attendance",
+        "subtitle": "Track employee attendance",
+        "newAttendance": "New Entry",
+        "employee": "Employee",
+        "date": "Date",
+        "checkIn": "Check In",
+        "checkOut": "Check Out",
+        "status": "Status"
+      },
+      "leave": {
+        "title": "Leave Applications",
+        "subtitle": "Manage leave requests",
+        "newLeave": "New Application",
+        "employee": "Employee",
+        "type": "Type",
+        "startDate": "Start Date",
+        "endDate": "End Date",
+        "status": "Status"
+      },
+      "payroll": {
+        "title": "Payroll",
+        "subtitle": "Manage employee salaries",
+        "newPayroll": "New Payroll",
+        "employee": "Employee",
+        "month": "Month",
+        "netSalary": "Net Salary",
+        "status": "Status"
+      }
+    },
+    "Projects": {
+      "title": "Projects",
+      "subtitle": "Manage projects",
+      "newProject": "New Project",
+      "code": "Code",
+      "name": "Name",
+      "budget": "Budget",
+      "actualCost": "Actual Cost",
+      "status": "Status",
+      "tasks": {
+        "title": "Tasks",
+        "subtitle": "Manage project tasks",
+        "newTask": "New Task",
+        "taskTitle": "Title",
+        "project": "Project",
+        "priority": "Priority",
+        "status": "Status",
+        "dueDate": "Due Date"
+      },
+      "timesheets": {
+        "title": "Timesheets",
+        "subtitle": "Track time spent on projects",
+        "newTimesheet": "New Entry",
+        "date": "Date",
+        "project": "Project",
+        "task": "Task",
+        "hours": "Hours",
+        "description": "Description"
+      }
+    }
+  },
+  "Finance": {
+    "payments": {
+      "title": "Payments",
+      "subtitle": "Manage payments",
+      "newPayment": "New Payment",
+      "date": "Date",
+      "customer": "Customer",
+      "amount": "Amount",
+      "method": "Method",
+      "status": "Status"
+    },
+    "taxRates": {
+      "title": "Tax Rates",
+      "subtitle": "Manage tax rates",
+      "newTaxRate": "New Tax Rate",
+      "name": "Name",
+      "rate": "Rate",
+      "code": "Code",
+      "default": "Default"
     }
   },
   "CRM": {
-    "leads": {
-      "title": "Leads",
-      "subtitle": "Manage your sales leads and prospects",
-      "newLead": "New Lead",
-      "company": "Company",
-      "source": "Source",
-      "score": "Score",
+    "activities": {
+      "title": "Activities",
+      "subtitle": "Track customer activities",
+      "newActivity": "New Activity",
+      "subject": "Subject",
+      "type": "Type",
+      "lead": "Lead",
+      "customer": "Customer",
+      "date": "Date",
       "status": "Status"
     },
-    "opportunities": {
-      "title": "Opportunities",
-      "subtitle": "Track your sales pipeline and deals",
-      "newOpportunity": "New Opportunity",
-      "stage": "Stage",
-      "expectedRevenue": "Expected Revenue",
-      "probability": "Probability",
-      "expectedClose": "Expected Close"
-    }
-  },
-  "Manufacturing": {
-    "bom": {
-      "title": "Bill of Materials",
-      "subtitle": "Manage product BOMs and manufacturing recipes",
-      "newBOM": "New BOM",
-      "product": "Product",
-      "quantity": "Quantity",
-      "notes": "Notes"
-    },
-    "productionOrders": {
-      "title": "Production Orders",
-      "subtitle": "Manage manufacturing production orders",
-      "newOrder": "New Production Order",
-      "orderNumber": "Order #",
-      "plannedStart": "Planned Start",
+    "tickets": {
+      "title": "Support Tickets",
+      "subtitle": "Manage support tickets",
+      "newTicket": "New Ticket",
+      "subject": "Subject",
+      "customer": "Customer",
+      "priority": "Priority",
       "status": "Status"
     }
-  },
-  "Projects": {
-    "title": "Projects",
-    "subtitle": "Manage your organization's projects",
-    "newProject": "New Project",
-    "code": "Code",
-    "name": "Name",
-    "budget": "Budget",
-    "actualCost": "Actual Cost",
-    "status": "Status"
   }
 }

@@ -32,6 +32,32 @@ export interface Opportunity {
     updatedAt: string;
 }
 
+export interface Activity {
+    id: string;
+    leadId?: string;
+    customerId?: string;
+    type: string;
+    subject: string;
+    description?: string;
+    date: string;
+    status: string;
+    leadName?: string;
+    customerName?: string;
+}
+
+export interface SupportTicket {
+    id: string;
+    customerId: string;
+    subject: string;
+    description: string;
+    priority: string;
+    status: string;
+    assignedTo?: string;
+    createdAt: string;
+    updatedAt: string;
+    customerName?: string;
+}
+
 export const crmService = {
     // Lead methods
     getLeads(): Lead[] {
@@ -182,4 +208,65 @@ export const crmService = {
         const stmt = db.prepare('DELETE FROM Opportunity WHERE id = ?');
         stmt.run(id);
     },
+
+    // Activity methods
+    getActivities(): Activity[] {
+        return db.prepare(`
+            SELECT a.*, l.firstName || ' ' || l.lastName as leadName, c.name as customerName
+            FROM Activity a
+            LEFT JOIN Lead l ON a.leadId = l.id
+            LEFT JOIN Customer c ON a.customerId = c.id
+            ORDER BY a.date DESC
+        `).all() as Activity[];
+    },
+
+    createActivity(data: Omit<Activity, 'id' | 'leadName' | 'customerName'>): Activity {
+        const id = uuidv4();
+        const stmt = db.prepare(`
+            INSERT INTO Activity (id, leadId, customerId, type, subject, description, date, status)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+        `);
+        stmt.run(
+            id,
+            data.leadId || null,
+            data.customerId || null,
+            data.type,
+            data.subject,
+            data.description || null,
+            data.date,
+            data.status || 'pending'
+        );
+        return { id, ...data };
+    },
+
+    // Support Ticket methods
+    getTickets(): SupportTicket[] {
+        return db.prepare(`
+            SELECT t.*, c.name as customerName
+            FROM SupportTicket t
+            LEFT JOIN Customer c ON t.customerId = c.id
+            ORDER BY t.createdAt DESC
+        `).all() as SupportTicket[];
+    },
+
+    createTicket(data: Omit<SupportTicket, 'id' | 'createdAt' | 'updatedAt' | 'customerName'>): SupportTicket {
+        const id = uuidv4();
+        const now = new Date().toISOString();
+        const stmt = db.prepare(`
+            INSERT INTO SupportTicket (id, customerId, subject, description, priority, status, assignedTo, createdAt, updatedAt)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        `);
+        stmt.run(
+            id,
+            data.customerId,
+            data.subject,
+            data.description,
+            data.priority || 'medium',
+            data.status || 'open',
+            data.assignedTo || null,
+            now,
+            now
+        );
+        return { id, ...data, createdAt: now, updatedAt: now };
+    }
 };

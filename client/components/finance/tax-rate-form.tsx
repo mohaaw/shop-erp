@@ -3,16 +3,11 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
-import { Button } from '@/components/ui/button';
+import { useTranslations } from 'next-intl';
+import { useRouter } from 'next/navigation';
 import { Input } from '@/components/ui/input';
-import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from "@/components/ui/dialog";
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
     Form,
     FormControl,
@@ -20,7 +15,14 @@ import {
     FormItem,
     FormLabel,
     FormMessage,
+    FormDescription,
 } from '@/components/ui/form';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Textarea } from '@/components/ui/textarea';
+import { Loader2, Save, X } from 'lucide-react';
+import { TaxRateFormValues, taxRateSchema } from '@/lib/validations/finance';
+import { createTaxRateAction } from '@/app/actions/finance-actions';
+
 import {
     Select,
     SelectContent,
@@ -28,34 +30,25 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select';
-import { Plus } from 'lucide-react';
-import { createTaxRateAction } from '@/app/actions/tax-actions';
 import { Account } from '@/lib/services/accounting-service';
 
-const taxRateSchema = z.object({
-    name: z.string().min(1, "Name is required"),
-    code: z.string().min(1, "Code is required"),
-    rate: z.coerce.number().min(0, "Rate must be positive"),
-    accountId: z.string().optional(),
-});
-
-type TaxRateFormValues = z.infer<typeof taxRateSchema>;
-
 interface TaxRateFormProps {
-    accounts: Account[];
+    accounts?: Account[];
 }
 
 export function TaxRateForm({ accounts }: TaxRateFormProps) {
-    const [open, setOpen] = useState(false);
+    const t = useTranslations('Finance.taxRates');
+    const router = useRouter();
     const [loading, setLoading] = useState(false);
 
     const form = useForm<TaxRateFormValues>({
         resolver: zodResolver(taxRateSchema),
         defaultValues: {
             name: '',
-            code: '',
             rate: 0,
-            accountId: '',
+            code: '',
+            description: '',
+            isDefault: false,
         },
     });
 
@@ -63,63 +56,99 @@ export function TaxRateForm({ accounts }: TaxRateFormProps) {
         setLoading(true);
         try {
             await createTaxRateAction(data);
-            setOpen(false);
-            form.reset();
+            router.push('/dashboard/finance/tax-rates');
+            router.refresh();
         } catch (error) {
-            console.error(error);
+            console.error('Error creating tax rate:', error);
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>
-                <Button>
-                    <Plus className="mr-2 h-4 w-4" />
-                    New Tax Rate
-                </Button>
-            </DialogTrigger>
-            <DialogContent>
-                <DialogHeader>
-                    <DialogTitle>Add New Tax Rate</DialogTitle>
-                </DialogHeader>
-                <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                        <FormField
-                            control={form.control}
-                            name="name"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Name</FormLabel>
-                                    <FormControl>
-                                        <Input {...field} placeholder="e.g. VAT 20%" />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
+        <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                <div className="flex items-center justify-between">
+                    <div>
+                        <h2 className="text-2xl font-bold tracking-tight">{t('newTaxRate')}</h2>
+                        <p className="text-muted-foreground">{t('newTaxRateDesc')}</p>
+                    </div>
+                    <div className="flex items-center gap-4">
+                        <Button
+                            type="button"
+                            variant="outline"
+                            onClick={() => router.back()}
+                            disabled={loading}
+                        >
+                            <X className="mr-2 h-4 w-4" />
+                            {t('cancel')}
+                        </Button>
+                        <Button type="submit" disabled={loading}>
+                            {loading ? (
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            ) : (
+                                <Save className="mr-2 h-4 w-4" />
                             )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="code"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Code</FormLabel>
-                                    <FormControl>
-                                        <Input {...field} placeholder="e.g. VAT20" />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+                            {t('save')}
+                        </Button>
+                    </div>
+                </div>
+
+                <Card>
+                    <CardHeader>
+                        <CardTitle>{t('details')}</CardTitle>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                        <div className="grid grid-cols-2 gap-4">
+                            <FormField
+                                control={form.control}
+                                name="name"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>{t('name')}</FormLabel>
+                                        <FormControl>
+                                            <Input placeholder={t('namePlaceholder')} {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="code"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel>{t('code')}</FormLabel>
+                                        <FormControl>
+                                            <Input placeholder="VAT-20" {...field} />
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                        </div>
                         <FormField
                             control={form.control}
                             name="rate"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Rate (%)</FormLabel>
+                                    <FormLabel>{t('rate')}</FormLabel>
                                     <FormControl>
-                                        <Input type="number" step="0.01" {...field} />
+                                        <Input type="number" step="0.01" min="0" {...field} />
+                                    </FormControl>
+                                    <FormDescription>{t('rateDesc')}</FormDescription>
+                                    <FormMessage />
+                                </FormItem>
+                            )}
+                        />
+                        <FormField
+                            control={form.control}
+                            name="description"
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>{t('description')}</FormLabel>
+                                    <FormControl>
+                                        <Textarea placeholder={t('descriptionPlaceholder')} {...field} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -130,16 +159,18 @@ export function TaxRateForm({ accounts }: TaxRateFormProps) {
                             name="accountId"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Linked Account (Optional)</FormLabel>
+                                    <FormLabel>{t('account')}</FormLabel>
                                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                                         <FormControl>
                                             <SelectTrigger>
-                                                <SelectValue placeholder="Select Account" />
+                                                <SelectValue placeholder={t('selectAccount')} />
                                             </SelectTrigger>
                                         </FormControl>
                                         <SelectContent>
-                                            {accounts.map(a => (
-                                                <SelectItem key={a.id} value={a.id}>{a.code} - {a.name}</SelectItem>
+                                            {accounts?.map((account) => (
+                                                <SelectItem key={account.id} value={account.id}>
+                                                    {account.name} ({account.code})
+                                                </SelectItem>
                                             ))}
                                         </SelectContent>
                                     </Select>
@@ -147,14 +178,31 @@ export function TaxRateForm({ accounts }: TaxRateFormProps) {
                                 </FormItem>
                             )}
                         />
-                        <div className="flex justify-end">
-                            <Button type="submit" disabled={loading}>
-                                {loading ? "Saving..." : "Save Tax Rate"}
-                            </Button>
-                        </div>
-                    </form>
-                </Form>
-            </DialogContent>
-        </Dialog>
+                        <FormField
+                            control={form.control}
+                            name="isDefault"
+                            render={({ field }) => (
+                                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                                    <FormControl>
+                                        <Checkbox
+                                            checked={field.value}
+                                            onChange={field.onChange}
+                                        />
+                                    </FormControl>
+                                    <div className="space-y-1 leading-none">
+                                        <FormLabel>
+                                            {t('isDefault')}
+                                        </FormLabel>
+                                        <FormDescription>
+                                            {t('isDefaultDesc')}
+                                        </FormDescription>
+                                    </div>
+                                </FormItem>
+                            )}
+                        />
+                    </CardContent>
+                </Card>
+            </form>
+        </Form>
     );
 }

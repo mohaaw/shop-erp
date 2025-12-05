@@ -88,7 +88,8 @@ export function VariantMatrix({ attributes }: VariantMatrixProps) {
 
         setVariants(newVariants);
         form.setValue("variants", newVariants);
-    }, [attributes, form.getValues("price")]); // Re-run when attributes change
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [attributes, form]); // Re-run when attributes change
 
     if (variants.length === 0) return null;
 

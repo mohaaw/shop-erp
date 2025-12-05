@@ -1,12 +1,31 @@
 'use server';
 
+import { warehouseService, Warehouse, StockTransfer } from '@/lib/services/warehouse-service';
 import { inventoryService } from '@/lib/services/inventory-service';
 import { revalidatePath } from 'next/cache';
 
-export async function createWarehouseAction(name: string, code: string) {
-    const result = inventoryService.createWarehouse({ name, code });
-    revalidatePath('/dashboard/inventory');
-    return result;
+export async function getWarehousesAction() {
+    return warehouseService.getWarehouses();
+}
+
+export async function createWarehouseAction(data: Omit<Warehouse, 'id'>) {
+    warehouseService.createWarehouse(data);
+    revalidatePath('/dashboard/inventory/warehouses');
+}
+
+export async function getStockTransfersAction() {
+    return warehouseService.getStockTransfers();
+}
+
+export async function createStockTransferAction(data: Omit<StockTransfer, 'id'>) {
+    warehouseService.createStockTransfer(data);
+    revalidatePath('/dashboard/inventory/stock-transfers');
+}
+
+export async function createStockAdjustmentAction(data: { productId: string; locationId: string; newQuantity: number }) {
+    // Using updateStock for adjustments
+    inventoryService.updateStock(data.productId, data.locationId, data.newQuantity);
+    revalidatePath('/dashboard/inventory/adjustments');
 }
 
 export async function getLowStockProductsAction() {
@@ -18,35 +37,11 @@ export async function getLowStockProductsAction() {
         return { success: false, error: 'Failed to fetch low stock products' };
     }
 }
-
 export async function updateStockAction(productId: string, locationId: string, quantity: number) {
-    try {
-        inventoryService.updateStock(productId, locationId, quantity);
-        revalidatePath('/dashboard/products');
-        revalidatePath('/dashboard/inventory');
-        return { success: true };
-    } catch (error) {
-        console.error('Failed to update stock:', error);
-        return { success: false, error: 'Failed to update stock' };
-    }
+    inventoryService.updateStock(productId, locationId, quantity);
+    revalidatePath('/dashboard/inventory/adjustments');
 }
 
-export async function getStockQuantsAction() {
-    try {
-        const quants = inventoryService.getAllStockQuants();
-        return { success: true, data: quants };
-    } catch (error) {
-        console.error('Failed to fetch stock quants:', error);
-        return { success: false, error: 'Failed to fetch stock quants' };
-    }
-}
-
-export async function getLocationsAction() {
-    try {
-        const locations = inventoryService.getLocations();
-        return { success: true, data: locations };
-    } catch (error) {
-        console.error('Failed to fetch locations:', error);
-        return { success: false, error: 'Failed to fetch locations' };
-    }
+export async function getLocationsAction(warehouseId?: string) {
+    return warehouseService.getLocations(warehouseId);
 }

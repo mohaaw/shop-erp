@@ -35,6 +35,7 @@ import { Button } from '@/components/ui/button';
 
 import { MoreHorizontal, Pencil, Trash2, Filter } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 import {
     Dialog,
@@ -221,7 +222,7 @@ export function ProductTable({ data }: ProductTableProps) {
                                     <TableCell>
                                         <div className="w-12 h-12 bg-secondary-100 rounded-md flex items-center justify-center text-secondary-400 overflow-hidden">
                                             {product.image ? (
-                                                <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
+                                                <Image src={product.image} alt={product.name} fill className="object-cover" />
                                             ) : (
                                                 <span className="text-xs">IMG</span>
                                             )}

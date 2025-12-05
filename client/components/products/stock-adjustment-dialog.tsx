@@ -54,13 +54,13 @@ export function StockAdjustmentDialog({ product, trigger }: StockAdjustmentDialo
 
     const loadLocations = async () => {
         const result = await getLocationsAction();
-        if (result.success && result.data) {
-            const locs = result.data as Location[];
+        if (result) {
+            const locs = result as Location[];
             setLocations(locs.filter((l) => l.type === 'internal'));
             // Default to WH01/STOCK if available
             const defaultLoc = locs.find((l) => l.code.endsWith('/STOCK'));
             if (defaultLoc) setSelectedLocation(defaultLoc.id);
-            else if (result.data.length > 0) setSelectedLocation(result.data[0].id);
+            else if (locs.length > 0) setSelectedLocation(locs[0].id);
         }
     };
 
@@ -71,12 +71,8 @@ export function StockAdjustmentDialog({ product, trigger }: StockAdjustmentDialo
             const qty = parseFloat(quantity);
             if (isNaN(qty)) return;
 
-            const result = await updateStockAction(product.id, selectedLocation, qty);
-            if (result.success) {
-                setOpen(false);
-            } else {
-                console.error(result.error);
-            }
+            await updateStockAction(product.id, selectedLocation, qty);
+            setOpen(false);
         } catch (error) {
             console.error(error);
         } finally {

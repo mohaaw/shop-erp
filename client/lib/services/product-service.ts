@@ -3,6 +3,8 @@ import { ProductFormValues } from '@/lib/validations/product';
 import { Product } from '@/types/product';
 import { randomUUID } from 'crypto';
 
+
+
 export class ProductService {
     static createProduct(data: ProductFormValues) {
         const id = randomUUID();

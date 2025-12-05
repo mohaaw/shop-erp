@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useLocale } from 'next-intl';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -27,11 +27,7 @@ export function TranslationEditor() {
     const [editingId, setEditingId] = useState<string | null>(null);
     const [editValue, setEditValue] = useState('');
 
-    useEffect(() => {
-        loadTerms();
-    }, [locale]);
-
-    const loadTerms = async () => {
+    const loadTerms = useCallback(async () => {
         setLoading(true);
         try {
             const data = await getTranslationsAction(locale);
@@ -45,7 +41,11 @@ export function TranslationEditor() {
         } finally {
             setLoading(false);
         }
-    };
+    }, [locale]);
+
+    useEffect(() => {
+        loadTerms();
+    }, [loadTerms]);
 
     const filteredTerms = terms.filter(term =>
         term.key.toLowerCase().includes(searchQuery.toLowerCase()) ||

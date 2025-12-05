@@ -4,10 +4,10 @@ import { InvoiceForm } from '@/components/finance/invoice-form';
 import { Product } from '@/types/product';
 
 export default async function NewInvoicePage() {
-    const customersData = await getCustomersAction();
+
     const productsData = await getProductsAction();
 
-    const customers = customersData.success && customersData.customers ? customersData.customers : [];
+    const customers = await getCustomersAction();
     const products = (productsData.success && productsData.products ? productsData.products : []) as Product[];
 
     return (
