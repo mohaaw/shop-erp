@@ -31,11 +31,8 @@ export function TranslationEditor() {
         setLoading(true);
         try {
             const data = await getTranslationsAction(locale);
-            const termList = Object.entries(data).map(([key, value]) => ({
-                key,
-                value: value as string
-            }));
-            setTerms(termList);
+            // data is now TranslationTerm[]
+            setTerms(data);
         } catch (error) {
             console.error('Failed to load translations:', error);
         } finally {
@@ -49,7 +46,8 @@ export function TranslationEditor() {
 
     const filteredTerms = terms.filter(term =>
         term.key.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        term.value.toLowerCase().includes(searchQuery.toLowerCase())
+        term.value.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (term.originalValue && term.originalValue.toLowerCase().includes(searchQuery.toLowerCase()))
     );
 
     const handleEdit = (term: TranslationTerm) => {
@@ -115,15 +113,17 @@ export function TranslationEditor() {
                             <Table>
                                 <TableHeader>
                                     <TableRow>
-                                        <TableHead className="w-[300px]">Source Term (English)</TableHead>
-                                        <TableHead>Translation</TableHead>
+                                        <TableHead className="w-[200px]">Key</TableHead>
+                                        <TableHead className="w-[300px]">Source (English)</TableHead>
+                                        <TableHead>Translation ({locale.toUpperCase()})</TableHead>
                                         <TableHead className="w-[100px]">Action</TableHead>
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
                                     {filteredTerms.map((term) => (
                                         <TableRow key={term.key}>
-                                            <TableCell className="font-medium">{term.key}</TableCell>
+                                            <TableCell className="font-mono text-xs text-muted-foreground">{term.key}</TableCell>
+                                            <TableCell className="text-sm">{term.originalValue}</TableCell>
                                             <TableCell>
                                                 {editingId === term.key ? (
                                                     <Input
@@ -167,7 +167,7 @@ export function TranslationEditor() {
                                     ))}
                                     {filteredTerms.length === 0 && (
                                         <TableRow>
-                                            <TableCell colSpan={3} className="text-center py-8 text-muted-foreground">
+                                            <TableCell colSpan={4} className="text-center py-8 text-muted-foreground">
                                                 No terms found matching &quot;{searchQuery}&quot;
                                             </TableCell>
                                         </TableRow>

@@ -10,8 +10,27 @@ export async function getCurrentUserAction() {
     return user;
 }
 
-export async function updateProfileAction(userId: string, data: { name: string; email: string; bio?: string; avatar?: string }) {
+import { writeFile } from 'fs/promises';
+import path from 'path';
+
+export async function updateProfileAction(userId: string, formData: FormData) {
     try {
+        const name = formData.get('name') as string;
+        const email = formData.get('email') as string;
+        const bio = formData.get('bio') as string;
+        const avatarFile = formData.get('avatarFile') as File | null;
+        let avatar = formData.get('avatar') as string;
+
+        if (avatarFile && avatarFile.size > 0) {
+            const buffer = Buffer.from(await avatarFile.arrayBuffer());
+            const filename = `${userId}-${Date.now()}${path.extname(avatarFile.name)}`;
+            const uploadPath = path.join(process.cwd(), 'public/uploads', filename);
+
+            await writeFile(uploadPath, buffer);
+            avatar = `/uploads/${filename}`;
+        }
+
+        const data = { name, email, bio, avatar };
         const updatedUser = userService.updateProfile(userId, data);
         revalidatePath('/dashboard/settings/profile');
         return { success: true, user: updatedUser };

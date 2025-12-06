@@ -195,3 +195,13 @@
     - [x] Create `ProfileForm` component
     - [x] Update `ProfileSettingsPage` to be dynamic
     - [x] Implement Avatar URL input
+    - [x] Implement Avatar File Upload
+
+## Batch 15: Translations Settings (Odoo-like)
+- [x] **Backend**
+    - [x] Rewrite `translation-service.ts` to use JSON files
+    - [x] Update `translation-actions.ts`
+- [x] **Frontend**
+    - [x] Update `TranslationEditor` to show Source/Target columns
+    - [x] Verify persistence to JSON files
+

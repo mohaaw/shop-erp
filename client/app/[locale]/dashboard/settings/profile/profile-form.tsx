@@ -23,17 +23,37 @@ export function ProfileForm({ user }: ProfileFormProps) {
     const [isLoading, setIsLoading] = useState(false);
     const [avatarUrl, setAvatarUrl] = useState(user.avatar || '');
 
+    const [avatarFile, setAvatarFile] = useState<File | null>(null);
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            setAvatarFile(file);
+            // Create a preview URL
+            const url = URL.createObjectURL(file);
+            setAvatarUrl(url);
+        }
+    };
+
     async function onSubmit(formData: FormData) {
         setIsLoading(true);
         try {
-            const data = {
-                name: formData.get('fullName') as string,
-                email: formData.get('email') as string,
-                bio: formData.get('bio') as string,
-                avatar: avatarUrl, // Use the state for avatar
-            };
+            // Append the file and the current avatar URL (which might be a text URL)
+            // If a file was selected, we append it.
+            if (avatarFile) {
+                formData.append('avatarFile', avatarFile);
+            }
+            // We also send the 'avatar' text field which contains the URL (or the preview URL, but backend handles precedence)
+            // Actually, if we have a file, the backend ignores the 'avatar' string for the final path, 
+            // but if we DON'T have a file, we want the 'avatar' string to be saved.
+            // The formData already contains 'avatar' from the input field if we name it 'avatar'.
+            // Let's ensure the input has name='avatar'.
 
-            const result = await updateProfileAction(user.id, data);
+            // However, the avatar input is controlled by state `avatarUrl`. 
+            // We should ensure it's in the formData.
+            formData.set('avatar', avatarUrl);
+
+            const result = await updateProfileAction(user.id, formData);
 
             if (result.success) {
                 toast.success(t('updateSuccess'));
@@ -58,17 +78,30 @@ export function ProfileForm({ user }: ProfileFormProps) {
                 </Avatar>
                 <div className="space-y-2">
                     <h3 className="font-medium text-secondary-900 dark:text-white">{t('avatar')}</h3>
-                    <div className="flex gap-3 items-center">
-                        <Input
-                            placeholder="Avatar URL"
-                            value={avatarUrl}
-                            onChange={(e) => setAvatarUrl(e.target.value)}
-                            className="w-[300px]"
-                        />
-                        {/* <Button variant="outline" size="sm" type="button">Change</Button> */}
-                        {/* <Button variant="ghost" size="sm" className="text-red-500 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/20" type="button">Remove</Button> */}
+                    <div className="flex flex-col gap-3">
+                        <div className="flex gap-2 items-center">
+                            <Input
+                                placeholder="Avatar URL"
+                                value={avatarUrl}
+                                name="avatar"
+                                onChange={(e) => {
+                                    setAvatarUrl(e.target.value);
+                                    setAvatarFile(null); // Clear file if URL is manually changed
+                                }}
+                                className="w-[300px]"
+                            />
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <span className="text-sm text-muted-foreground">OR</span>
+                            <Input
+                                type="file"
+                                accept="image/*"
+                                onChange={handleFileChange}
+                                className="w-[300px]"
+                            />
+                        </div>
                     </div>
-                    <p className="text-xs text-muted-foreground">Enter an image URL for your avatar.</p>
+                    <p className="text-xs text-muted-foreground">Enter an image URL or upload a file.</p>
                 </div>
             </div>
 
@@ -76,7 +109,7 @@ export function ProfileForm({ user }: ProfileFormProps) {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
                         <Label htmlFor="fullName">{t('fullName')}</Label>
-                        <Input id="fullName" name="fullName" defaultValue={user.name} required />
+                        <Input id="fullName" name="name" defaultValue={user.name} required />
                     </div>
                     <div className="space-y-2">
                         <Label htmlFor="email">{t('email')}</Label>

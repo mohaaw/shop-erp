@@ -1,110 +1,89 @@
-import { db } from '@/lib/db';
+import { promises as fs } from 'fs';
+import path from 'path';
 
 export interface TranslationTerm {
     key: string;
     value: string;
-    category?: string;
+    originalValue?: string; // English value
 }
 
-export const translationService = {
-    updateTranslation: async (key: string, value: string, locale: string) => {
-        try {
-            const stmt = db.prepare(`
-                INSERT INTO Translation (locale, namespace, key, value, updatedAt)
-                VALUES (?, 'common', ?, ?, CURRENT_TIMESTAMP)
-                ON CONFLICT(locale, namespace, key) DO UPDATE SET
-                value = excluded.value,
-                updatedAt = CURRENT_TIMESTAMP
-            `);
-            stmt.run(locale, key, value);
-            return { success: true };
-        } catch (error) {
-            console.error('Failed to update translation:', error);
-            return { success: false, error };
-        }
-    },
+const MESSAGES_DIR = path.join(process.cwd(), 'messages');
 
+export const translationService = {
     getFlatTranslations: async (locale: string): Promise<Record<string, string>> => {
         try {
-            const stmt = db.prepare('SELECT key, value FROM Translation WHERE locale = ?');
-            const translations = stmt.all(locale) as { key: string; value: string }[];
-
-            const result: Record<string, string> = {};
-            translations.forEach((t) => {
-                result[t.key] = t.value;
-            });
-
-            return result;
+            const filePath = path.join(MESSAGES_DIR, `${locale}.json`);
+            const fileContent = await fs.readFile(filePath, 'utf-8');
+            const messages = JSON.parse(fileContent);
+            return flattenMessages(messages);
         } catch (error) {
-            console.error('Failed to fetch translations:', error);
+            console.error(`Failed to load translations for ${locale}:`, error);
             return {};
         }
     },
 
-    getTranslations: async (locale: string): Promise<Record<string, unknown>> => {
+    updateTranslation: async (key: string, value: string, locale: string) => {
         try {
-            const stmt = db.prepare('SELECT key, value FROM Translation WHERE locale = ?');
-            const translations = stmt.all(locale) as { key: string; value: string }[];
+            const filePath = path.join(MESSAGES_DIR, `${locale}.json`);
+            const fileContent = await fs.readFile(filePath, 'utf-8');
+            let messages = JSON.parse(fileContent);
 
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const result: Record<string, any> = {};
+            // Update the nested key
+            messages = setNestedValue(messages, key, value);
 
-            translations.forEach((t) => {
-                const parts = t.key.split('.');
-                let current = result;
-                for (let i = 0; i < parts.length; i++) {
-                    const part = parts[i];
-                    if (i === parts.length - 1) {
-                        current[part] = t.value;
-                    } else {
-                        current[part] = current[part] || {};
-                        current = current[part];
-                    }
-                }
-            });
-
-            return result;
-        } catch (error: unknown) {
-            console.error('Failed to fetch translations:', error);
-            return {};
-        }
-    },
-
-    seed: async (locale: string, messages: Record<string, unknown>) => {
-        try {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const flatten = (obj: any, prefix = ''): Record<string, string> => {
-                return Object.keys(obj).reduce((acc: Record<string, string>, k) => {
-                    const pre = prefix.length ? prefix + '.' : '';
-                    if (typeof obj[k] === 'object' && obj[k] !== null) {
-                        Object.assign(acc, flatten(obj[k], pre + k));
-                    } else {
-                        acc[pre + k] = String(obj[k]);
-                    }
-                    return acc;
-                }, {});
-            };
-
-            const flatMessages = flatten(messages);
-
-            const insert = db.prepare(`
-                INSERT INTO Translation (locale, namespace, key, value, updatedAt)
-                VALUES (?, 'common', ?, ?, CURRENT_TIMESTAMP)
-                ON CONFLICT(locale, namespace, key) DO NOTHING
-            `);
-
-            const insertMany = db.transaction((msgs: Record<string, string>) => {
-                for (const [key, value] of Object.entries(msgs)) {
-                    insert.run(locale, key, value);
-                }
-            });
-
-            insertMany(flatMessages);
-            console.log(`Seeded translations for ${locale}`);
+            await fs.writeFile(filePath, JSON.stringify(messages, null, 2), 'utf-8');
             return { success: true };
-        } catch (error: unknown) {
-            console.error('Failed to seed translations:', error);
+        } catch (error) {
+            console.error(`Failed to update translation for ${locale}:`, error);
             return { success: false, error };
         }
+    },
+
+    // Helper to get both source (en) and target translations for the editor
+    getEditorTranslations: async (targetLocale: string) => {
+        const enFlat = await translationService.getFlatTranslations('en');
+        const targetFlat = targetLocale === 'en' ? enFlat : await translationService.getFlatTranslations(targetLocale);
+
+        const terms: TranslationTerm[] = [];
+        const allKeys = new Set([...Object.keys(enFlat), ...Object.keys(targetFlat)]);
+
+        allKeys.forEach(key => {
+            terms.push({
+                key,
+                value: targetFlat[key] || '',
+                originalValue: enFlat[key] || ''
+            });
+        });
+
+        return terms.sort((a, b) => a.key.localeCompare(b.key));
     }
 };
+
+// Helper functions
+type NestedMessages = {
+    [key: string]: string | NestedMessages;
+};
+
+function flattenMessages(nestedMessages: NestedMessages, prefix = ''): Record<string, string> {
+    return Object.keys(nestedMessages).reduce((messages: Record<string, string>, key) => {
+        const value = nestedMessages[key];
+        const prefixedKey = prefix ? `${prefix}.${key}` : key;
+
+        if (typeof value === 'string') {
+            messages[prefixedKey] = value;
+        } else {
+            Object.assign(messages, flattenMessages(value, prefixedKey));
+        }
+
+        return messages;
+    }, {});
+}
+
+function setNestedValue(obj: NestedMessages, path: string, value: string) {
+    const keys = path.split('.');
+    const lastKey = keys.pop()!;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const lastObj = keys.reduce((o: any, key) => o[key] = o[key] || {}, obj);
+    lastObj[lastKey] = value;
+    return obj;
+}
