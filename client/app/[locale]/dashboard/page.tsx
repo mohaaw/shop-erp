@@ -14,6 +14,22 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { dashboardApi } from '@/lib/api';
+import { getRecentOrders, getSalesData } from '@/app/actions/dashboard-actions';
+import { SalesChart } from '@/components/dashboard/sales-chart';
+import { format } from 'date-fns';
+
+interface Order {
+  id: string;
+  total: number;
+  status: string;
+  createdAt: string;
+  customerName: string | null;
+}
+
+interface SalesData {
+  name: string;
+  total: number;
+}
 
 export default function DashboardPage() {
   const t = useTranslations('Dashboard');
@@ -23,23 +39,32 @@ export default function DashboardPage() {
     customerCount: 0,
     productCount: 0
   });
+  const [recentOrders, setRecentOrders] = useState<Order[]>([]);
+  const [salesData, setSalesData] = useState<SalesData[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchStats = async () => {
+    const fetchData = async () => {
       try {
-        const response = await dashboardApi.getStats();
-        if (response.data.success) {
-          setStats(response.data.data as { totalSales: number; orderCount: number; customerCount: number; productCount: number; });
+        const [statsRes, orders, sales] = await Promise.all([
+          dashboardApi.getStats(),
+          getRecentOrders(),
+          getSalesData()
+        ]);
+
+        if (statsRes.data.success) {
+          setStats(statsRes.data.data as { totalSales: number; orderCount: number; customerCount: number; productCount: number; });
         }
+        setRecentOrders(orders as Order[]);
+        setSalesData(sales as SalesData[]);
       } catch (error) {
-        console.error('Failed to fetch dashboard stats:', error);
+        console.error('Failed to fetch dashboard data:', error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchStats();
+    fetchData();
   }, []);
 
   const statCards = [
@@ -127,12 +152,8 @@ export default function DashboardPage() {
             </CardTitle>
             <CardDescription>{t('charts.last30Days')}</CardDescription>
           </CardHeader>
-          <CardContent>
-            <div className="h-64 flex items-center justify-center bg-secondary-50 dark:bg-secondary-800/50 rounded-lg">
-              <p className="text-secondary-500 dark:text-secondary-400">
-                {t('charts.comingSoon')}
-              </p>
-            </div>
+          <CardContent className="pl-2">
+            <SalesChart data={salesData} />
           </CardContent>
         </Card>
 
@@ -165,21 +186,38 @@ export default function DashboardPage() {
           <CardDescription>{t('recentOrders.subtitle')}</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="space-y-3">
-            {/* {[].map((order: any) => (
-              <div key={order.id} className="flex items-center justify-between p-3 border border-secondary-200 dark:border-secondary-700 rounded-lg">
-                <div>
-                  <p className="font-medium text-secondary-900 dark:text-white">{t('recentOrders.orderPrefix')}{order.id}</p>
-                  <p className="text-sm text-secondary-600 dark:text-secondary-400">{t('recentOrders.hoursAgo')}</p>
+          <div className="space-y-4">
+            {recentOrders.length === 0 ? (
+              <div className="text-center text-sm text-secondary-500 py-4">No recent orders</div>
+            ) : (
+              recentOrders.map((order) => (
+                <div key={order.id} className="flex items-center justify-between p-4 border border-secondary-200 dark:border-secondary-700 rounded-lg hover:bg-secondary-50 dark:hover:bg-secondary-800/50 transition-colors">
+                  <div className="flex flex-col gap-1">
+                    <div className="flex items-center gap-2">
+                      <span className="font-semibold text-secondary-900 dark:text-white">
+                        {order.customerName || 'Walk-in Customer'}
+                      </span>
+                      <span className="text-xs text-secondary-500">#{order.id.slice(-6)}</span>
+                    </div>
+                    <p className="text-sm text-secondary-600 dark:text-secondary-400">
+                      {format(new Date(order.createdAt), 'MMM d, yyyy h:mm a')}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-4">
+                    <span className="font-bold text-secondary-900 dark:text-white">
+                      ${order.total.toFixed(2)}
+                    </span>
+                    <Badge variant={order.status === 'completed' ? 'success' : 'warning'}>
+                      {order.status}
+                    </Badge>
+                  </div>
                 </div>
-                <Badge variant="success">{t('recentOrders.completed')}</Badge>
-              </div>
-            ))} */}
-            {/* Placeholder if no orders */}
-            <div className="text-center text-sm text-secondary-500">No recent orders</div>
+              ))
+            )}
           </div>
         </CardContent>
       </Card>
     </div>
   );
 }
+

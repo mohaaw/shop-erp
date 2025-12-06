@@ -13,7 +13,7 @@ import { toast } from 'sonner';
 
 export default function GeneralSettingsPage() {
     const t = useTranslations('Settings.general');
-    const { storeName, setStoreName } = useSettingsStore();
+    const { storeName, setSettings } = useSettingsStore();
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
         supportEmail: '',
@@ -22,20 +22,22 @@ export default function GeneralSettingsPage() {
     });
 
     useEffect(() => {
-        getSettingsAction().then((settings) => {
+        const fetchSettings = async () => {
+            const settings = await getSettingsAction();
             if (settings) {
-                setStoreName(settings.storeName);
+                setSettings(settings);
                 setFormData({
                     supportEmail: settings.supportEmail || '',
                     currency: settings.currency,
                     timezone: settings.timezone,
                 });
             }
-        });
-    }, [setStoreName]);
+        };
+        fetchSettings();
+    }, [setSettings]);
 
     const handleStoreNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setStoreName(e.target.value);
+        setSettings({ storeName: e.target.value });
     };
 
     const handleSave = async () => {

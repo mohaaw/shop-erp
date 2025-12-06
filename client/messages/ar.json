@@ -21,7 +21,8 @@
         "finance": "المالية",
         "reports": "التقارير",
         "retailErp": "نظام تخطيط موارد المؤسسات",
-        "welcomeAdmin": "مرحباً بالمدير"
+        "welcomeAdmin": "مرحباً بالمدير",
+        "search": "بحث"
     },
     "UserMenu": {
         "profile": "الملف الشخصي",
@@ -540,5 +541,50 @@
             "code": "الرمز",
             "default": "الافتراضي"
         }
+    },
+    "POS": {
+        "title": "نقطة البيع",
+        "subtitle": "معالجة المبيعات وإدارة الطلبات",
+        "searchPlaceholder": "البحث عن المنتجات...",
+        "scanBarcode": "مسح الباركود",
+        "cart": "سلة التسوق",
+        "emptyCart": "السلة فارغة",
+        "total": "الإجمالي",
+        "subtotal": "المجموع الفرعي",
+        "tax": "الضريبة",
+        "discount": "الخصم",
+        "checkout": "الدفع",
+        "customer": "العميل",
+        "selectCustomer": "اختر العميل",
+        "walkInCustomer": "عميل عابر",
+        "payment": "الدفع",
+        "cash": "نقدي",
+        "card": "بطاقة",
+        "amount": "المبلغ",
+        "change": "الباقي",
+        "complete": "إتمام البيع",
+        "receipt": "الإيصال",
+        "print": "طباعة",
+        "newSale": "بيع جديد",
+        "hold": "تعليق",
+        "resume": "استئناف",
+        "quantity": "الكمية",
+        "price": "السعر",
+        "item": "الصنف",
+        "stock": "المخزون"
+    },
+    "TeamHub": {
+        "title": "مركز الفريق",
+        "connected": "متصل",
+        "disconnected": "غير متصل",
+        "chatTitle": "دردشة الفريق",
+        "placeholder": "اكتب رسالة...",
+        "announcements": "الإعلانات",
+        "noAnnouncements": "لا توجد إعلانات حتى الآن."
+    },
+    "Notifications": {
+        "title": "الإشعارات",
+        "empty": "لا توجد إشعارات جديدة",
+        "viewAll": "عرض الكل"
     }
 }

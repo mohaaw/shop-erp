@@ -105,6 +105,15 @@ export const manufacturingService = {
         return this.getBOMById(id)!;
     },
 
+    createBOMItem(data: Omit<BOMItem, 'id'>) {
+        const id = uuidv4();
+        const stmt = db.prepare(`
+            INSERT INTO BOMItem (id, bomId, productId, quantity, scrapRate)
+            VALUES (?, ?, ?, ?, ?)
+        `);
+        stmt.run(id, data.bomId, data.productId, data.quantity, data.scrapRate || 0);
+    },
+
     // Production Order methods
     getProductionOrders(): ProductionOrder[] {
         const stmt = db.prepare(`

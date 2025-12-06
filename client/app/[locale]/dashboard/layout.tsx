@@ -29,16 +29,18 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
   const locale = useLocale();
   const t = useTranslations('Common');
   const isRtl = locale === 'ar';
-  const { storeName, setStoreName } = useSettingsStore();
+  const { storeName, setSettings } = useSettingsStore();
 
   // Fetch settings on mount
   useEffect(() => {
-    getSettingsAction().then((settings) => {
-      if (settings?.storeName) {
-        setStoreName(settings.storeName);
+    const fetchSettings = async () => {
+      const settings = await getSettingsAction();
+      if (settings) {
+        setSettings(settings);
       }
-    });
-  }, [setStoreName]);
+    };
+    fetchSettings();
+  }, [setSettings]);
 
   const initials = storeName
     .split(' ')
@@ -50,6 +52,7 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
   const menuItems = [
     { label: t('dashboard'), href: '/dashboard', icon: LayoutDashboard },
     { label: t('products'), href: '/dashboard/products', icon: Package },
+    { label: t('team'), href: '/dashboard/team', icon: Users },
     { label: t('inventory'), href: '/dashboard/inventory', icon: Box },
     { label: t('sales'), href: '/dashboard/sales', icon: ShoppingCart },
     { label: t('customers'), href: '/dashboard/customers', icon: Users },
@@ -128,21 +131,30 @@ function Sidebar({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) 
   );
 }
 
+import { CommandMenu } from '@/components/command-menu';
+import { ThemeToggle } from '@/components/theme-toggle';
+import { NotificationCenter } from '@/components/notification-center';
+
 function TopNav({ onMenuOpen }: { onMenuOpen: () => void }) {
   const t = useTranslations('Common');
 
   return (
     <header className="sticky top-0 z-20 bg-white dark:bg-secondary-900 border-b border-secondary-200 dark:border-secondary-800">
-      <div className="px-4 py-3 flex items-center justify-between">
-        <button
-          onClick={onMenuOpen}
-          className="md:hidden p-2 hover:bg-secondary-100 dark:hover:bg-secondary-800 rounded-lg transition-colors"
-        >
-          <Menu className="w-5 h-5 text-secondary-900 dark:text-white" />
-        </button>
+      <div className="px-4 py-3 flex items-center justify-between gap-4">
+        <div className="flex items-center gap-4">
+          <button
+            onClick={onMenuOpen}
+            className="md:hidden p-2 hover:bg-secondary-100 dark:hover:bg-secondary-800 rounded-lg transition-colors"
+          >
+            <Menu className="w-5 h-5 text-secondary-900 dark:text-white" />
+          </button>
+          <CommandMenu />
+        </div>
 
-        <div className="flex-1 md:flex-none md:ml-auto flex items-center gap-4">
-          <div className="text-sm font-medium text-secondary-900 dark:text-white">
+        <div className="flex items-center gap-2 md:gap-4">
+          <ThemeToggle />
+          <NotificationCenter />
+          <div className="hidden md:block text-sm font-medium text-secondary-900 dark:text-white border-l pl-4 ml-2 border-secondary-200 dark:border-secondary-800">
             {t('welcomeAdmin')}
           </div>
         </div>
@@ -150,6 +162,7 @@ function TopNav({ onMenuOpen }: { onMenuOpen: () => void }) {
     </header>
   );
 }
+
 
 export default function DashboardLayout({
   children,

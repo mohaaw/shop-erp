@@ -1,6 +1,6 @@
 'use server';
 
-import { manufacturingService, BOM, ProductionOrder, Workstation, JobCard } from '@/lib/services/manufacturing-service';
+import { manufacturingService, ProductionOrder, Workstation, JobCard } from '@/lib/services/manufacturing-service';
 import { revalidatePath } from 'next/cache';
 
 // BOM actions
@@ -12,8 +12,30 @@ export async function getBOMByIdAction(id: string) {
     return manufacturingService.getBOMById(id);
 }
 
-export async function createBOMAction(data: Omit<BOM, 'id' | 'createdAt' | 'updatedAt'>) {
-    const bom = manufacturingService.createBOM(data);
+export async function createBOMAction(data: {
+    productId: string;
+    quantity: number;
+    name: string;
+    items: { productId: string; quantity: number }[];
+}) {
+    // Create the BOM header
+    const bom = manufacturingService.createBOM({
+        productId: data.productId,
+        quantity: data.quantity,
+        isActive: true,
+        notes: data.name, // Using notes for name/description for now
+    });
+
+    // Create BOM items
+    for (const item of data.items) {
+        manufacturingService.createBOMItem({
+            bomId: bom.id,
+            productId: item.productId,
+            quantity: item.quantity,
+            scrapRate: 0,
+        });
+    }
+
     revalidatePath('/dashboard/manufacturing/bom');
     return bom;
 }

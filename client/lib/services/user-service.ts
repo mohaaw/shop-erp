@@ -1,26 +1,23 @@
 import { db } from '@/lib/db';
+import { randomUUID } from 'crypto';
 import bcrypt from 'bcryptjs';
-import { v4 as uuidv4 } from 'uuid';
 
 export interface User {
     id: string;
     name: string;
     email: string;
-    password?: string;
     role: string;
+    password?: string;
+    avatar?: string;
+    bio?: string;
     createdAt: string;
     updatedAt: string;
 }
 
 export const userService = {
-    createUser: async (name: string, email: string, password: string): Promise<User> => {
-        const existingUser = db.prepare('SELECT id FROM User WHERE email = ?').get(email);
-        if (existingUser) {
-            throw new Error('User with this email already exists');
-        }
-
+    createUser: async (name: string, email: string, password: string) => {
+        const id = randomUUID();
         const hashedPassword = await bcrypt.hash(password, 10);
-        const id = uuidv4();
         const now = new Date().toISOString();
 
         const stmt = db.prepare(`
@@ -29,23 +26,33 @@ export const userService = {
         `);
 
         stmt.run(id, name, email, hashedPassword, now, now);
-
-        return {
-            id,
-            name,
-            email,
-            role: 'user',
-            createdAt: now,
-            updatedAt: now
-        };
+        return userService.getUserById(id);
     },
 
-    getUserByEmail: async (email: string): Promise<User | null> => {
-        const user = db.prepare('SELECT * FROM User WHERE email = ?').get(email) as User | undefined;
-        return user || null;
-    },
-
-    verifyPassword: async (password: string, hash: string): Promise<boolean> => {
+    verifyPassword: async (password: string, hash: string) => {
         return bcrypt.compare(password, hash);
+    },
+
+    getUserById: (id: string): User | null => {
+        return db.prepare('SELECT id, name, email, role, avatar, bio, createdAt, updatedAt FROM User WHERE id = ?').get(id) as User | null;
+    },
+
+    getUserByEmail: (email: string): User | null => {
+        return db.prepare('SELECT id, name, email, role, avatar, bio, createdAt, updatedAt FROM User WHERE email = ?').get(email) as User | null;
+    },
+
+    getUserByEmailWithPassword: (email: string): User | null => {
+        return db.prepare('SELECT * FROM User WHERE email = ?').get(email) as User | null;
+    },
+
+    updateProfile: (id: string, data: { name: string; email: string; bio?: string; avatar?: string }) => {
+        const now = new Date().toISOString();
+        const stmt = db.prepare(`
+            UPDATE User 
+            SET name = ?, email = ?, bio = ?, avatar = ?, updatedAt = ?
+            WHERE id = ?
+        `);
+        stmt.run(data.name, data.email, data.bio || null, data.avatar || null, now, id);
+        return userService.getUserById(id);
     }
 };

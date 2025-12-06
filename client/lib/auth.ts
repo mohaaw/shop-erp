@@ -16,7 +16,7 @@ export const authOptions: NextAuthOptions = {
 
                 try {
                     const { userService } = await import('./services/user-service');
-                    const user = await userService.getUserByEmail(credentials.email);
+                    const user = await userService.getUserByEmailWithPassword(credentials.email);
 
                     if (!user || !user.password) {
                         return null;

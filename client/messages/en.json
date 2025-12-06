@@ -21,7 +21,8 @@
     "finance": "Finance",
     "reports": "Reports",
     "retailErp": "Retail ERP",
-    "welcomeAdmin": "Welcome Admin"
+    "welcomeAdmin": "Welcome Admin",
+    "search": "Search"
   },
   "UserMenu": {
     "profile": "Profile",
@@ -700,5 +701,50 @@
       "save": "Save Tax Rate",
       "details": "Tax Rate Details"
     }
+  },
+  "POS": {
+    "title": "Point of Sale",
+    "subtitle": "Process sales and manage orders",
+    "searchPlaceholder": "Search products...",
+    "scanBarcode": "Scan Barcode",
+    "cart": "Shopping Cart",
+    "emptyCart": "Cart is empty",
+    "total": "Total",
+    "subtotal": "Subtotal",
+    "tax": "Tax",
+    "discount": "Discount",
+    "checkout": "Checkout",
+    "customer": "Customer",
+    "selectCustomer": "Select Customer",
+    "walkInCustomer": "Walk-in Customer",
+    "payment": "Payment",
+    "cash": "Cash",
+    "card": "Card",
+    "amount": "Amount",
+    "change": "Change",
+    "complete": "Complete Sale",
+    "receipt": "Receipt",
+    "print": "Print",
+    "newSale": "New Sale",
+    "hold": "Hold",
+    "resume": "Resume",
+    "quantity": "Qty",
+    "price": "Price",
+    "item": "Item",
+    "stock": "Stock"
+  },
+  "TeamHub": {
+    "title": "Team Hub",
+    "connected": "Connected",
+    "disconnected": "Disconnected",
+    "chatTitle": "Team Chat",
+    "placeholder": "Type a message...",
+    "announcements": "Announcements",
+    "noAnnouncements": "No announcements yet."
+  },
+  "Notifications": {
+    "title": "Notifications",
+    "empty": "No new notifications",
+    "viewAll": "View all"
   }
 }

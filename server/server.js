@@ -98,8 +98,15 @@ app.use('/api', (req, res) => {
 });
 
 // Start server
-app.listen(PORT, () => {
+const http = require('http');
+const socketIO = require('./socket');
+
+const server = http.createServer(app);
+socketIO.init(server);
+
+server.listen(PORT, () => {
   console.log(`🚀 Shop ERP Server running on http://localhost:${PORT}`);
   console.log(`🔒 Security: Helmet & Rate Limiting enabled`);
   console.log(`⚡ Performance: Compression enabled`);
+  console.log(`💬 Socket.io: Enabled`);
 });

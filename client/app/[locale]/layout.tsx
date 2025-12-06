@@ -1,9 +1,11 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
-import { ThemeProvider } from '@/lib/theme';
+import { ThemeProvider } from '@/components/theme-provider';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { Toaster } from '@/components/ui/toaster';
+import { SocketProvider } from '@/lib/socket-provider';
+import SessionProvider from '@/components/providers/SessionProvider';
 import '../globals.css';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -15,6 +17,8 @@ export const metadata: Metadata = {
     icon: '/favicon.ico',
   },
 };
+
+import { ThemeManager } from '@/components/theme-manager';
 
 export default async function RootLayout({
   children,
@@ -29,10 +33,20 @@ export default async function RootLayout({
   return (
     <html lang={locale} dir={direction} suppressHydrationWarning>
       <body className={inter.className}>
-        <NextIntlClientProvider messages={messages}>
-          <ThemeProvider>
-            {children}
-            <Toaster />
+        <ThemeManager />
+        <NextIntlClientProvider locale={locale} messages={messages}>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <SessionProvider>
+              <SocketProvider>
+                {children}
+                <Toaster />
+              </SocketProvider>
+            </SessionProvider>
           </ThemeProvider>
         </NextIntlClientProvider>
       </body>

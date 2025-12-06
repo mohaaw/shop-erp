@@ -1,0 +1,14 @@
+{
+  "name": "shop-erp-monorepo",
+  "version": "1.0.0",
+  "description": "Monorepo for Shop ERP System",
+  "scripts": {
+    "dev": "concurrently \"npm run dev --prefix client\" \"npm run dev --prefix server\"",
+    "build": "npm run build --prefix client",
+    "start": "concurrently \"npm run start --prefix client\" \"npm run start --prefix server\"",
+    "install:all": "npm install && npm install --prefix client && npm install --prefix server"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

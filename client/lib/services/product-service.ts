@@ -64,7 +64,7 @@ export class ProductService {
             FROM Product p 
             LEFT JOIN Category c ON p.categoryId = c.id
             ORDER BY p.name
-        `).all();
+        `).all() as Product[];
     }
 
     static getPosProducts() {

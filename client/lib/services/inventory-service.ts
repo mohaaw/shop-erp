@@ -28,6 +28,12 @@ export interface StockMovement {
     date: string;
 }
 
+export interface StockAdjustment extends StockMovement {
+    productName: string;
+    sourceLocationName: string;
+    destLocationName: string;
+}
+
 export const inventoryService = {
     createWarehouse: (data: { name: string; code: string }) => {
         const id = randomUUID();
@@ -73,18 +79,7 @@ export const inventoryService = {
             `).run(moveId, data.productId, data.quantity, data.sourceLocationId, data.destLocationId, data.reference || null, date);
 
             // 2. Update Source Quant (Decrement)
-            db.prepare(`
-                INSERT INTO StockQuant (id, productId, locationId, quantity)
-                VALUES (?, ?, ?, ?)
-                ON CONFLICT(productId, locationId) DO UPDATE SET quantity = quantity - excluded.quantity
-            `).run(randomUUID(), data.productId, data.sourceLocationId, data.quantity); // Note: Logic is tricky here. 
-            // Actually, for Source, we need to SUBTRACT. The upsert above ADDS if new.
-            // Correct logic:
-            // Check if quant exists. If not, create with -quantity. If yes, subtract.
-            // SQLite upsert can do this:
-            // VALUES (..., -quantity) ... UPDATE SET quantity = quantity + excluded.quantity (which is adding negative)
-
-            // Let's redo the Source Quant update properly
+            // Correct logic: Check if quant exists. If not, create with -quantity. If yes, subtract.
             db.prepare(`
                 INSERT INTO StockQuant (id, productId, locationId, quantity)
                 VALUES (?, ?, ?, ?)
@@ -109,9 +104,6 @@ export const inventoryService = {
     },
 
     getProductStock: (productId: string) => {
-        // Sum of all internal locations
-        // We need to know which locations are internal.
-        // For now, let's just sum all quants where location type is 'internal'
         const result = db.prepare(`
             SELECT SUM(sq.quantity) as total 
             FROM StockQuant sq
@@ -122,7 +114,6 @@ export const inventoryService = {
     },
 
     getProductsWithStock: () => {
-        // Get all products and their current stock level (sum of internal locations)
         const products = db.prepare(`
             SELECT p.*, COALESCE(SUM(sq.quantity), 0) as stock
             FROM Product p
@@ -143,21 +134,11 @@ export const inventoryService = {
     },
 
     updateStock: (productId: string, locationId: string, newQuantity: number) => {
-        // This is a "Physical Inventory" adjustment.
-        // We calculate the difference and create a movement to/from "Inventory Adjustment" location.
-        // For simplicity, we'll just assume a direct update for now, but ideally we should find/create a virtual location for adjustments.
-
-        // 1. Get current stock
         const currentQty = inventoryService.getStockLevel(productId, locationId);
         const diff = newQuantity - currentQty;
 
         if (diff === 0) return;
 
-        // 2. Determine Source/Dest
-        // If diff > 0, we are adding stock. Source: Virtual/Adjustment, Dest: locationId
-        // If diff < 0, we are removing stock. Source: locationId, Dest: Virtual/Adjustment
-
-        // Let's find or create a Virtual Location for adjustments
         let adjustmentLoc = db.prepare("SELECT id FROM Location WHERE type = 'virtual' AND name = 'Inventory Adjustment'").get() as { id: string } | undefined;
 
         if (!adjustmentLoc) {
@@ -186,9 +167,6 @@ export const inventoryService = {
     },
 
     getLowStockProducts: () => {
-        // Get products where stock < minStock
-        // Note: We need to aggregate stock first.
-        // This query gets products, sums their internal stock, and filters by minStock.
         return db.prepare(`
             SELECT * FROM (
                 SELECT p.*, COALESCE(SUM(sq.quantity), 0) as stock
@@ -198,5 +176,17 @@ export const inventoryService = {
                 GROUP BY p.id
             ) WHERE minStock > 0 AND stock < minStock
         `).all();
+    },
+
+    getStockAdjustments: () => {
+        return db.prepare(`
+            SELECT sm.*, p.name as productName, sl.name as sourceLocationName, dl.name as destLocationName
+            FROM StockMovement sm
+            JOIN Product p ON sm.productId = p.id
+            JOIN Location sl ON sm.sourceLocationId = sl.id
+            JOIN Location dl ON sm.destLocationId = dl.id
+            WHERE sm.reference = 'Inventory Adjustment'
+            ORDER BY sm.date DESC
+        `).all() as StockAdjustment[];
     }
 };

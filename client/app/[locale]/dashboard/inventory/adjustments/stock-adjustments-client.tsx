@@ -2,12 +2,43 @@
 
 import { BackButton } from '@/components/ui/back-button';
 import { Button } from '@/components/ui/button';
+import { DataTable, SortableHeader } from '@/components/ui/data-table';
 import { Plus } from 'lucide-react';
 import Link from 'next/link';
+import { StockAdjustment } from '@/lib/services/inventory-service';
 import { useTranslations } from 'next-intl';
+import { ColumnDef } from '@tanstack/react-table';
 
-export function StockAdjustmentsClient() {
+interface StockAdjustmentsClientProps {
+    adjustments: StockAdjustment[];
+}
+
+export function StockAdjustmentsClient({ adjustments }: StockAdjustmentsClientProps) {
     const t = useTranslations('Inventory.adjustments');
+
+    const columns: ColumnDef<StockAdjustment>[] = [
+        {
+            accessorKey: 'productName',
+            header: ({ column }) => <SortableHeader column={column}>{t('product')}</SortableHeader>,
+        },
+        {
+            accessorKey: 'quantity',
+            header: t('quantity'),
+        },
+        {
+            accessorKey: 'sourceLocationName',
+            header: t('from'),
+        },
+        {
+            accessorKey: 'destLocationName',
+            header: t('to'),
+        },
+        {
+            accessorKey: 'date',
+            header: t('date'),
+            cell: ({ row }) => new Date(row.original.date).toLocaleDateString(),
+        },
+    ];
 
     return (
         <div className="space-y-6">
@@ -27,9 +58,12 @@ export function StockAdjustmentsClient() {
                 </Link>
             </div>
 
-            <div className="rounded-md border p-8 text-center text-muted-foreground">
-                Stock adjustments list coming soon. Use &quot;New Adjustment&quot; to adjust stock.
-            </div>
+            <DataTable
+                columns={columns}
+                data={adjustments}
+                searchKey="productName"
+                searchPlaceholder={t('product')}
+            />
         </div>
     );
 }

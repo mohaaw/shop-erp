@@ -42,6 +42,10 @@ export async function updateStockAction(productId: string, locationId: string, q
     revalidatePath('/dashboard/inventory/adjustments');
 }
 
+export async function getStockAdjustmentsAction() {
+    return inventoryService.getStockAdjustments();
+}
+
 export async function getLocationsAction(warehouseId?: string) {
     return warehouseService.getLocations(warehouseId);
 }
