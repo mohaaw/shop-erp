@@ -16,7 +16,12 @@ import {
     BarChart3,
     PlusCircle,
     LayoutDashboard,
+    Sun,
+    Moon,
+    Languages,
 } from 'lucide-react';
+import { useTheme } from 'next-themes';
+import { usePathname } from 'next/navigation';
 
 import {
     CommandDialog,
@@ -34,6 +39,8 @@ export function CommandMenu() {
     const [open, setOpen] = React.useState(false);
     const router = useRouter();
     const t = useTranslations('Common');
+    const { setTheme } = useTheme();
+    const pathname = usePathname();
 
     React.useEffect(() => {
         const down = (e: KeyboardEvent) => {
@@ -51,6 +58,12 @@ export function CommandMenu() {
         setOpen(false);
         command();
     }, []);
+
+    const switchLocale = (newLocale: string) => {
+        const segments = pathname.split('/');
+        segments[1] = newLocale;
+        router.push(segments.join('/'));
+    };
 
     return (
         <>
@@ -71,81 +84,93 @@ export function CommandMenu() {
                 <CommandInput placeholder="Type a command or search..." />
                 <CommandList>
                     <CommandEmpty>No results found.</CommandEmpty>
-                    <CommandGroup heading="Pages">
-                        <CommandItem
-                            onSelect={() => runCommand(() => router.push('/dashboard'))}
-                        >
+
+                    <CommandGroup heading="Quick Actions">
+                        <CommandItem onSelect={() => runCommand(() => router.push('/dashboard/pos'))}>
+                            <ShoppingCart className="mr-2 h-4 w-4" />
+                            <span>New Sale (POS)</span>
+                        </CommandItem>
+                        <CommandItem onSelect={() => runCommand(() => router.push('/dashboard/products/new'))}>
+                            <PlusCircle className="mr-2 h-4 w-4" />
+                            <span>Add Product</span>
+                        </CommandItem>
+                        <CommandItem onSelect={() => runCommand(() => router.push('/dashboard/crm/customers/new'))}>
+                            <Users className="mr-2 h-4 w-4" />
+                            <span>Add Customer</span>
+                        </CommandItem>
+                        <CommandItem onSelect={() => runCommand(() => router.push('/dashboard/scm/purchase-orders/new'))}>
+                            <Briefcase className="mr-2 h-4 w-4" />
+                            <span>New Purchase Order</span>
+                        </CommandItem>
+                    </CommandGroup>
+
+                    <CommandSeparator />
+
+                    <CommandGroup heading="Navigation">
+                        <CommandItem onSelect={() => runCommand(() => router.push('/dashboard'))}>
                             <LayoutDashboard className="mr-2 h-4 w-4" />
                             <span>Dashboard</span>
                         </CommandItem>
-                        <CommandItem
-                            onSelect={() => runCommand(() => router.push('/dashboard/products'))}
-                        >
+                        <CommandItem onSelect={() => runCommand(() => router.push('/dashboard/products'))}>
                             <Package className="mr-2 h-4 w-4" />
                             <span>Products</span>
                         </CommandItem>
-                        <CommandItem
-                            onSelect={() => runCommand(() => router.push('/dashboard/sales'))}
-                        >
+                        <CommandItem onSelect={() => runCommand(() => router.push('/dashboard/sales'))}>
                             <ShoppingCart className="mr-2 h-4 w-4" />
                             <span>Sales</span>
                         </CommandItem>
-                        <CommandItem
-                            onSelect={() => runCommand(() => router.push('/dashboard/customers'))}
-                        >
+                        <CommandItem onSelect={() => runCommand(() => router.push('/dashboard/crm/customers'))}>
                             <Users className="mr-2 h-4 w-4" />
                             <span>Customers</span>
                         </CommandItem>
-                        <CommandItem
-                            onSelect={() => runCommand(() => router.push('/dashboard/inventory'))}
-                        >
+                        <CommandItem onSelect={() => runCommand(() => router.push('/dashboard/inventory'))}>
                             <Box className="mr-2 h-4 w-4" />
                             <span>Inventory</span>
                         </CommandItem>
-                        <CommandItem
-                            onSelect={() => runCommand(() => router.push('/dashboard/pos'))}
-                        >
-                            <PlusCircle className="mr-2 h-4 w-4" />
-                            <span>POS</span>
-                        </CommandItem>
-                        <CommandItem
-                            onSelect={() => runCommand(() => router.push('/dashboard/suppliers'))}
-                        >
+                        <CommandItem onSelect={() => runCommand(() => router.push('/dashboard/scm/suppliers'))}>
                             <Briefcase className="mr-2 h-4 w-4" />
                             <span>Suppliers</span>
                         </CommandItem>
-                        <CommandItem
-                            onSelect={() => runCommand(() => router.push('/dashboard/employees'))}
-                        >
+                        <CommandItem onSelect={() => runCommand(() => router.push('/dashboard/hcm/employees'))}>
                             <Users2 className="mr-2 h-4 w-4" />
                             <span>Employees</span>
                         </CommandItem>
-                        <CommandItem
-                            onSelect={() => runCommand(() => router.push('/dashboard/finance'))}
-                        >
+                        <CommandItem onSelect={() => runCommand(() => router.push('/dashboard/finance/payments'))}>
                             <DollarSign className="mr-2 h-4 w-4" />
-                            <span>Finance</span>
+                            <span>Payments</span>
                         </CommandItem>
-                        <CommandItem
-                            onSelect={() => runCommand(() => router.push('/dashboard/reports'))}
-                        >
+                        <CommandItem onSelect={() => runCommand(() => router.push('/dashboard/reports'))}>
                             <BarChart3 className="mr-2 h-4 w-4" />
                             <span>Reports</span>
                         </CommandItem>
                     </CommandGroup>
+
                     <CommandSeparator />
-                    <CommandGroup heading="Settings">
-                        <CommandItem
-                            onSelect={() => runCommand(() => router.push('/dashboard/settings/general'))}
-                        >
+
+                    <CommandGroup heading="Settings & Appearance">
+                        <CommandItem onSelect={() => runCommand(() => router.push('/dashboard/settings/profile'))}>
+                            <User className="mr-2 h-4 w-4" />
+                            <span>Profile</span>
+                        </CommandItem>
+                        <CommandItem onSelect={() => runCommand(() => router.push('/dashboard/settings/general'))}>
                             <Settings className="mr-2 h-4 w-4" />
                             <span>General Settings</span>
                         </CommandItem>
-                        <CommandItem
-                            onSelect={() => runCommand(() => router.push('/dashboard/settings/profile'))}
-                        >
-                            <User className="mr-2 h-4 w-4" />
-                            <span>Profile</span>
+                        <CommandItem onSelect={() => runCommand(() => setTheme('light'))}>
+                            <Sun className="mr-2 h-4 w-4" />
+                            <span>Light Mode</span>
+                        </CommandItem>
+                        <CommandItem onSelect={() => runCommand(() => setTheme('dark'))}>
+                            <Moon className="mr-2 h-4 w-4" />
+                            <span>Dark Mode</span>
+                        </CommandItem>
+                        <CommandItem onSelect={() => runCommand(() => switchLocale('en'))}>
+                            <Languages className="mr-2 h-4 w-4" />
+                            <span>English</span>
+                        </CommandItem>
+                        <CommandItem onSelect={() => runCommand(() => switchLocale('ar'))}>
+                            <Languages className="mr-2 h-4 w-4" />
+                            <span>Arabic</span>
                         </CommandItem>
                     </CommandGroup>
                 </CommandList>
