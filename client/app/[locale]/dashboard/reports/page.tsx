@@ -49,7 +49,6 @@ export default function ReportsPage() {
     avgOrderValue: 0
   });
   const [salesData, setSalesData] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
 
   // Fetch real data on component mount
   // Fetch real data on component mount
@@ -57,7 +56,7 @@ export default function ReportsPage() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const token = localStorage.getItem('token'); // Assuming simple token storage for this demo, or rely on session
+        // const token = localStorage.getItem('token');
         // In a real app with next-auth, you'd use useSession().data.accessToken
         // For this audit fix, we'll try to fetch public or rely on cookies if setup, 
         // but likely we need to pass headers if auth is strict. 
@@ -73,7 +72,7 @@ export default function ReportsPage() {
         // Let's try fetching directly from the environmental variable API URL or relative if proxied.
         // PRO TIP: Client components can't easily access process.env in build unless public.
 
-        const headers = { 'Content-Type': 'application/json' };
+        // const headers = { 'Content-Type': 'application/json' };
         // We'd arguably need the auth token here. 
         // For now, let's implement the fetch and see. 
 

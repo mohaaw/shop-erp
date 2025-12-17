@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache';
 import { db } from '@/lib/db';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function getSettingsAction() {
     try {
         const settings = db.prepare('SELECT * FROM Settings LIMIT 1').get() as any;
@@ -22,6 +23,7 @@ export async function getSettingsAction() {
     }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function updateSettingsAction(data: any) {
     try {
         const existing = db.prepare('SELECT id FROM Settings LIMIT 1').get() as any;

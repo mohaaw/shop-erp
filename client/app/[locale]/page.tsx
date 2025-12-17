@@ -127,7 +127,7 @@ export default function Home() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {features.map((feature, i) => {
+          {features.map((feature) => {
             const Icon = feature.icon;
             return (
               <Card key={feature.title} className="group hover:shadow-lg transition-all duration-300 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950/50">

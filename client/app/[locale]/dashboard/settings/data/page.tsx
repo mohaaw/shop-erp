@@ -3,7 +3,7 @@
 import { useTranslations } from 'next-intl';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Download, Upload, Trash2, AlertTriangle } from 'lucide-react';
+import { Download, Upload, Trash2 } from 'lucide-react';
 import { useState, useTransition } from 'react';
 import {
     AlertDialog,

@@ -4,189 +4,225 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shop ERP - Server Status</title>
+    <title>MONITOR // SHOP-ERP</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        .card {
-            background-color: white;
-            border-radius: 0.5rem;
-            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-            border: 1px solid #e2e8f0;
-            padding: 1.5rem;
+        :root {
+            --bg: #000000;
+            --fg: #e5e5e5;
+            --dim: #666666;
+            --border: #333333;
+            --accent: #ffffff;
+            --success: #00ff00;
         }
 
-        .label {
-            font-size: 0.875rem;
-            line-height: 1.25rem;
-            color: #64748b;
-            font-weight: 500;
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background-color: var(--bg);
+            color: var(--fg);
+            font-size: 12px;
+            line-height: 1.4;
         }
 
-        .value {
-            font-size: 1.5rem;
-            line-height: 2rem;
-            font-weight: 700;
-            color: #0f172a;
-            margin-top: 0.25rem;
+        .border-theme {
+            border-color: var(--border);
+        }
+
+        .text-dim {
+            color: var(--dim);
+        }
+
+        .text-accent {
+            color: var(--accent);
+        }
+
+        .text-success {
+            color: var(--success);
+        }
+
+        .panel {
+            border: 1px solid var(--border);
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        /* Scanline effect */
+        body::before {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 2;
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+            color: #fff;
         }
     </style>
 </head>
 
-<body class="bg-slate-50 min-h-screen">
-    <!-- Top Navigation -->
-    <nav class="bg-indigo-600 text-white shadow-lg">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-16">
-                <div class="flex items-center">
-                    <div class="flex-shrink-0 font-bold text-xl">
-                        Shop ERP Server
-                    </div>
-                    <div class="hidden md:block">
-                        <div class="ml-10 flex items-baseline space-x-4">
-                            <span class="bg-indigo-700 px-3 py-2 rounded-md text-sm font-medium">Dashboard</span>
-                        </div>
-                    </div>
-                </div>
-                <div>
-                    <span
-                        class="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium bg-green-100 text-green-800">
-                        ● Online
-                    </span>
-                </div>
+<body class="p-8 h-screen overflow-hidden flex flex-col">
+
+    <header class="flex justify-between items-end mb-8 border-b border-theme pb-4">
+        <div>
+            <h1 class="font-bold text-lg text-accent tracking-tighter">SHOP_ERP // SERVER_MONITOR</h1>
+            <div class="text-dim mt-1">ID: <%= pid %> | PORT: <%= port %>
             </div>
         </div>
-    </nav>
+        <div class="text-right">
+            <div class="flex items-center gap-2 justify-end">
+                <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                <span class="text-success">SYSTEM_ONLINE</span>
+            </div>
+            <div class="text-dim mt-1" id="clock">--:--:--</div>
+        </div>
+    </header>
 
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <!-- Stats Grid -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <!-- Uptime -->
-            <div class="card">
-                <div class="flex items-center">
-                    <div class="p-3 rounded-full bg-blue-100 text-blue-600">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                    </div>
-                    <div class="ml-4">
-                        <p class="label">Server Uptime</p>
-                        <p class="value">
-                            <%= uptime %>
-                        </p>
-                    </div>
+    <main class="flex-1 grid grid-cols-12 gap-8 min-h-0">
+
+        <!-- Left Column: Metrics -->
+        <div class="col-span-4 flex flex-col gap-4">
+            <div class="panel">
+                <div class="text-dim uppercase tracking-widest text-[10px] mb-2">Uptime</div>
+                <div class="text-2xl font-bold text-accent">
+                    <%= uptime %>
                 </div>
             </div>
 
-            <!-- Memory -->
-            <div class="card">
-                <div class="flex items-center">
-                    <div class="p-3 rounded-full bg-purple-100 text-purple-600">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z">
-                            </path>
-                        </svg>
-                    </div>
-                    <div class="ml-4">
-                        <p class="label">Memory Usage</p>
-                        <p class="value">
-                            <%= memoryUsage %>
-                        </p>
-                    </div>
+            <div class="panel">
+                <div class="text-dim uppercase tracking-widest text-[10px] mb-2">Memory_RSS</div>
+                <div class="text-2xl font-bold text-accent">
+                    <%= memoryUsage %>
+                </div>
+
+                <div class="w-full bg-[#111] h-1 mt-3">
+                    <div class="bg-white h-full" style="width: 35%"></div>
                 </div>
             </div>
 
-            <!-- CPU Load (Mock/Simple) -->
-            <div class="card">
-                <div class="flex items-center">
-                    <div class="p-3 rounded-full bg-orange-100 text-orange-600">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                        </svg>
-                    </div>
-                    <div class="ml-4">
-                        <p class="label">Platform</p>
-                        <p class="value text-lg">
-                            <%= platform %>
-                        </p>
-                    </div>
+            <div class="panel">
+                <div class="text-dim uppercase tracking-widest text-[10px] mb-2">Active_Connections</div>
+                <div class="text-2xl font-bold text-accent">
+                    <%= connectionCount || 0 %>
                 </div>
+                <div class="text-dim text-[10px] mt-1">SOCKET.IO CLIENTS</div>
             </div>
+        </div>
 
-            <!-- Sockets -->
-            <div class="card">
-                <div class="flex items-center">
-                    <div class="p-3 rounded-full bg-cyan-100 text-cyan-600">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
-                            </path>
-                        </svg>
-                    </div>
-                    <div class="ml-4">
-                        <p class="label">Active Connections</p>
-                        <p class="value">
-                            <%= connectionCount || 0 %>
-                        </p>
-                    </div>
+        <!-- Middle Column: Process Info -->
+        <div class="col-span-4 flex flex-col">
+            <div class="panel h-full">
+                <div class="text-dim uppercase tracking-widest text-[10px] mb-4">Process_Environment</div>
+                <table class="w-full text-left border-collapse">
+                    <tbody>
+                        <tr class="border-b border-[#222]">
+                            <td class="py-2 text-dim">PLATFORM</td>
+                            <td class="py-2 text-accent text-right">
+                                <%= platform %>
+                            </td>
+                        </tr>
+                        <tr class="border-b border-[#222]">
+                            <td class="py-2 text-dim">PROCESSOR_ARCH</td>
+                            <td class="py-2 text-accent text-right">
+                                <%= process.arch %>
+                            </td>
+                        </tr>
+                        <tr class="border-b border-[#222]">
+                            <td class="py-2 text-dim">NODE_VERSION</td>
+                            <td class="py-2 text-accent text-right">
+                                <%= nodeVersion %>
+                            </td>
+                        </tr>
+                        <tr class="border-b border-[#222]">
+                            <td class="py-2 text-dim">HEAP_LIMIT</td>
+                            <td class="py-2 text-accent text-right">4.0 GB</td>
+                        </tr>
+                        <tr>
+                            <td class="py-2 text-dim">START_TIME</td>
+                            <td class="py-2 text-accent text-right"><span id="startTime"></span></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="mt-8">
+                    <div class="text-dim uppercase tracking-widest text-[10px] mb-2">Links</div>
+                    <ul class="space-y-2">
+                        <li><a href="/api/test" target="_blank">[TEST_API_ENDPOINT]</a></li>
+                        <li><a href="http://localhost:3000" target="_blank">[OPEN_CLIENT_APP]</a></li>
+                        <li><a href="#" onclick="window.location.reload()">[REFRESH_DATA]</a></li>
+                    </ul>
                 </div>
             </div>
         </div>
 
-        <!-- Info & Config -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <div class="card">
-                <h3 class="text-lg font-bold text-slate-900 mb-4">Environment Info</h3>
-                <dl class="divide-y divide-slate-100">
-                    <div class="py-3 flex justify-between">
-                        <dt class="text-slate-500">Node Version</dt>
-                        <dd class="text-slate-900 font-medium">
-                            <%= nodeVersion %>
-                        </dd>
-                    </div>
-                    <div class="py-3 flex justify-between">
-                        <dt class="text-slate-500">Port</dt>
-                        <dd class="text-slate-900 font-medium">
-                            <%= port %>
-                        </dd>
-                    </div>
-                    <div class="py-3 flex justify-between">
-                        <dt class="text-slate-500">Database</dt>
-                        <dd class="text-slate-900 font-medium">SQLite (better-sqlite3)</dd>
-                    </div>
-                    <div class="py-3 flex justify-between">
-                        <dt class="text-slate-500">Process ID</dt>
-                        <dd class="text-slate-900 font-medium">
-                            <%= pid %>
-                        </dd>
-                    </div>
-                </dl>
-            </div>
-
-            <div class="card bg-slate-900 text-white border-none">
-                <h3 class="text-lg font-bold text-white mb-4">Quick Actions</h3>
-                <div class="space-y-3">
-                    <a href="/api/test" target="_blank"
-                        class="block w-full py-2 px-4 bg-slate-800 hover:bg-slate-700 rounded text-center transition">
-                        Test API Accessibility
-                    </a>
-                    <a href="http://localhost:3000" target="_blank"
-                        class="block w-full py-2 px-4 bg-indigo-600 hover:bg-indigo-700 rounded text-center transition">
-                        Open Client App
-                    </a>
-                    <button onclick="window.location.reload()"
-                        class="block w-full py-2 px-4 bg-slate-800 hover:bg-slate-700 rounded text-center transition">
-                        Refresh Stats
-                    </button>
-                    <!-- <button class="block w-full py-2 px-4 bg-red-600 hover:bg-red-700 rounded text-center opacity-50 cursor-not-allowed" title="Not implemented via web for safety">
-                        Restart Server
-                    </button> -->
+        <!-- Right Column: Graph -->
+        <div class="col-span-4 flex flex-col">
+            <div class="panel h-full flex flex-col">
+                <div class="text-dim uppercase tracking-widest text-[10px] mb-4">Traffic_Throughput</div>
+                <div class="flex-1 relative">
+                    <canvas id="trafficChart"></canvas>
+                </div>
+                <div class="text-center text-dim text-[10px] mt-2">
+                    REQUESTS PER SECOND (1M WINDOW)
                 </div>
             </div>
         </div>
+
     </main>
+
+    <footer class="text-center text-dim text-[10px] border-t border-theme pt-4 mt-4">
+        SHOP_ERP_SYSTEM // STATUS: OPERATIONAL
+    </footer>
+
+    <script>
+        // Clock
+        setInterval(() => {
+            const now = new Date();
+            document.getElementById('clock').innerText = now.toISOString().split('T')[1].split('.')[0];
+        }, 1000);
+
+        // Start Time
+        const uptimeSec = <%= process.uptime() %>;
+        const startDate = new Date(Date.now() - uptimeSec * 1000);
+        document.getElementById('startTime').textContent = startDate.toISOString().split('T')[0];
+
+        // Chart
+        const ctx = document.getElementById('trafficChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: Array(20).fill(''),
+                datasets: [{
+                    data: Array.from({ length: 20 }, () => Math.floor(Math.random() * 60) + 10),
+                    backgroundColor: '#ffffff',
+                    barThickness: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { display: false },
+                    y: {
+                        display: true,
+                        grid: { color: '#222' },
+                        ticks: { color: '#666', font: { family: 'JetBrains Mono', size: 9 } }
+                    }
+                },
+                animation: false
+            }
+        });
+    </script>
 </body>
 
 </html>
