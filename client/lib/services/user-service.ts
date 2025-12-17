@@ -30,7 +30,13 @@ export const userService = {
     },
 
     verifyPassword: async (password: string, hash: string) => {
-        return bcrypt.compare(password, hash);
+        console.log('userService.verifyPassword called');
+        console.log('bcrypt lib available:', !!bcrypt);
+        console.log('password length:', password?.length);
+        console.log('hash length:', hash?.length);
+        const result = await bcrypt.compare(password, hash);
+        console.log('bcrypt.compare result:', result);
+        return result;
     },
 
     getUserById: (id: string): User | null => {

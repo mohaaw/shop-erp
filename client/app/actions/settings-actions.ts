@@ -1,78 +1,91 @@
 'use server';
 
-import { db } from '@/lib/db';
 import { revalidatePath } from 'next/cache';
+import { db } from '@/lib/db';
 
 export async function getSettingsAction() {
     try {
-        const settings = db.prepare('SELECT * FROM Settings LIMIT 1').get() as {
-            id: string;
-            storeName: string;
-            supportEmail: string | null;
-            currency: string;
-            timezone: string;
-            primaryColor: string;
-            secondaryColor: string;
-        } | undefined;
-
+        const settings = db.prepare('SELECT * FROM Settings LIMIT 1').get() as any;
         if (!settings) {
-            // Create default settings if not exists
-            const id = Math.random().toString(36).substring(7);
-            const now = new Date().toISOString();
-            db.prepare(`
-        INSERT INTO Settings (id, storeName, currency, timezone, primaryColor, secondaryColor, updatedAt)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
-      `).run(id, 'ERP-SHOP', 'usd', 'utc', '#3B82F6', '#64748B', now);
-
+            // Return defaults if no settings found
             return {
-                storeName: 'ERP-SHOP',
-                currency: 'usd',
-                timezone: 'utc',
-                supportEmail: null,
-                primaryColor: '#3B82F6',
-                secondaryColor: '#64748B'
+                theme: 'system',
+                language: 'en',
+                currency: 'USD',
+                companyName: 'My Shop',
             };
         }
-
         return settings;
     } catch (error) {
-        console.error('Error fetching settings:', error);
+        console.error('Failed to fetch settings:', error);
         return null;
     }
 }
 
-export async function updateSettingsAction(data: {
-    storeName: string;
-    supportEmail?: string;
-    currency: string;
-    timezone: string;
-    primaryColor?: string;
-    secondaryColor?: string;
-}) {
+export async function updateSettingsAction(data: any) {
     try {
-        const now = new Date().toISOString();
-
-        // Check if settings exist
-        const existing = db.prepare('SELECT id FROM Settings LIMIT 1').get() as { id: string } | undefined;
+        const existing = db.prepare('SELECT id FROM Settings LIMIT 1').get() as any;
 
         if (existing) {
-            db.prepare(`
-        UPDATE Settings 
-        SET storeName = ?, supportEmail = ?, currency = ?, timezone = ?, primaryColor = ?, secondaryColor = ?, updatedAt = ?
-        WHERE id = ?
-      `).run(data.storeName, data.supportEmail || null, data.currency, data.timezone, data.primaryColor || '#3B82F6', data.secondaryColor || '#64748B', now, existing.id);
+            const setClause = Object.keys(data).map(key => `${key} = ?`).join(', ');
+            const values = [...Object.values(data), existing.id];
+            db.prepare(`UPDATE Settings SET ${setClause} WHERE id = ?`).run(...values);
         } else {
-            const id = Math.random().toString(36).substring(7);
-            db.prepare(`
-        INSERT INTO Settings (id, storeName, supportEmail, currency, timezone, primaryColor, secondaryColor, updatedAt)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)
-      `).run(id, data.storeName, data.supportEmail || null, data.currency, data.timezone, data.primaryColor || '#3B82F6', data.secondaryColor || '#64748B', now);
+            const columns = Object.keys(data).join(', ');
+            const placeholders = Object.keys(data).map(() => '?').join(', ');
+            db.prepare(`INSERT INTO Settings (${columns}) VALUES (${placeholders})`).run(...Object.values(data));
         }
 
-        revalidatePath('/dashboard');
+        revalidatePath('/');
         return { success: true };
     } catch (error) {
-        console.error('Error updating settings:', error);
+        console.error('Failed to update settings:', error);
         return { success: false, error: 'Failed to update settings' };
+    }
+}
+
+export async function resetDatabaseAction() {
+    try {
+        // Disable foreign key constraints
+        db.pragma('foreign_keys = OFF');
+
+        const tables = [
+            'Translation', 'Warehouse', 'Location', 'StockMovement', 'StockQuant',
+            'Category', 'Product', 'Customer', 'Order', 'OrderItem',
+            'Account', 'JournalEntry', 'JournalItem', 'Invoice', 'InvoiceItem',
+            'Supplier', 'PurchaseInvoice', 'PurchaseInvoiceItem', 'RFQ', 'RFQItem',
+            'PurchaseOrder', 'PurchaseOrderItem', 'PurchaseReceipt', 'PurchaseReceiptItem',
+            'Lead', 'Opportunity', 'Activity', 'Ticket', 'Note',
+            'Department', 'Employee', 'Attendance', 'LeaveApplication', 'Payroll', 'ExpenseClaim',
+            'BOM', 'BOMItem', 'WorkStation', 'ProductionOrder', 'JobCard',
+            'MaterialRequest', 'MaterialRequestItem', 'Project', 'Task', 'Timesheet',
+            'Cart', 'CartItem', 'WebPage', 'WebForm', 'WebFormSubmission', 'AuditLog'
+        ];
+
+        for (const table of tables) {
+            try {
+                const check = db.prepare(`SELECT name FROM sqlite_master WHERE type='table' AND name=?`).get(table);
+                if (check) {
+                    db.prepare(`DELETE FROM "${table}"`).run();
+                }
+            } catch (err) {
+                console.warn(`Failed to clear table ${table}:`, err);
+            }
+        }
+
+        // Special handling for User table - preserve Admin
+        try {
+            db.prepare(`DELETE FROM User WHERE email != 'admin@example.com'`).run();
+        } catch (err) {
+            console.warn('Failed to clear Users:', err);
+        }
+
+        db.pragma('foreign_keys = ON');
+
+        revalidatePath('/');
+        return { success: true, message: 'Database cleared successfully' };
+    } catch (error) {
+        console.error('Error resetting database:', error);
+        return { success: false, message: 'Failed to reset database' };
     }
 }

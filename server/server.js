@@ -5,6 +5,7 @@ const helmet = require('helmet');
 const compression = require('compression');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
+const path = require('path');
 
 const authRoutes = require('./routes/authRoutes');
 const productRoutes = require('./routes/productRoutes');
@@ -49,42 +50,44 @@ app.use('/api/customers', customerRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/settings', settingsRoutes);
 
-// Dashboard Stats (Kept inline for simplicity as it aggregates multiple domains)
+// Dashboard Routes
+const dashboardController = require('./controllers/dashboardController');
 const authenticateToken = require('./middleware/authMiddleware');
-app.get('/api/dashboard/stats', authenticateToken, (req, res) => {
-  try {
-    const productCount = db.prepare('SELECT COUNT(*) as count FROM Product').get().count;
 
-    // Check tables existence before querying to avoid errors during initial setup
-    let customerCount = 0;
-    let orderCount = 0;
-    let totalSales = 0;
+app.get('/api/dashboard/stats', authenticateToken, dashboardController.getStats);
+app.get('/api/dashboard/sales-chart', authenticateToken, dashboardController.getSalesChart);
+app.get('/api/dashboard/recent-orders', authenticateToken, dashboardController.getRecentOrders);
 
-    const customerTable = db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='Customer'").get();
-    if (customerTable) {
-      customerCount = db.prepare('SELECT COUNT(*) as count FROM Customer').get().count;
-    }
 
-    const orderTable = db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name='Order'").get();
-    if (orderTable) {
-      orderCount = db.prepare('SELECT COUNT(*) as count FROM "Order"').get().count;
-      totalSales = db.prepare('SELECT SUM(total) as total FROM "Order"').get().total || 0;
-    }
+// --- Server Status Dashboard (Web GUI) ---
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
 
-    res.json({
-      success: true,
-      data: {
-        totalSales,
-        orderCount,
-        customerCount,
-        productCount
-      }
-    });
-  } catch (error) {
-    console.error('Error fetching stats:', error);
-    res.status(500).json({ success: false, message: 'Failed to fetch stats' });
-  }
+function formatUptime(seconds) {
+  const d = Math.floor(seconds / (3600 * 24));
+  const h = Math.floor(seconds % (3600 * 24) / 3600);
+  const m = Math.floor(seconds % 3600 / 60);
+  const s = Math.floor(seconds % 60);
+  return `${d}d ${h}h ${m}m ${s}s`;
+}
+
+app.get('/monitor', (req, res) => {
+  const memory = process.memoryUsage();
+
+  // Basic stats
+  const stats = {
+    uptime: formatUptime(process.uptime()),
+    memoryUsage: Math.round(memory.rss / 1024 / 1024) + ' MB',
+    platform: process.platform,
+    nodeVersion: process.version,
+    pid: process.pid,
+    port: PORT,
+    connectionCount: socketIO.getConnectionCount ? socketIO.getConnectionCount() : 0
+  };
+
+  res.render('dashboard', stats);
 });
+
 
 app.get('/api/test', (req, res) => {
   res.status(200).json({ success: true, message: "Backend API is reachable!" });
@@ -100,13 +103,63 @@ app.use('/api', (req, res) => {
 // Start server
 const http = require('http');
 const socketIO = require('./socket');
+const { exec } = require('child_process');
 
 const server = http.createServer(app);
 socketIO.init(server);
 
-server.listen(PORT, () => {
-  console.log(`🚀 Shop ERP Server running on http://localhost:${PORT}`);
-  console.log(`🔒 Security: Helmet & Rate Limiting enabled`);
-  console.log(`⚡ Performance: Compression enabled`);
-  console.log(`💬 Socket.io: Enabled`);
-});
+// Function to kill the process using the port and restart the server
+// Function to kill the process using the port and restart the server
+function startServer() {
+  server.listen(PORT, () => {
+    console.log(`🚀 Shop ERP Server running on http://localhost:${PORT}`);
+    console.log(`🔒 Security: Helmet & Rate Limiting enabled`);
+    console.log(`⚡ Performance: Compression enabled`);
+    console.log(`💬 Socket.io: Enabled`);
+  });
+
+  server.on('error', (err) => {
+    if (err.code === 'EADDRINUSE') {
+      console.log(`⚠️  Port ${PORT} is in use. Attempting to kill the process...`);
+      const cmd = process.platform === 'win32'
+        ? `netstat -ano | findstr :${PORT}`
+        : `lsof -t -i:${PORT}`;
+
+      exec(cmd, (error, stdout, stderr) => {
+        if (error) {
+          // Fallback for some linux environments without lsof, try fuser or just fail gracefully
+          console.log(`⚠️  Could not find process with lsof, trying fuser...`);
+          exec(`fuser -k ${PORT}/tcp`, (err2, stdout2) => {
+            if (err2) {
+              console.error(`❌ Failed to kill process on port ${PORT}. Please stop it manually.`);
+              process.exit(1);
+            }
+            console.log(`✅ Process killed. Restarting server...`);
+            setTimeout(startServer, 1000);
+          });
+          return;
+        }
+
+        const pids = stdout.trim().split('\n');
+        if (pids.length > 0) {
+          const killCmd = process.platform === 'win32'
+            ? `taskkill /F /PID ${pids[0]}`
+            : `kill -9 ${pids.join(' ')}`;
+
+          exec(killCmd, (err, stdout, stderr) => {
+            if (err) {
+              console.error(`❌ Failed to kill process ${pids.join(' ')}`);
+              process.exit(1);
+            }
+            console.log(`✅ Process ${pids.join(' ')} killed. Restarting server...`);
+            setTimeout(startServer, 1000);
+          });
+        }
+      });
+    } else {
+      console.error('Server error:', err);
+    }
+  });
+}
+
+startServer();

@@ -55,7 +55,8 @@
     "copyright": "© 2025 ERP-SHOP. All rights reserved.",
     "invalidCredentials": "Invalid email or password",
     "enterpriseResourcePlanning": "Enterprise Resource Planning for Retail",
-    "unexpectedError": "An unexpected error occurred"
+    "unexpectedError": "An unexpected error occurred",
+    "unauthorizedAccess": "You don't have permission to access this resource. Contact your administrator if you believe this is an error."
   },
   "Landing": {
     "nav": {
@@ -104,6 +105,11 @@
       "title": "Dashboard",
       "subtitle": "Welcome back! Here's your business overview."
     },
+    "auditTrail": {
+      "title": "Recent Activity",
+      "noActivity": "No activity yet",
+      "noActivityDesc": "Recent actions will appear here"
+    },
     "stats": {
       "totalSales": "Total Sales",
       "orders": "Orders",
@@ -129,6 +135,13 @@
       "orderPrefix": "Order #",
       "hoursAgo": "2 hours ago",
       "completed": "Completed"
+    },
+    "lowStock": {
+      "title": "Low Stock Alerts",
+      "underMin": "Below min: {min}",
+      "allGood": "All Good!",
+      "noIssues": "No products with low stock alerts",
+      "loading": "Loading alerts..."
     }
   },
   "Settings": {
@@ -734,6 +747,10 @@
     "item": "Item",
     "stock": "Stock"
   },
+  "Reports": {
+    "title": "Reports & Analytics",
+    "subtitle": "Comprehensive business insights and analytics"
+  },
   "TeamHub": {
     "title": "Team Hub",
     "connected": "Connected",
@@ -746,6 +763,8 @@
   "Notifications": {
     "title": "Notifications",
     "empty": "No new notifications",
-    "viewAll": "View all"
+    "viewAll": "View all",
+    "notifications": "notifications",
+    "markAllRead": "Mark all read"
   }
 }

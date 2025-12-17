@@ -57,6 +57,19 @@ const nextConfig = {
   output: 'standalone',
   compress: true,
   poweredByHeader: false,
+  experimental: {
+    serverComponentsExternalPackages: ['better-sqlite3'],
+  },
+  webpack: (config) => {
+    config.externals.push({
+      'better-sqlite3': 'commonjs better-sqlite3',
+    });
+    return config;
+  },
+  compiler: {
+    removeConsole: process.env.NODE_ENV === 'production',
+  },
+  productionBrowserSourceMaps: false,
 };
 
 module.exports = withNextIntl(nextConfig);

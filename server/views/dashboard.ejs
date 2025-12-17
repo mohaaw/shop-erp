@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop ERP - Server Status</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .card { @apply bg-white rounded-lg shadow-sm border border-slate-200 p-6; }
+        .label { @apply text-sm text-slate-500 font-medium; }
+        .value { @apply text-2xl font-bold text-slate-900 mt-1; }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen">
+    <!-- Top Navigation -->
+    <nav class="bg-indigo-600 text-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 font-bold text-xl">
+                        Shop ERP Server
+                    </div>
+                    <div class="hidden md:block">
+                        <div class="ml-10 flex items-baseline space-x-4">
+                            <span class="bg-indigo-700 px-3 py-2 rounded-md text-sm font-medium">Dashboard</span>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <span class="inline-flex items-center px-3 py-0.5 rounded-full text-sm font-medium bg-green-100 text-green-800">
+                        ● Online
+                    </span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Stats Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <!-- Uptime -->
+            <div class="card">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-blue-100 text-blue-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    </div>
+                    <div class="ml-4">
+                        <p class="label">Server Uptime</p>
+                        <p class="value"><%= uptime %></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Memory -->
+            <div class="card">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-purple-100 text-purple-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"></path></svg>
+                    </div>
+                    <div class="ml-4">
+                        <p class="label">Memory Usage</p>
+                        <p class="value"><%= memoryUsage %></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CPU Load (Mock/Simple) -->
+            <div class="card">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-orange-100 text-orange-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                    </div>
+                    <div class="ml-4">
+                        <p class="label">Platform</p>
+                        <p class="value text-lg"><%= platform %></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sockets -->
+            <div class="card">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-cyan-100 text-cyan-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+                    </div>
+                    <div class="ml-4">
+                        <p class="label">Active Connections</p>
+                        <p class="value"><%= connectionCount || 0 %></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Info & Config -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div class="card">
+                <h3 class="text-lg font-bold text-slate-900 mb-4">Environment Info</h3>
+                <dl class="divide-y divide-slate-100">
+                    <div class="py-3 flex justify-between">
+                        <dt class="text-slate-500">Node Version</dt>
+                        <dd class="text-slate-900 font-medium"><%= nodeVersion %></dd>
+                    </div>
+                    <div class="py-3 flex justify-between">
+                        <dt class="text-slate-500">Port</dt>
+                        <dd class="text-slate-900 font-medium"><%= port %></dd>
+                    </div>
+                    <div class="py-3 flex justify-between">
+                        <dt class="text-slate-500">Database</dt>
+                        <dd class="text-slate-900 font-medium">SQLite (better-sqlite3)</dd>
+                    </div>
+                    <div class="py-3 flex justify-between">
+                        <dt class="text-slate-500">Process ID</dt>
+                        <dd class="text-slate-900 font-medium"><%= pid %></dd>
+                    </div>
+                </dl>
+            </div>
+
+            <div class="card bg-slate-900 text-white border-none">
+                <h3 class="text-lg font-bold text-white mb-4">Quick Actions</h3>
+                <div class="space-y-3">
+                    <a href="/api/test" target="_blank" class="block w-full py-2 px-4 bg-slate-800 hover:bg-slate-700 rounded text-center transition">
+                        Test API Accessibility
+                    </a>
+                    <a href="http://localhost:3000" target="_blank" class="block w-full py-2 px-4 bg-indigo-600 hover:bg-indigo-700 rounded text-center transition">
+                        Open Client App
+                    </a>
+                    <button onclick="window.location.reload()" class="block w-full py-2 px-4 bg-slate-800 hover:bg-slate-700 rounded text-center transition">
+                        Refresh Stats
+                    </button>
+                    <!-- <button class="block w-full py-2 px-4 bg-red-600 hover:bg-red-700 rounded text-center opacity-50 cursor-not-allowed" title="Not implemented via web for safety">
+                        Restart Server
+                    </button> -->
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

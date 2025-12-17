@@ -55,7 +55,8 @@
         "copyright": "© 2025 ERP-SHOP. جميع الحقوق محفوظة.",
         "invalidCredentials": "البريد الإلكتروني أو كلمة المرور غير صحيحة",
         "enterpriseResourcePlanning": "تخطيط موارد المؤسسات لتجارة التجزئة",
-        "unexpectedError": "حدث خطأ غير متوقع"
+        "unexpectedError": "حدث خطأ غير متوقع",
+        "unauthorizedAccess": "ليس لديك إذن للوصول إلى هذا المورد. تواصل مع مسؤول النظام إذا كنت تعتقد أن هذا خطأ."
     },
     "Landing": {
         "nav": {
@@ -104,6 +105,11 @@
             "title": "لوحة التحكم",
             "subtitle": "مرحباً بعودتك! إليك نظرة عامة على أعمالك."
         },
+        "auditTrail": {
+            "title": "النشاط الأخير",
+            "noActivity": "لا توجد أنشطة بعد",
+            "noActivityDesc": "ستظهر الإجراءات الأخيرة هنا"
+        },
         "stats": {
             "totalSales": "إجمالي المبيعات",
             "orders": "الطلبات",
@@ -129,6 +135,13 @@
             "orderPrefix": "طلب #",
             "hoursAgo": "منذ ساعتين",
             "completed": "مكتمل"
+        },
+        "lowStock": {
+            "title": "تنبيهات نقص المخزون",
+            "underMin": "أقل من الحد الأدنى: {min}",
+            "allGood": "كل شيء جيد!",
+            "noIssues": "لا توجد منتجات بتنبيهات نقص المخزون",
+            "loading": "جاري تحميل التنبيهات..."
         }
     },
     "Settings": {
@@ -336,20 +349,38 @@
             "title": "الموردين",
             "subtitle": "إدارة الموردين والبائعين",
             "newSupplier": "مورد جديد",
+            "newSupplierDesc": "إضافة مورد جديد إلى قاعدة البيانات الخاصة بك",
             "name": "الاسم",
+            "namePlaceholder": "اسم المورد",
             "email": "البريد الإلكتروني",
             "phone": "الهاتف",
-            "taxId": "الرقم الضريبي"
+            "address": "العنوان",
+            "taxId": "الرقم الضريبي",
+            "cancel": "إلغاء",
+            "save": "حفظ المورد",
+            "details": "تفاصيل المورد"
         },
         "purchaseOrders": {
             "title": "أوامر الشراء",
-            "subtitle": "إدارة طلبات الشراء",
+            "subtitle": "إدارة أوامر الشراء الخاصة بك",
             "newOrder": "أمر شراء جديد",
+            "newOrderDesc": "إنشاء أمر شراء جديد",
             "orderNumber": "رقم الطلب",
             "supplier": "المورد",
+            "selectSupplier": "اختر المورد",
             "date": "التاريخ",
             "totalAmount": "المبلغ الإجمالي",
-            "status": "الحالة"
+            "status": "الحالة",
+            "selectStatus": "اختر الحالة",
+            "items": "العناصر",
+            "addItem": "إضافة عنصر",
+            "product": "المنتج",
+            "selectProduct": "اختر المنتج",
+            "quantity": "الكمية",
+            "price": "السعر",
+            "cancel": "إلغاء",
+            "save": "حفظ الطلب",
+            "details": "تفاصيل الطلب"
         }
     },
     "CRM": {
@@ -357,10 +388,15 @@
             "title": "العملاء",
             "subtitle": "إدارة قاعدة العملاء",
             "newCustomer": "عميل جديد",
+            "newCustomerDesc": "إضافة عميل جديد إلى قاعدة البيانات الخاصة بك",
             "name": "الاسم",
+            "namePlaceholder": "اسم العميل",
             "email": "البريد الإلكتروني",
             "phone": "الهاتف",
-            "address": "العنوان"
+            "address": "العنوان",
+            "cancel": "إلغاء",
+            "save": "حفظ العميل",
+            "details": "تفاصيل العميل"
         },
         "leads": {
             "title": "العملاء المحتملين",
@@ -384,21 +420,42 @@
             "title": "الأنشطة",
             "subtitle": "تتبع أنشطة العملاء",
             "newActivity": "نشاط جديد",
+            "newActivityDesc": "تسجيل نشاط جديد",
             "subject": "الموضوع",
+            "subjectPlaceholder": "مثلاً: اجتماع مع العميل",
             "type": "النوع",
+            "selectType": "اختر النوع",
             "lead": "العميل المحتمل",
+            "selectLead": "اختر العميل المحتمل",
             "customer": "العميل",
+            "selectCustomer": "اختر العميل",
             "date": "التاريخ",
-            "status": "الحالة"
+            "status": "الحالة",
+            "selectStatus": "اختر الحالة",
+            "description": "الوصف",
+            "descriptionPlaceholder": "تفاصيل النشاط...",
+            "cancel": "إلغاء",
+            "save": "حفظ النشاط",
+            "details": "تفاصيل النشاط"
         },
         "tickets": {
             "title": "تذاكر الدعم",
             "subtitle": "إدارة تذاكر الدعم",
             "newTicket": "تذكرة جديدة",
+            "newTicketDesc": "إنشاء تذكرة دعم جديدة",
             "subject": "الموضوع",
+            "subjectPlaceholder": "ملخص المشكلة",
             "customer": "العميل",
+            "selectCustomer": "اختر العميل",
             "priority": "الأولوية",
-            "status": "الحالة"
+            "selectPriority": "اختر الأولوية",
+            "status": "الحالة",
+            "selectStatus": "اختر الحالة",
+            "description": "الوصف",
+            "descriptionPlaceholder": "وصف مفصل للمشكلة...",
+            "cancel": "إلغاء",
+            "save": "حفظ التذكرة",
+            "details": "تفاصيل التذكرة"
         }
     },
     "Manufacturing": {
@@ -423,17 +480,39 @@
             "subtitle": "إدارة محطات العمل والآلات",
             "newWorkstation": "محطة عمل جديدة",
             "name": "الاسم",
+            "namePlaceholder": "مثال: خط التجميع 1",
             "code": "الرمز",
-            "status": "الحالة"
+            "type": "النوع",
+            "selectType": "اختر النوع",
+            "capacity": "السعة",
+            "status": "الحالة",
+            "selectStatus": "اختر الحالة",
+            "description": "الوصف",
+            "descriptionPlaceholder": "وصف محطة العمل...",
+            "cancel": "إلغاء",
+            "save": "حفظ محطة العمل",
+            "details": "تفاصيل محطة العمل"
         },
         "jobCards": {
             "title": "بطاقات العمل",
             "subtitle": "تتبع عمليات الإنتاج",
             "newJobCard": "بطاقة عمل جديدة",
+            "newJobCardDesc": "إنشاء بطاقة عمل جديدة",
             "productionOrder": "أمر الإنتاج",
+            "selectProductionOrder": "اختر أمر الإنتاج",
             "workstation": "محطة العمل",
+            "selectWorkstation": "اختر محطة العمل",
             "operation": "العملية",
-            "status": "الحالة"
+            "operationPlaceholder": "مثال: التجميع",
+            "status": "الحالة",
+            "selectStatus": "اختر الحالة",
+            "startDate": "تاريخ البدء",
+            "endDate": "تاريخ الانتهاء",
+            "notes": "ملاحظات",
+            "notesPlaceholder": "ملاحظات إضافية...",
+            "cancel": "إلغاء",
+            "save": "حفظ بطاقة العمل",
+            "details": "تفاصيل بطاقة العمل"
         }
     },
     "Inventory": {
@@ -441,60 +520,112 @@
             "title": "المستودعات",
             "subtitle": "إدارة مواقع التخزين",
             "newWarehouse": "مستودع جديد",
+            "newWarehouseDesc": "إضافة مستودع جديد",
             "name": "الاسم",
-            "code": "الرمز"
+            "namePlaceholder": "اسم المستودع",
+            "code": "الرمز",
+            "address": "العنوان",
+            "capacity": "السعة",
+            "cancel": "إلغاء",
+            "save": "حفظ المستودع",
+            "details": "تفاصيل المستودع"
         },
         "stockTransfers": {
             "title": "تحويلات المخزون",
             "subtitle": "نقل المخزون بين المواقع",
             "newTransfer": "تحويل جديد",
+            "newTransferDesc": "إنشاء تحويل مخزون جديد",
             "product": "المنتج",
-            "from": "من",
-            "to": "إلى",
+            "selectProduct": "اختر المنتج",
             "quantity": "الكمية",
+            "sourceLocation": "الموقع المصدر",
+            "destLocation": "الموقع الوجهة",
+            "selectLocation": "اختر الموقع",
             "date": "التاريخ",
-            "status": "الحالة"
+            "status": "الحالة",
+            "selectStatus": "اختر الحالة",
+            "reference": "المرجع",
+            "referencePlaceholder": "مثلاً: TR-001",
+            "cancel": "إلغاء",
+            "save": "حفظ التحويل",
+            "details": "تفاصيل التحويل"
         },
         "adjustments": {
             "title": "تعديلات المخزون",
             "subtitle": "تصحيح مستويات المخزون",
-            "newAdjustment": "تعديل جديد"
+            "newAdjustment": "تعديل جديد",
+            "newAdjustmentDesc": "إنشاء تعديل مخزون جديد",
+            "product": "المنتج",
+            "selectProduct": "اختر المنتج",
+            "location": "الموقع",
+            "selectLocation": "اختر الموقع",
+            "quantity": "الكمية الجديدة",
+            "reason": "السبب",
+            "reasonPlaceholder": "سبب التعديل",
+            "cancel": "إلغاء",
+            "save": "حفظ التعديل",
+            "details": "تفاصيل التعديل"
         }
     },
     "HCM": {
         "attendance": {
             "title": "الحضور",
             "subtitle": "تتبع حضور الموظفين",
-            "newAttendance": "سجل جديد",
+            "newAttendance": "إدخال جديد",
+            "newAttendanceDesc": "تسجيل حضور الموظف",
             "employee": "الموظف",
+            "selectEmployee": "اختر الموظف",
             "date": "التاريخ",
             "checkIn": "تسجيل الدخول",
             "checkOut": "تسجيل الخروج",
-            "status": "الحالة"
+            "status": "الحالة",
+            "selectStatus": "اختر الحالة",
+            "cancel": "إلغاء",
+            "save": "حفظ الإدخال",
+            "details": "تفاصيل الحضور"
         },
         "leave": {
             "title": "طلبات الإجازة",
             "subtitle": "إدارة طلبات الإجازة",
             "newLeave": "طلب جديد",
+            "newLeaveDesc": "تقديم طلب إجازة جديد",
             "employee": "الموظف",
+            "selectEmployee": "اختر الموظف",
             "type": "النوع",
+            "selectType": "اختر نوع الإجازة",
             "startDate": "تاريخ البدء",
             "endDate": "تاريخ الانتهاء",
-            "status": "الحالة"
+            "reason": "السبب",
+            "reasonPlaceholder": "سبب الإجازة...",
+            "status": "الحالة",
+            "selectStatus": "اختر الحالة",
+            "cancel": "إلغاء",
+            "save": "تقديم الطلب",
+            "details": "تفاصيل الإجازة"
         },
         "payroll": {
             "title": "الرواتب",
             "subtitle": "إدارة رواتب الموظفين",
-            "newPayroll": "راتب جديد",
+            "newPayroll": "رواتب جديدة",
+            "newPayrollDesc": "معالجة رواتب الموظفين",
             "employee": "الموظف",
+            "selectEmployee": "اختر الموظف",
             "month": "الشهر",
+            "year": "السنة",
+            "basicSalary": "الراتب الأساسي",
+            "allowances": "البدلات",
+            "deductions": "الخصومات",
             "netSalary": "صافي الراتب",
-            "status": "الحالة"
+            "status": "الحالة",
+            "selectStatus": "اختر الحالة",
+            "cancel": "إلغاء",
+            "save": "معالجة الراتب",
+            "details": "تفاصيل الراتب"
         }
     },
     "Projects": {
         "title": "المشاريع",
-        "subtitle": "إدارة مشاريع المؤسسة",
+        "subtitle": "إدارة المشاريع",
         "newProject": "مشروع جديد",
         "code": "الرمز",
         "name": "الاسم",
@@ -505,21 +636,42 @@
             "title": "المهام",
             "subtitle": "إدارة مهام المشروع",
             "newTask": "مهمة جديدة",
+            "newTaskDesc": "إنشاء مهمة جديدة",
             "taskTitle": "العنوان",
+            "titlePlaceholder": "عنوان المهمة",
             "project": "المشروع",
+            "selectProject": "اختر المشروع",
+            "assignedTo": "مخصص لـ",
+            "selectEmployee": "اختر الموظف",
             "priority": "الأولوية",
+            "selectPriority": "اختر الأولوية",
             "status": "الحالة",
-            "dueDate": "تاريخ الاستحقاق"
+            "selectStatus": "اختر الحالة",
+            "dueDate": "تاريخ الاستحقاق",
+            "description": "الوصف",
+            "descriptionPlaceholder": "وصف المهمة...",
+            "cancel": "إلغاء",
+            "save": "حفظ المهمة",
+            "details": "تفاصيل المهمة"
         },
         "timesheets": {
-            "title": "الجداول الزمنية",
-            "subtitle": "تتبع الوقت المستغرق في المشاريع",
-            "newTimesheet": "سجل جديد",
+            "title": "جداول الوقت",
+            "subtitle": "تتبع الوقت المستغرق في مشاريع",
+            "newTimesheet": "إدخال جديد",
+            "newTimesheetDesc": "تسجيل وقت لمشروع أو مهمة",
             "date": "التاريخ",
             "project": "المشروع",
+            "selectProject": "اختر المشروع",
             "task": "المهمة",
+            "selectTask": "اختر المهمة",
+            "employee": "الموظف",
+            "selectEmployee": "اختر الموظف",
             "hours": "الساعات",
-            "description": "الوصف"
+            "description": "الوصف",
+            "descriptionPlaceholder": "وصف العمل...",
+            "cancel": "إلغاء",
+            "save": "حفظ الإدخال",
+            "details": "تفاصيل الجدول الزمني"
         }
     },
     "Finance": {
@@ -527,11 +679,24 @@
             "title": "المدفوعات",
             "subtitle": "إدارة المدفوعات",
             "newPayment": "دفعة جديدة",
+            "newPaymentDesc": "تسجيل دفعة جديدة",
             "date": "التاريخ",
             "customer": "العميل",
+            "selectCustomer": "اختر العميل",
+            "order": "الطلب",
+            "selectOrder": "اختر الطلب",
             "amount": "المبلغ",
-            "method": "الطريقة",
-            "status": "الحالة"
+            "method": "طريقة الدفع",
+            "selectMethod": "اختر الطريقة",
+            "reference": "المرجع",
+            "referencePlaceholder": "مثلاً: رقم المعاملة",
+            "status": "الحالة",
+            "selectStatus": "اختر الحالة",
+            "notes": "ملاحظات",
+            "notesPlaceholder": "ملاحظات الدفعة...",
+            "cancel": "إلغاء",
+            "save": "حفظ الدفعة",
+            "details": "تفاصيل الدفعة"
         },
         "taxRates": {
             "title": "معدلات الضرائب",
@@ -540,7 +705,16 @@
             "name": "الاسم",
             "rate": "المعدل",
             "code": "الرمز",
-            "default": "الافتراضي"
+            "default": "الافتراضي",
+            "isDefault": "معدل الضريبة الافتراضي",
+            "isDefaultDesc": "تعيين هذا كمعدل ضريبة افتراضي للمنتجات الجديدة",
+            "description": "الوصف",
+            "descriptionPlaceholder": "وصف معدل الضريبة...",
+            "account": "الحساب المرتبط",
+            "selectAccount": "اختر الحساب",
+            "cancel": "إلغاء",
+            "save": "حفظ معدل الضريبة",
+            "details": "تفاصيل معدل الضريبة"
         }
     },
     "POS": {
@@ -559,7 +733,7 @@
         "selectCustomer": "اختر العميل",
         "walkInCustomer": "عميل عابر",
         "payment": "الدفع",
-        "cash": "نقدي",
+        "cash": "نقداً",
         "card": "بطاقة",
         "amount": "المبلغ",
         "change": "الباقي",
@@ -574,6 +748,10 @@
         "item": "الصنف",
         "stock": "المخزون"
     },
+    "Reports": {
+        "title": "التقارير والتحليلات",
+        "subtitle": "تحليلات شاملة ورؤى تجارية"
+    },
     "TeamHub": {
         "title": "مركز الفريق",
         "connected": "متصل",
@@ -586,6 +764,8 @@
     "Notifications": {
         "title": "الإشعارات",
         "empty": "لا توجد إشعارات جديدة",
-        "viewAll": "عرض الكل"
+        "viewAll": "عرض الكل",
+        "notifications": "إشعارات",
+        "markAllRead": "تحديد الكل كمقروء"
     }
 }

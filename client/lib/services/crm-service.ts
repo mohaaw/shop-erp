@@ -243,7 +243,7 @@ export const crmService = {
     getTickets(): SupportTicket[] {
         return db.prepare(`
             SELECT t.*, c.name as customerName
-            FROM SupportTicket t
+            FROM Ticket t
             LEFT JOIN Customer c ON t.customerId = c.id
             ORDER BY t.createdAt DESC
         `).all() as SupportTicket[];
@@ -253,7 +253,7 @@ export const crmService = {
         const id = uuidv4();
         const now = new Date().toISOString();
         const stmt = db.prepare(`
-            INSERT INTO SupportTicket (id, customerId, subject, description, priority, status, assignedTo, createdAt, updatedAt)
+            INSERT INTO Ticket (id, customerId, subject, description, priority, status, assignedTo, createdAt, updatedAt)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         `);
         stmt.run(

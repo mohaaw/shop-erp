@@ -1,8 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { Role, Permission } from '@prisma/client';
-import { RoleWithPermissions } from '@/lib/services/role-service';
+import { useState } from 'react';
+import { RoleWithPermissions, Permission } from '@/lib/services/role-service';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -23,7 +22,7 @@ import {
     DialogFooter,
 } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
-import { Plus, Trash2, Save, Loader2 } from 'lucide-react';
+import { Plus, Trash2, Loader2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { createRoleAction, updateRoleAction, deleteRoleAction } from '@/app/actions/role-actions';
 
@@ -89,7 +88,7 @@ export function RoleEditor({ initialRoles, allPermissions }: RoleEditorProps) {
                 // Revert
                 setRoles(roles);
             }
-        } catch (error) {
+        } catch {
             toast.error('Failed to update permission');
             setRoles(roles);
         }
@@ -119,7 +118,7 @@ export function RoleEditor({ initialRoles, allPermissions }: RoleEditorProps) {
             } else {
                 toast.error('Failed to create role');
             }
-        } catch (error) {
+        } catch {
             toast.error('Failed to create role');
         } finally {
             setLoading(false);
@@ -136,7 +135,7 @@ export function RoleEditor({ initialRoles, allPermissions }: RoleEditorProps) {
             } else {
                 toast.error('Failed to delete role');
             }
-        } catch (error) {
+        } catch {
             toast.error('Failed to delete role');
         }
     };

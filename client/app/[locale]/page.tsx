@@ -84,21 +84,30 @@ export default function Home() {
       </nav>
 
       {/* Hero */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-32">
-        <div className="text-center space-y-6">
-          <h1 className="text-5xl md:text-6xl font-bold text-secondary-900 dark:text-white">
-            {t('hero.titlePart1')}{' '}
-            <span className="text-primary-600">{t('hero.titlePart2')}</span>
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 lg:py-32 relative overflow-hidden">
+        <div className="absolute inset-0 bg-grid-slate-900/[0.04] bg-[bottom_1px_center] dark:bg-grid-slate-400/[0.05] [mask-image:linear-gradient(0deg,transparent,black)] -z-10" />
+        <div className="text-center space-y-8 max-w-4xl mx-auto">
+          <div className="inline-flex items-center rounded-full border border-primary-200 bg-primary-50 px-3 py-1 text-sm font-medium text-primary-800 dark:border-primary-800 dark:bg-primary-900/30 dark:text-primary-300">
+            <span className="flex h-2 w-2 rounded-full bg-primary-600 mr-2 animate-pulse"></span>
+            v2.0 Enterprise Edition is Live
+          </div>
+          <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight text-slate-900 dark:text-white leading-tight">
+            Simplify Retail. <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-indigo-600 dark:from-primary-400 dark:to-indigo-400">
+              Amplify Growth.
+            </span>
           </h1>
-          <p className="text-xl text-secondary-600 dark:text-secondary-400 max-w-2xl mx-auto">
-            {t('hero.subtitle')}
+          <p className="text-xl md:text-2xl text-slate-600 dark:text-slate-400 max-w-2xl mx-auto font-light leading-relaxed">
+            The all-in-one ERP solution designed for modern retailers. manage inventory, sales, customers, and analytics from a single, intuitive interface.
           </p>
-          <div className="flex gap-4 justify-center">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
             <Link href="/dashboard">
-              <Button size="lg">{t('hero.getStarted')}</Button>
+              <Button size="lg" className="h-12 px-8 text-lg shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all">
+                {t('hero.getStarted')}
+              </Button>
             </Link>
             <a href="#features">
-              <Button size="lg" variant="outline">
+              <Button size="lg" variant="outline" className="h-12 px-8 text-lg backdrop-blur-sm">
                 {t('hero.learnMore')}
               </Button>
             </a>
@@ -107,33 +116,31 @@ export default function Home() {
       </section>
 
       {/* Features */}
-      <section id="features" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-secondary-900 dark:text-white mb-4">
-            {t('features.title')}
+      <section id="features" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 bg-slate-50/50 dark:bg-slate-900/50 rounded-3xl my-12">
+        <div className="text-center mb-16 max-w-3xl mx-auto">
+          <h2 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-6">
+            Enterprise-Grade Features for High-Volume Retail
           </h2>
-          <p className="text-xl text-secondary-600 dark:text-secondary-400">
-            {t('features.subtitle')}
+          <p className="text-lg text-slate-600 dark:text-slate-400">
+            Everything you need to run your business efficiently, securely, and at scale.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {features.map((feature) => {
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {features.map((feature, i) => {
             const Icon = feature.icon;
             return (
-              <Card key={feature.title}>
-                <CardContent className="pt-6">
-                  <div className="flex flex-col items-center text-center space-y-3">
-                    <div className="p-3 bg-primary-100 dark:bg-primary-900/30 rounded-lg">
-                      <Icon className="w-6 h-6 text-primary-600 dark:text-primary-400" />
-                    </div>
-                    <h3 className="font-semibold text-secondary-900 dark:text-white">
-                      {feature.title}
-                    </h3>
-                    <p className="text-sm text-secondary-600 dark:text-secondary-400">
-                      {feature.description}
-                    </p>
+              <Card key={feature.title} className="group hover:shadow-lg transition-all duration-300 border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950/50">
+                <CardContent className="pt-8 pb-8 flex flex-col items-center text-center h-full">
+                  <div className="p-4 bg-primary-50 dark:bg-primary-900/10 rounded-2xl mb-6 group-hover:scale-110 transition-transform duration-300">
+                    <Icon className="w-8 h-8 text-primary-600 dark:text-primary-400" />
                   </div>
+                  <h3 className="font-bold text-xl text-slate-900 dark:text-white mb-3">
+                    {feature.title}
+                  </h3>
+                  <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
+                    {feature.description}
+                  </p>
                 </CardContent>
               </Card>
             );

@@ -1,6 +1,6 @@
 'use server';
 
-import { roleService } from '@/lib/services/role-service';
+import { roleService } from '@/lib/services/role-service.server';
 import { revalidatePath } from 'next/cache';
 
 export async function getRolesAction() {

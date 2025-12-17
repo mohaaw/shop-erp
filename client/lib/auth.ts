@@ -12,17 +12,23 @@ export const authOptions: NextAuthOptions = {
                 password: { label: "Password", type: "password" }
             },
             async authorize(credentials) {
+                console.log('Authorize called with:', { email: credentials?.email, hasPassword: !!credentials?.password });
                 if (!credentials?.email || !credentials?.password) return null;
 
                 try {
                     const { userService } = await import('./services/user-service');
+                    console.log('Fetching user...');
                     const user = await userService.getUserByEmailWithPassword(credentials.email);
+                    console.log('User fetch result:', user ? { id: user.id, email: user.email, hasHash: !!user.password } : 'not found');
 
                     if (!user || !user.password) {
+                        console.log('User or password missing');
                         return null;
                     }
 
+                    console.log('Verifying password...');
                     const isValid = await userService.verifyPassword(credentials.password, user.password);
+                    console.log('Password verification result:', isValid);
 
                     if (!isValid) {
                         return null;
