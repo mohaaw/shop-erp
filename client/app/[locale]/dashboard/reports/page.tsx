@@ -102,8 +102,6 @@ export default function ReportsPage() {
         }
       } catch (error) {
         console.error('Failed to fetch dashboard data:', error);
-      } finally {
-        setIsLoading(false);
       }
     };
 

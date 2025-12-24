@@ -16,7 +16,7 @@ Enterprise Resource Planning for Retail Shops - A complete solution for managing
 - **Charts**: Recharts
 - **Forms**: React Hook Form + Zod
 - **Animations**: Framer Motion
-- **Database**: PostgreSQL with Prisma ORM
+- **Database**: SQLite with Prisma ORM
 - **Authentication**: NextAuth.js
 - **File Upload**: UploadThing or Multer
 - **Deployment**: Vercel (recommended) or self-hosted

@@ -2,6 +2,8 @@
 
 This document outlines the completed implementation of the ERP-SHOP UI forms and pages.
 
+>For the **Full Project Report** (including backend, database, and all modules), please see **[report.md](report.md)**.
+
 ## Completed Features
 
 We have successfully implemented the "Create New" forms and pages for the following modules:

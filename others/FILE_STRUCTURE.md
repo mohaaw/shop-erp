@@ -1,6 +1,6 @@
 # ERP-SHOP Complete File Structure
 
-## Root Directory (`d:\shop-erp`)
+## Root Directory (`/home/thedevil/shop-erp`)
 ```
 shop-erp/
 ├── README.md                 # Main project documentation

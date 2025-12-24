@@ -2,7 +2,7 @@
 
 You can run the ERP system in three ways: Development Mode, Production Mode, or using Docker.
 
-## 1. Development Mode (Recommended for coding)
+### 1. Development Mode (Recommended for coding)
 Use this mode when you are making changes to the code. This runs both the Next.js frontend and Express backend concurrently.
 
 1.  **Install Dependencies** (Run from root):
@@ -13,7 +13,7 @@ Use this mode when you are making changes to the code. This runs both the Next.j
 2.  **Initialize Database**:
     ```bash
     cd client
-    npm run db:init
+    node init-sqlite.js # or equivalent initialization script
     cd ..
     ```
 

@@ -6,9 +6,10 @@ This is the backend API server for the Shop ERP System, built with Express.js an
 
 - **Authentication**: User registration and login with JWT tokens
 - **Authorization**: Protected routes with JWT middleware
-- **Mock Data**: Built-in mock users for development and testing
-- **CORS Support**: Configured to work with the Vue frontend
-- **Error Handling**: Comprehensive error handling and logging
+- **Real-time**: Socket.io integration for Chat and Announcements
+- **Security**: Helmet, Compression, Rate Limiting, and Morgan logging
+- **Database**: SQLite integration with Prisma and Better-SQLite3
+- **Monitoring**: Built-in Server Status Dashboard (/monitor)
 
 ## Prerequisites
 
@@ -42,7 +43,7 @@ NODE_ENV=development
 JWT_SECRET=your-very-secret-key-for-shop-erp-project-secure
 
 # CORS Configuration (if needed)
-CORS_ORIGIN=http://localhost:5173
+CORS_ORIGIN=http://localhost:3000
 ```
 
 **Note**: For production, use a strong and unique JWT_SECRET. Never commit `.env` files to version control.
@@ -121,6 +122,8 @@ Configure your Vue frontend to communicate with the backend:
 1. In the client `.env` file, set:
 ```env
 VITE_API_BASE_URL=http://localhost:3001/api
+# Or for Next.js:
+NEXT_PUBLIC_API_URL=http://localhost:3001
 ```
 
 2. Make sure both client (port 5173) and server (port 3001) are running simultaneously.
@@ -168,16 +171,16 @@ The server includes comprehensive logging. Check the console output for:
 - Token verification results
 - Error messages
 
-## Future Enhancements
-
-- [ ] Database integration (MongoDB, PostgreSQL, etc.)
-- [ ] User role management
-- [ ] Product management endpoints
-- [ ] Customer management endpoints
-- [ ] Sales and inventory endpoints
-- [ ] Email notifications
-- [ ] Request validation middleware
-- [ ] Rate limiting
+## ✅ Features Implemented
+- [x] Database integration (SQLite)
+- [x] User role management (RBAC)
+- [x] Product management endpoints
+- [x] Customer management endpoints
+- [x] Sales and inventory endpoints
+- [x] Socket.io real-time communication
+- [x] Request validation middleware
+- [x] Rate limiting & Security headers
+- [x] Server Monitoring Interface
 
 ## Troubleshooting
 
