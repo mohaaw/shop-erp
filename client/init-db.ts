@@ -111,6 +111,9 @@ CREATE TABLE IF NOT EXISTS "User" (
     "email" TEXT NOT NULL UNIQUE,
     "password" TEXT NOT NULL,
     "role" TEXT NOT NULL DEFAULT 'user',
+    "twoFactorEnabled" BOOLEAN DEFAULT 0,
+    "twoFactorSecret" TEXT,
+    "backupCodes" TEXT,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
 );

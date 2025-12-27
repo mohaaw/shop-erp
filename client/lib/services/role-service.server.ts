@@ -1,3 +1,4 @@
+import "server-only";
 // Server-side role service for server actions
 import { db } from '@/lib/db';
 

@@ -1,3 +1,4 @@
+import "server-only";
 import { db } from '../db';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -221,6 +222,31 @@ export const employeeService = {
         `);
         stmt.run(id, data.employeeId, data.type, data.startDate, data.endDate, data.reason || null, data.status || 'pending');
         return { id, ...data };
+    },
+
+    updateLeave(id: string, data: Partial<LeaveApplication>): LeaveApplication {
+        const stmt = db.prepare(`
+            UPDATE LeaveApplication
+            SET type = ?, startDate = ?, endDate = ?, reason = ?, status = ?
+            WHERE id = ?
+        `);
+
+        // Simple fetch and merge
+        const current = db.prepare('SELECT * FROM LeaveApplication WHERE id = ?').get(id) as LeaveApplication;
+        if (!current) throw new Error('Leave application not found');
+
+        const updated = { ...current, ...data };
+
+        stmt.run(
+            updated.type,
+            updated.startDate,
+            updated.endDate,
+            updated.reason || null,
+            updated.status,
+            id
+        );
+
+        return updated;
     },
 
     // Payroll methods

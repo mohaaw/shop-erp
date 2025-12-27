@@ -13,6 +13,8 @@ export default function LoginPage() {
   const t = useTranslations('Auth');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [twoFactorCode, setTwoFactorCode] = useState('');
+  const [requiresTwoFactor, setRequiresTwoFactor] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const router = useRouter();
@@ -28,10 +30,18 @@ export default function LoginPage() {
         callbackUrl: '/dashboard',
         email,
         password,
+        code: twoFactorCode || undefined,
       });
 
       if (result?.error) {
-        setError(result.error);
+        if (result.error === '2FA_REQUIRED') {
+          setRequiresTwoFactor(true);
+          setError('Please enter your 2FA code');
+        } else if (result.error === 'INVALID_2FA_CODE') {
+          setError('Invalid 2FA code. Please try again.');
+        } else {
+          setError(result.error);
+        }
       } else {
         router.refresh();
         router.push('/dashboard');
@@ -82,7 +92,21 @@ export default function LoginPage() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                disabled={requiresTwoFactor}
               />
+
+              {requiresTwoFactor && (
+                <Input
+                  label="2FA Code"
+                  type="text"
+                  placeholder="123456"
+                  value={twoFactorCode}
+                  onChange={(e) => setTwoFactorCode(e.target.value)}
+                  maxLength={8}
+                  required
+                  autoFocus
+                />
+              )}
 
               <Button type="submit" fullWidth loading={loading}>
                 {t('signIn')}

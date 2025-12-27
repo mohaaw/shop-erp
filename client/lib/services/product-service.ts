@@ -1,3 +1,4 @@
+import "server-only";
 import { db } from '@/lib/db';
 import { ProductFormValues } from '@/lib/validations/product';
 import { Product } from '@/types/product';

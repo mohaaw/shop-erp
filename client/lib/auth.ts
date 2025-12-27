@@ -17,6 +17,8 @@ export const authOptions: NextAuthOptions = {
 
                 try {
                     const { userService } = await import('./services/user-service');
+                    const speakeasy = await import('speakeasy');
+
                     console.log('Fetching user...');
                     const user = await userService.getUserByEmailWithPassword(credentials.email);
                     console.log('User fetch result:', user ? { id: user.id, email: user.email, hasHash: !!user.password } : 'not found');
@@ -34,15 +36,51 @@ export const authOptions: NextAuthOptions = {
                         return null;
                     }
 
+                    // Check 2FA
+                    if (user.twoFactorEnabled && user.twoFactorSecret) {
+                        const code = (credentials as { email: string; password: string; code?: string }).code;
+
+                        if (!code) {
+                            // Password is correct but 2FA code is missing
+                            throw new Error('2FA_REQUIRED');
+                        }
+
+                        // Verify TOTP code
+                        const verified = speakeasy.default.totp.verify({
+                            secret: user.twoFactorSecret,
+                            encoding: 'base32',
+                            token: code,
+                        });
+
+                        if (!verified) {
+                            // Check if it's a backup code
+                            if (user.backupCodes) {
+                                const backupCodes = JSON.parse(user.backupCodes) as string[];
+                                if (backupCodes.includes(code)) {
+                                    // Valid backup code, remove it
+                                    const updatedCodes = backupCodes.filter(c => c !== code);
+                                    userService.updateBackupCodes(user.id, updatedCodes);
+                                } else {
+                                    throw new Error('INVALID_2FA_CODE');
+                                }
+                            } else {
+                                throw new Error('INVALID_2FA_CODE');
+                            }
+                        }
+                    }
+
                     return {
                         id: user.id,
                         name: user.name,
                         email: user.email,
                         role: user.role,
-                        accessToken: 'local-token', // We don't need a real token for local auth anymore, but keeping structure
+                        accessToken: 'local-token',
                     };
                 } catch (error: unknown) {
                     console.error("Auth error:", error);
+                    if ((error as Error).message === '2FA_REQUIRED' || (error as Error).message === 'INVALID_2FA_CODE') {
+                        throw error;
+                    }
                     return null;
                 }
             },

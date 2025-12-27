@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   },
 };
 
-import { ThemeManager } from '@/components/theme-manager';
+
 
 export default async function RootLayout({
   children,
@@ -33,7 +33,7 @@ export default async function RootLayout({
   return (
     <html lang={locale} dir={direction} suppressHydrationWarning>
       <body className={inter.className}>
-        <ThemeManager />
+
         <NextIntlClientProvider locale={locale} messages={messages}>
           <ThemeProvider
             attribute="class"

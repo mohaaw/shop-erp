@@ -1,3 +1,4 @@
+import "server-only";
 import { db } from '../db';
 import { randomUUID } from 'crypto';
 import { inventoryService } from './inventory-service';

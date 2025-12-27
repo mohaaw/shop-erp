@@ -1,3 +1,4 @@
+import "server-only";
 import { db } from '@/lib/db';
 import { randomUUID } from 'crypto';
 import { Product } from '@/types/product';

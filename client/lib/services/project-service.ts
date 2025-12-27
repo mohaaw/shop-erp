@@ -1,3 +1,4 @@
+import "server-only";
 import { db } from '../db';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -124,6 +125,38 @@ export const projectService = {
             data.priority || 'medium',
             data.dueDate || null,
             now
+        );
+
+        return this.getTaskById(id)!;
+    },
+
+    updateTask(id: string, data: Partial<Task>): Task {
+        const now = new Date().toISOString();
+        const stmt = db.prepare(`
+            UPDATE Task
+            SET title = ?, description = ?, assignedTo = ?,
+                status = ?, priority = ?, dueDate = ?, updatedAt = ?
+            WHERE id = ?
+        `);
+
+        // Need to get existing task to merge data or handle partial updates more dynamically.
+        // For simplicity in this robust environment, let's assume we pass all needed fields or acceptable defaults,
+        // but better-sqlite3 with standard SQL requires all params if we bind them.
+        // Actually, let's just fetch, merge, and update.
+        const current = this.getTaskById(id);
+        if (!current) throw new Error('Task not found');
+
+        const updated = { ...current, ...data };
+
+        stmt.run(
+            updated.title,
+            updated.description || null,
+            updated.assignedTo || null,
+            updated.status,
+            updated.priority,
+            updated.dueDate || null,
+            now,
+            id
         );
 
         return this.getTaskById(id)!;

@@ -1,3 +1,4 @@
+import "server-only";
 import { db } from '@/lib/db';
 import { Customer } from '@/types/customer';
 import { v4 as uuidv4 } from 'uuid';

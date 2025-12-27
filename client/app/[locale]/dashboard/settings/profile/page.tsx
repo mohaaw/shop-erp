@@ -3,6 +3,8 @@ import { Separator } from '@/components/ui/separator';
 import { ProfileForm } from './profile-form';
 import { getCurrentUserAction } from '@/app/actions/user-actions';
 
+import { TwoFactorSettings } from './two-factor-settings';
+
 export default async function ProfileSettingsPage() {
     const t = await getTranslations('Settings.profile');
     const user = await getCurrentUserAction();
@@ -23,6 +25,10 @@ export default async function ProfileSettingsPage() {
             <Separator />
 
             <ProfileForm user={user} />
+
+            <Separator />
+
+            <TwoFactorSettings user={user} />
         </div>
     );
 }

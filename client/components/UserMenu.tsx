@@ -16,61 +16,22 @@ import {
 } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
 import { LanguageSwitcher } from '@/components/ui/language-switcher';
-import {
-  getThemeMode,
-  setThemeMode,
-  getPrimaryColor,
-  getNeutralColor,
-  PRESET_THEMES,
-  applyPresetTheme,
-  initializeTheme,
-  type ThemeMode,
-} from '@/lib/themeSystem';
+import { useTheme } from 'next-themes';
 import { useTranslations } from 'next-intl';
 
 export function UserMenu() {
   const [isOpen, setIsOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const [themeMode, setThemeModeState] = useState<ThemeMode>('auto');
-  const [currentTheme, setCurrentTheme] = useState('');
+  const { theme, setTheme } = useTheme();
   const menuRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const t = useTranslations('UserMenu');
 
+
   // Initialize theme on mount
   useEffect(() => {
     setMounted(true);
-    initializeTheme();
-
-    const mode = getThemeMode();
-    const primary = getPrimaryColor();
-    const neutral = getNeutralColor();
-
-    setThemeModeState(mode);
-
-    // Find matching preset theme
-    const matching = PRESET_THEMES.find(
-      t => t.mode === mode && t.primary === primary && t.neutral === neutral
-    );
-    setCurrentTheme(matching?.name || '');
-
-    console.log('✅ UserMenu initialized:', { mode, primary, neutral, theme: matching?.name });
   }, []);
-
-  // Handle preset theme selection
-  const handlePresetTheme = (themeName: string) => {
-    applyPresetTheme(themeName);
-    setCurrentTheme(themeName);
-    console.log('✅ Applied preset theme:', themeName);
-  };
-
-  // Handle manual theme mode change (Light/Dark/Auto buttons)
-  const handleThemeModeChange = (mode: ThemeMode) => {
-    setThemeMode(mode);
-    setThemeModeState(mode);
-    // Clear preset theme when manually changing mode
-    setCurrentTheme('');
-  };
 
   // Handle logout
   const handleLogout = () => {
@@ -165,31 +126,13 @@ export function UserMenu() {
               <Palette size={14} /> {t('themes')}
             </p>
 
-            {/* Preset Themes Grid */}
-            <div className="grid grid-cols-2 gap-1 mb-3">
-              {PRESET_THEMES.map((theme) => (
-                <button
-                  key={theme.name}
-                  onClick={() => handlePresetTheme(theme.name)}
-                  className={cn(
-                    'px-2 py-1.5 text-xs rounded border transition-all',
-                    currentTheme === theme.name
-                      ? 'bg-primary-600 text-white border-primary-600'
-                      : 'bg-secondary-100 dark:bg-secondary-800 text-secondary-900 dark:text-secondary-50 border-secondary-300 dark:border-secondary-600 hover:border-primary-400'
-                  )}
-                >
-                  {theme.name}
-                </button>
-              ))}
-            </div>
-
             {/* Quick Theme Mode Buttons */}
             <div className="flex gap-1">
               <button
-                onClick={() => handleThemeModeChange('light')}
+                onClick={() => setTheme('light')}
                 className={cn(
                   'flex-1 flex items-center justify-center gap-1 px-2 py-1.5 text-xs rounded transition-all',
-                  themeMode === 'light'
+                  theme === 'light'
                     ? 'bg-primary-600 text-white'
                     : 'bg-secondary-100 dark:bg-secondary-800 text-secondary-900 dark:text-secondary-50 hover:bg-secondary-200'
                 )}
@@ -198,10 +141,10 @@ export function UserMenu() {
                 <Sun size={14} /> {t('light')}
               </button>
               <button
-                onClick={() => handleThemeModeChange('dark')}
+                onClick={() => setTheme('dark')}
                 className={cn(
                   'flex-1 flex items-center justify-center gap-1 px-2 py-1.5 text-xs rounded transition-all',
-                  themeMode === 'dark'
+                  theme === 'dark'
                     ? 'bg-primary-600 text-white'
                     : 'bg-secondary-100 dark:bg-secondary-800 text-secondary-900 dark:text-secondary-50 hover:bg-secondary-200'
                 )}
@@ -210,10 +153,10 @@ export function UserMenu() {
                 <Moon size={14} /> {t('dark')}
               </button>
               <button
-                onClick={() => handleThemeModeChange('auto')}
+                onClick={() => setTheme('system')}
                 className={cn(
                   'flex-1 px-2 py-1.5 text-xs rounded transition-all',
-                  themeMode === 'auto'
+                  theme === 'system'
                     ? 'bg-primary-600 text-white'
                     : 'bg-secondary-100 dark:bg-secondary-800 text-secondary-900 dark:text-secondary-50 hover:bg-secondary-200'
                 )}
