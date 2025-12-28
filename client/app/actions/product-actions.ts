@@ -36,9 +36,14 @@ export async function getProductAction(id: string) {
     }
 }
 
+import { getCurrentUserAction } from './user-actions';
+
 export async function deleteProductAction(id: string) {
     try {
-        ProductService.deleteProduct(id);
+        const user = await getCurrentUserAction();
+        if (!user) throw new Error('Unauthorized');
+
+        ProductService.deleteProduct(id, user.id);
         revalidatePath('/dashboard/products');
         return { success: true };
     } catch (error) {
@@ -49,10 +54,13 @@ export async function deleteProductAction(id: string) {
 
 export async function bulkDeleteProductsAction(ids: string[]) {
     try {
+        const user = await getCurrentUserAction();
+        if (!user) throw new Error('Unauthorized');
+
         // We can optimize this to a single query later if ProductService supports it.
         // For now, loop.
         for (const id of ids) {
-            ProductService.deleteProduct(id);
+            ProductService.deleteProduct(id, user.id);
         }
         revalidatePath('/dashboard/products');
         return { success: true };

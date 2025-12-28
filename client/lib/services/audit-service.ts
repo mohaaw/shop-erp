@@ -207,3 +207,13 @@ export function getEntityAuditTrail(entity: string, entityId: string) {
     changesObj: log.changes ? JSON.parse(log.changes) : null
   }));
 }
+
+export const auditService = {
+  logAuditEvent,
+  getAuditLogsByEntity,
+  getAuditLogsByUser,
+  getRecentAuditLogs,
+  getAuditLogs,
+  logEntityChange,
+  getEntityAuditTrail
+};

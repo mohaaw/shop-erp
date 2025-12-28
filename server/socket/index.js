@@ -3,6 +3,34 @@ const db = require('../db');
 
 let io;
 
+const os = require('os');
+
+function getCpuUsage() {
+    return new Promise((resolve) => {
+        const start = os.cpus();
+        const startUsage = start.reduce((acc, cpu) => {
+            acc.idle += cpu.times.idle;
+            acc.total += Object.values(cpu.times).reduce((a, b) => a + b, 0);
+            return acc;
+        }, { idle: 0, total: 0 });
+
+        setTimeout(() => {
+            const end = os.cpus();
+            const endUsage = end.reduce((acc, cpu) => {
+                acc.idle += cpu.times.idle;
+                acc.total += Object.values(cpu.times).reduce((a, b) => a + b, 0);
+                return acc;
+            }, { idle: 0, total: 0 });
+
+            const idleDiff = endUsage.idle - startUsage.idle;
+            const totalDiff = endUsage.total - startUsage.total;
+            const percentage = 100 - Math.floor((100 * idleDiff) / totalDiff);
+
+            resolve(percentage);
+        }, 1000);
+    });
+}
+
 exports.init = (server) => {
     io = new Server(server, {
         cors: {
@@ -11,6 +39,42 @@ exports.init = (server) => {
             credentials: true
         }
     });
+
+    // System Monitor Loop
+    setInterval(async () => {
+        try {
+            // CPU
+            const cpuUsage = await getCpuUsage();
+
+            // RAM
+            const totalMem = os.totalmem();
+            const freeMem = os.freemem();
+            const usedMem = totalMem - freeMem;
+            const memUsage = Math.round((usedMem / totalMem) * 100);
+
+            // DB Status
+            let dbStatus = 'disconnected';
+            try {
+                const check = db.prepare('SELECT 1').get();
+                if (check) dbStatus = 'connected';
+            } catch (e) {
+                dbStatus = 'error';
+            }
+
+            const stats = {
+                cpu: cpuUsage,
+                ram: memUsage,
+                ramUsed: Math.round(usedMem / 1024 / 1024), // MB
+                ramTotal: Math.round(totalMem / 1024 / 1024), // MB
+                db: dbStatus,
+                timestamp: new Date().toISOString()
+            };
+
+            io.emit('system_stats', stats);
+        } catch (err) {
+            console.error('Error broadcasting system stats:', err);
+        }
+    }, 2000);
 
     io.on('connection', (socket) => {
         console.log('Socket connected:', socket.id);
