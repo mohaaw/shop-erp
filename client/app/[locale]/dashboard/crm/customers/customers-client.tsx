@@ -1,10 +1,8 @@
 'use client';
 
 import { BackButton } from '@/components/ui/back-button';
-import { Button } from '@/components/ui/button';
 import { DataTable, SortableHeader } from '@/components/ui/data-table';
-import { Plus } from 'lucide-react';
-import Link from 'next/link';
+import { CustomerDialog } from '@/components/customers/customer-dialog';
 import { ColumnDef } from '@tanstack/react-table';
 import { Customer } from '@/types/customer';
 import { useTranslations } from 'next-intl';
@@ -48,12 +46,7 @@ export function CustomersClient({ customers }: CustomersClientProps) {
                         {t('subtitle')}
                     </p>
                 </div>
-                <Link href="/dashboard/crm/customers/new">
-                    <Button>
-                        <Plus className="mr-2 h-4 w-4" />
-                        {t('newCustomer')}
-                    </Button>
-                </Link>
+                <CustomerDialog />
             </div>
 
             <DataTable

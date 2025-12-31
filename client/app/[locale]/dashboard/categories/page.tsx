@@ -6,7 +6,7 @@ import { CategoryTable } from '@/components/products/category-table';
 import { Plus } from 'lucide-react';
 import { Link } from '@/i18n/navigation';
 import { Category } from '@/types/product';
-import { categoryService } from '@/services/categories';
+import { getCategoriesAction } from '@/app/actions/category-actions';
 
 export default function CategoriesPage() {
     const t = useTranslations('Categories');
@@ -16,7 +16,7 @@ export default function CategoriesPage() {
     useEffect(() => {
         const fetchCategories = async () => {
             try {
-                const data = await categoryService.getCategories();
+                const data = await getCategoriesAction();
                 setCategories(data);
             } catch (error) {
                 console.error('Failed to fetch categories:', error);

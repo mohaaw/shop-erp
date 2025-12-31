@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { CategoryForm } from '@/components/products/category-form';
-import { categoryService } from '@/services/categories';
+import { getCategoryAction } from '@/app/actions/category-actions';
 import { Category } from '@/types/product';
 
 export default function EditCategoryPage({ params }: { params: { id: string } }) {
@@ -14,7 +14,7 @@ export default function EditCategoryPage({ params }: { params: { id: string } })
     useEffect(() => {
         const fetchCategory = async () => {
             try {
-                const data = await categoryService.getCategoryById(params.id);
+                const data = await getCategoryAction(params.id);
                 if (data) {
                     setCategory(data);
                 }

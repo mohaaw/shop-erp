@@ -1,21 +1,35 @@
 'use client';
 
+import { useState } from 'react';
 import { BackButton } from '@/components/ui/back-button';
 import { Button } from '@/components/ui/button';
 import { DataTable, SortableHeader } from '@/components/ui/data-table';
 import { Badge } from '@/components/ui/badge';
 import { Plus } from 'lucide-react';
-import Link from 'next/link';
 import { ColumnDef } from '@tanstack/react-table';
-import { Employee } from '@/lib/services/employee-service';
+import { Employee, Department } from '@/lib/services/employee-service';
 import { useTranslations } from 'next-intl';
+import { EmployeeDialog } from '@/components/employees/employee-dialog';
 
 interface EmployeesClientProps {
     employees: Employee[];
+    departments: Department[];
 }
 
-export function EmployeesClient({ employees }: EmployeesClientProps) {
+export function EmployeesClient({ employees, departments }: EmployeesClientProps) {
     const t = useTranslations('Employees');
+    const [selectedEmployee, setSelectedEmployee] = useState<Employee | undefined>(undefined);
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+    const handleEdit = (employee: Employee) => {
+        setSelectedEmployee(employee);
+        setIsDialogOpen(true);
+    };
+
+    const handleCreate = () => {
+        setSelectedEmployee(undefined);
+        setIsDialogOpen(true);
+    };
 
     const columns: ColumnDef<Employee>[] = [
         {
@@ -33,6 +47,7 @@ export function EmployeesClient({ employees }: EmployeesClientProps) {
         {
             accessorKey: 'email',
             header: t('email'),
+            cell: ({ row }) => row.original.email || '-',
         },
         {
             accessorKey: 'departmentName',
@@ -59,9 +74,13 @@ export function EmployeesClient({ employees }: EmployeesClientProps) {
         {
             id: 'actions',
             cell: ({ row }) => (
-                <Link href={`/dashboard/employees/${row.original.id}`}>
-                    <Button variant="ghost" size="sm">View</Button>
-                </Link>
+                <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => handleEdit(row.original)}
+                >
+                    {t('edit')}
+                </Button>
             ),
         },
     ];
@@ -76,12 +95,15 @@ export function EmployeesClient({ employees }: EmployeesClientProps) {
                         {t('subtitle')}
                     </p>
                 </div>
-                <Link href="/dashboard/employees/new">
-                    <Button>
-                        <Plus className="mr-2 h-4 w-4" />
-                        {t('newEmployee')}
-                    </Button>
-                </Link>
+                <EmployeeDialog
+                    departments={departments}
+                    trigger={
+                        <Button onClick={handleCreate}>
+                            <Plus className="mr-2 h-4 w-4" />
+                            {t('newEmployee')}
+                        </Button>
+                    }
+                />
             </div>
 
             <DataTable
@@ -89,6 +111,13 @@ export function EmployeesClient({ employees }: EmployeesClientProps) {
                 data={employees}
                 searchKey="firstName"
                 searchPlaceholder={t('firstName')}
+            />
+
+            <EmployeeDialog
+                open={isDialogOpen}
+                onOpenChange={setIsDialogOpen}
+                employee={selectedEmployee}
+                departments={departments}
             />
         </div>
     );

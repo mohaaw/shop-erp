@@ -22,7 +22,7 @@ import { Input } from '@/components/ui/input';
 import { MoreHorizontal, Pencil, Trash2 } from 'lucide-react';
 import { Category } from '@/types/product';
 import { Link } from '@/i18n/navigation';
-import { categoryService } from '@/services/categories';
+import { deleteCategoryAction } from '@/app/actions/category-actions';
 import { useRouter } from '@/i18n/navigation';
 
 interface CategoryTableProps {
@@ -43,7 +43,7 @@ export function CategoryTable({ data }: CategoryTableProps) {
         if (confirm(t('deleteConfirmation'))) {
             setIsDeleting(true);
             try {
-                await categoryService.deleteCategory(id);
+                await deleteCategoryAction(id);
                 router.refresh();
             } catch (error) {
                 console.error('Failed to delete category:', error);

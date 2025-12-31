@@ -1,8 +1,8 @@
 'use client';
 
-import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Users, Plus } from 'lucide-react';
+import { Users } from 'lucide-react';
+import { CustomerDialog } from '@/components/customers/customer-dialog';
 import { useEffect, useState } from 'react';
 import { customersApi } from '@/lib/api';
 import { Customer } from '@/types/customer';
@@ -37,10 +37,7 @@ export default function CustomersPage() {
             Manage customer relationships
           </p>
         </div>
-        <Button className="gap-2">
-          <Plus className="w-4 h-4" />
-          New Customer
-        </Button>
+        <CustomerDialog />
       </div>
 
       <Card>

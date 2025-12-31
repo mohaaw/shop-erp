@@ -15,6 +15,7 @@ import {
   TableRow
 } from '@/components/ui/table';
 import { AlertTriangle, Plus, Trash2, User, Shield } from 'lucide-react';
+import { getRolesAction, createRoleFormAction, deleteRoleFormAction } from '@/app/actions/role-actions';
 
 export default async function RoleManagementPage() {
   const session = await getServerSession(authOptions);
@@ -43,12 +44,7 @@ export default async function RoleManagementPage() {
     );
   }
 
-  const roles = [
-    { id: 'admin', name: 'Administrator', description: 'Full access to all features' },
-    { id: 'manager', name: 'Manager', description: 'Access to manage products, sales, and employees' },
-    { id: 'staff', name: 'Staff', description: 'Access to process sales and manage customers' },
-    { id: 'user', name: 'User', description: 'Basic access to dashboard and profile' },
-  ];
+  const roles = await getRolesAction();
 
   return (
     <div className="space-y-6">
@@ -73,25 +69,26 @@ export default async function RoleManagementPage() {
           <CardTitle>Create New Role</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <Label htmlFor="roleName">Role Name</Label>
-              <Input
-                id="roleName"
-                name="roleName"
-                placeholder="e.g., Sales Manager"
-              />
+          <form action={createRoleFormAction} className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="roleName">Role Name</Label>
+                <Input
+                  id="roleName"
+                  name="roleName"
+                  placeholder="e.g., Sales Manager"
+                  required
+                />
+              </div>
+              <div>
+                <Label htmlFor="roleDesc">Description</Label>
+                <Input
+                  id="roleDesc"
+                  name="roleDesc"
+                  placeholder="Description of the role"
+                />
+              </div>
             </div>
-            <div>
-              <Label htmlFor="roleDesc">Description</Label>
-              <Input
-                id="roleDesc"
-                name="roleDesc"
-                placeholder="Description of the role"
-              />
-            </div>
-          </div>
-          <form action="/api/create-role" method="post">
             <Button type="submit" className="w-fit">
               <Plus className="h-4 w-4 mr-2" />
               Create Role
@@ -111,7 +108,6 @@ export default async function RoleManagementPage() {
               <TableRow>
                 <TableHead>Role</TableHead>
                 <TableHead>Description</TableHead>
-                <TableHead>Users</TableHead>
                 <TableHead>Permissions</TableHead>
                 <TableHead>Actions</TableHead>
               </TableRow>
@@ -127,11 +123,6 @@ export default async function RoleManagementPage() {
                   </TableCell>
                   <TableCell>{role.description}</TableCell>
                   <TableCell>
-                    <Badge variant="outline">
-                      {role.id === 'admin' ? 'System' : 'Custom'}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
                     <Badge variant="secondary">
                       {accessControlService.getRoleActions(role.id).length} permissions
                     </Badge>
@@ -144,13 +135,16 @@ export default async function RoleManagementPage() {
                       >
                         Edit
                       </Button>
-                      <Button
-                        size="sm"
-                        variant="danger"
-                        disabled={['admin', 'user', 'manager', 'staff'].includes(role.id)}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
+                      <form action={deleteRoleFormAction.bind(null, role.id)}>
+                        <Button
+                          size="sm"
+                          variant="danger"
+                          disabled={role.isSystem}
+                          type="submit"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </form>
                     </div>
                   </TableCell>
                 </TableRow>

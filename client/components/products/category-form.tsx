@@ -19,7 +19,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { categorySchema, CategoryFormValues } from '@/lib/validations/product';
 import { Loader2, Save, X } from 'lucide-react';
-import { categoryService } from '@/services/categories';
+import { createCategoryAction, updateCategoryAction } from '@/app/actions/category-actions';
 
 interface CategoryFormProps {
     initialData?: CategoryFormValues & { id?: string };
@@ -45,9 +45,9 @@ export function CategoryForm({ initialData }: CategoryFormProps) {
         setLoading(true);
         try {
             if (initialData?.id) {
-                await categoryService.updateCategory(initialData.id, data);
+                await updateCategoryAction(initialData.id, data);
             } else {
-                await categoryService.createCategory(data);
+                await createCategoryAction(data);
             }
             router.push('/dashboard/categories');
             router.refresh();

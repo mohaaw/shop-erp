@@ -196,5 +196,37 @@ export const accessControlService = {
     };
 
     return rolePermissions[role] || [];
+  },
+
+  getAllPossiblePermissions(): Permission[] {
+    return [
+      { id: 'products-read', action: 'read', resource: 'products' },
+      { id: 'products-create', action: 'create', resource: 'products' },
+      { id: 'products-update', action: 'update', resource: 'products' },
+      { id: 'products-delete', action: 'delete', resource: 'products' },
+      { id: 'sales-read', action: 'read', resource: 'sales' },
+      { id: 'sales-create', action: 'create', resource: 'sales' },
+      { id: 'sales-update', action: 'update', resource: 'sales' },
+      { id: 'sales-delete', action: 'delete', resource: 'sales' },
+      { id: 'inventory-read', action: 'read', resource: 'inventory' },
+      { id: 'inventory-create', action: 'create', resource: 'inventory' },
+      { id: 'inventory-update', action: 'update', resource: 'inventory' },
+      { id: 'inventory-delete', action: 'delete', resource: 'inventory' },
+      { id: 'customers-read', action: 'read', resource: 'customers' },
+      { id: 'customers-create', action: 'create', resource: 'customers' },
+      { id: 'customers-update', action: 'update', resource: 'customers' },
+      { id: 'customers-delete', action: 'delete', resource: 'customers' },
+      { id: 'dashboard-read', action: 'read', resource: 'dashboard' },
+      { id: 'profile-read', action: 'read', resource: 'profile' },
+      { id: 'profile-update', action: 'update', resource: 'profile' },
+      { id: 'employees-read', action: 'read', resource: 'employees' },
+      { id: 'employees-create', action: 'create', resource: 'employees' },
+      { id: 'employees-update', action: 'update', resource: 'employees' },
+      { id: 'employees-delete', action: 'delete', resource: 'employees' },
+      { id: 'roles-read', action: 'read', resource: 'roles' },
+      { id: 'roles-create', action: 'create', resource: 'roles' },
+      { id: 'roles-update', action: 'update', resource: 'roles' },
+      { id: 'roles-delete', action: 'delete', resource: 'roles' },
+    ];
   }
 };
