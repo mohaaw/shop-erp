@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
 import { resetDatabaseAction } from '@/app/actions/settings-actions';
+import { backupDatabaseAction } from '@/app/actions/system-actions';
 
 export default function DataSettingsPage() {
     const t = useTranslations('Settings.data');
@@ -72,6 +73,50 @@ export default function DataSettingsPage() {
                         </div>
                     </CardContent>
                 </Card>
+
+                {/* Database Backups */}
+                <Card>
+                    <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                            <Download className="w-5 h-5 text-primary-600" />
+                            Database Backups
+                        </CardTitle>
+                        <CardDescription>Create a manual backup of your database. System keeps the last 10 backups.</CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                        <div className="p-4 bg-secondary-50 dark:bg-secondary-800/50 rounded-lg">
+                            <p className="text-sm text-secondary-600 dark:text-secondary-300">
+                                Backups are stored in the server's <code>/backups</code> directory.
+                            </p>
+                        </div>
+                        <Button
+                            variant="outline"
+                            onClick={async () => {
+                                const toastId = toast.loading('Creating backup...');
+                                try {
+                                    const result = await backupDatabaseAction();
+                                    if (result.success) {
+                                        toast.success('Backup created successfully', {
+                                            id: toastId,
+                                            description: `Saved to: ${result.path}`
+                                        });
+                                    } else {
+                                        toast.error('Backup failed', {
+                                            id: toastId,
+                                            description: String(result.error)
+                                        });
+                                    }
+                                } catch (e) {
+                                    toast.error('Backup failed', { id: toastId });
+                                }
+                            }}
+                        >
+                            Create Backup Now
+                        </Button>
+                    </CardContent>
+                </Card>
+
+
 
                 {/* Import Data */}
                 <Card>
